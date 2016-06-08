@@ -1,0 +1,35 @@
+<ng-form name="metamodelForm">
+    <div data-ng-repeat="descriptor in metamodel.descriptors" class="row">
+        <div data-ng-if=":: descriptor.type === 'text'">
+            <label for="{{:: descriptor.propertyName}}" class="col-lg-2" data-uib-tooltip="{{:: descriptor.description}}">{{:: descriptor.viewName}}</label>
+            <input type="text" id="{{:: descriptor.propertyName}}" name="{{:: descriptor.propertyName}}" data-ng-model="settings[descriptor.propertyName]"
+                   data-ng-pattern=":: descriptor.pattern"
+                   data-ng-required=":: descriptor.required" data-ng-minLength=":: descriptor.minLength" data-ng-maxLength=":: descriptor.maxLength">
+            <span class="glyphicon glyphicon-warning-sign text-danger" data-ng-show="!metamodelForm.{{:: descriptor.propertyName}}.$valid"
+                  data-tooltip-placement="right" data-uib-tooltip-template="'/common.web/res/metamodel/metamodelCommonTooltip.html'"></span>
+        </div>
+
+        <div data-ng-if=":: descriptor.type === 'bool'">
+            <label for="{{:: descriptor.propertyName}}" class="col-lg-2" data-uib-tooltip="{{:: descriptor.description}}">{{:: descriptor.viewName}}</label>
+            <input type="checkbox" id="{{:: descriptor.propertyName}}" name="{{:: descriptor.propertyName}}" data-ng-model="settings[descriptor.propertyName]">
+        </div>
+
+        <div data-ng-if=":: descriptor.type === 'number'">
+            <label for="{{:: descriptor.propertyName}}" class="col-lg-2" data-uib-tooltip="{{:: descriptor.description}}">{{:: descriptor.viewName}}</label>
+            <input type="number" id="{{:: descriptor.propertyName}}" name="{{:: descriptor.propertyName}}" data-ng-model="settings[descriptor.propertyName]"
+                   data-ng-required=":: descriptor.required" data-ng-min=":: descriptor.min" data-ng-max=":: descriptor.max">
+            <span class="glyphicon glyphicon-warning-sign text-danger" data-ng-show="!metamodelForm.{{:: descriptor.propertyName}}.$valid"
+                  data-tooltip-placement="right" data-uib-tooltip-template="'/common.web/res/metamodel/metamodelCommonTooltip.html'"></span>
+        </div>
+
+        <div data-ng-if=":: descriptor.type === 'option'">
+            <label for="{{:: descriptor.propertyName}}" class="col-lg-2" data-uib-tooltip="{{:: descriptor.description}}">{{:: descriptor.viewName}}</label>
+            <select name="{{:: descriptor.propertyName}}" data-ng-model="settings[descriptor.propertyName]" data-ng-required=":: descriptor.required"
+                    data-ng-options=":: option for option in descriptor.options">
+                <option value="">--- None ---</option>
+            </select>
+            <span class="glyphicon glyphicon-warning-sign text-danger" data-ng-show="!metamodelForm.{{:: descriptor.propertyName}}.$valid"
+                  data-tooltip-placement="right" data-uib-tooltip-template="'/common.web/res/metamodel/metamodelCommonTooltip.html'"></span>
+        </div>
+    </div>
+</ng-form>

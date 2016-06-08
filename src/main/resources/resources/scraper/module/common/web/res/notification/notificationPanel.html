@@ -1,0 +1,19 @@
+<div data-ng-controller="notificationCtrl">
+    <div class="container notifications-bar light-border">
+        <div class="row">
+            <div class="col-lg-1 notifications-bar-actions">
+                &nbsp;
+                <spinner show="notificationSvc.actionsCount"></spinner>
+                &nbsp;
+            </div>
+
+            <div class="col-lg-11 notifications-bar-alerts">
+                <div data-ng-repeat="notification in notificationSvc.notifications | limitTo: 3" class="alert"
+                     data-ng-class=":: notificationSvc.ALERT_MAP[notification.type]">
+                    <button type="button" class="close" data-ng-click="notificationSvc.removeByIndex($index)"><span>&times;</span></button>
+                    <span>{{:: notification.msg}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

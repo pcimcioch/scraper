@@ -1,0 +1,27 @@
+.main-container .module-row {
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.main-container .module-worker {
+    background-color: A1D490;
+}
+
+.main-container .module-standalone {
+    background-color: D4A190;
+}
+
+.main-container .module-service {
+    background-color: 90C3D4;
+}
+
+.module-description {
+	padding-top: 3px;
+	padding-bottom: 3px;
+	margin-bottom: 2px;
+}
+
+.instance-description .progress {
+	height: 10px;
+	margin-bottom: 0;
+}

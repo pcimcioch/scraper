@@ -1,0 +1,63 @@
+<html data-ng-app="loggerViewApp">
+<head>
+    <title>Logs</title>
+
+    <link rel="stylesheet" href="/common.web/thirdparty/bootstrap.css">
+    <script src="/common.web/thirdparty/angular.js"></script>
+    <script src="/common.web/thirdparty/ui-bootstrap-tpls-1.3.2.js"></script>
+
+    <link rel="stylesheet" href="/common.web/res/main.css">
+    <script src="/common.web/res/main.js"></script>
+    <script src="/common.web/res/notification/notificationSvc.js"></script>
+    <script src="/common.web/res/notification/notificationCtrl.js"></script>
+
+    <link rel="stylesheet" href="./res/main.css">
+    <script src="./res/main.js"></script>
+    <script src="./res/logs/logsCtrl.js"></script>
+    <script src="./res/logs/logsSvc.js"></script>
+</head>
+<body>
+
+    <ng-include src="'/common.web/res/notification/notificationPanel.html'"></ng-include>
+
+    <div class="container main-container" data-ng-controller="logsCtrl">
+        <div class="row logs-options light-border">
+            <div class="col-lg-12">
+                <button type="button" class="btn btn-danger btn-xs navbar-right" data-ng-click="removeAllLogs()">
+                    <span class="glyphicon glyphicon-remove"></span>
+                    Remove All
+                </button>
+            </div>
+        </div>
+
+        <div class="row light-border logs-row clickable" data-ng-repeat-start="(moduleName, moduleLogs) in logs" data-ng-init="expanded=false"
+             data-ng-click="expanded = !expanded">
+            <div class="col-lg-12">
+                <span class="glyphicon" data-ng-class="expanded ? 'glyphicon-triangle-bottom' : 'glyphicon-triangle-right'"></span>
+                {{moduleName}} [{{moduleLogs.length}}]
+                <button type="button" class="btn btn-danger btn-xs navbar-right" data-ng-click="removeModuleLogs(moduleName)">
+                    <span class="glyphicon glyphicon-remove"></span>
+                    Remove
+                </button>
+            </div>
+        </div>
+
+        <div class="row alert" data-ng-show="expanded" data-ng-repeat="log in moduleLogs | orderBy: 'date' : true" data-ng-repeat-end=""
+             data-ng-class=":: ALERT_MAP[log.level]">
+            <div class="col-lg-1">
+                <span class="glyphicon pull-right" data-ng-class=":: GLYPHICON_MAP[log.level]"></span>
+            </div>
+            <div class="col-lg-1">
+                {{:: log.instance}}
+            </div>
+            <div class="col-lg-3">
+                {{:: log.date | date: 'yyyy-MM-dd HH:mm:ss.sss'}}
+            </div>
+            <div class="col-lg-7">
+                {{:: log.message}}
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

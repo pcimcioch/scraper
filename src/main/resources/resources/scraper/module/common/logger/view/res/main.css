@@ -1,0 +1,15 @@
+.main-container .alert {
+    padding-top: 0;
+    padding-bottom: 0;
+    margin: 0;
+}
+
+.main-container .logs-options {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.main-container .logs-row {
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
