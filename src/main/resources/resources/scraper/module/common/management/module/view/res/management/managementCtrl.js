@@ -16,6 +16,7 @@ frontendApp.controller('managementCtrl', ['$scope', 'managementSvc', 'notificati
     $scope.statusSvc = statusSvc;
 
     $scope.modules = [];
+    $scope.moduleInstances = {};
 
     $scope.refreshModules = function() {
         notificationSvc.actionsCount++;
@@ -28,11 +29,65 @@ frontendApp.controller('managementCtrl', ['$scope', 'managementSvc', 'notificati
         });
     };
 
+    $scope.refreshModuleInstances = function() {
+        notificationSvc.actionsCount++;
+        return managementSvc.getModuleInstances(function(response) {
+            setModuleInstances(response.data);
+        }, function() {
+            notificationSvc.error('Error refeshing module instances list');
+        }).finally(function() {
+            notificationSvc.actionsCount--;
+        });
+    };
+
+    var setModuleInstances = function(instances) {
+        $scope.moduleInstances = {};
+        for(var i = 0; i< instances.length; ++i) {
+            if($scope.moduleInstances[instances[i].module]) {
+                $scope.moduleInstances[instances[i].module].push(instances[i]);
+            } else {
+                $scope.moduleInstances[instances[i].module] = [instances[i]];
+            }
+        }
+    };
+
     $scope.stopWorkerModule = function(workerId) {
         notificationSvc.actionsCount++;
         managementSvc.stopWorkerModule(workerId, function(response) {
         }, function() {
-            notificationSvc.error('Error stopping module');
+            notificationSvc.error('Error stopping worker module');
+        }).finally(function() {
+            notificationSvc.actionsCount--;
+        });
+    };
+
+    $scope.runModuleInstance = function(id) {
+        notificationSvc.actionsCount++;
+        managementSvc.runModuleInstance(id, function(response) {
+        }, function() {
+            notificationSvc.error('Error running module instance');
+        }).finally(function() {
+            notificationSvc.actionsCount--;
+        });
+    };
+
+    $scope.removeModuleInstance = function(id) {
+        notificationSvc.actionsCount++;
+        managementSvc.removeModuleInstance(id, function() {
+            $scope.refreshModuleInstances();
+        }, function() {
+            notificationSvc.error('Error removing module instance');
+        }).finally(function() {
+            notificationSvc.actionsCount--;
+        });
+    };
+
+    $scope.addModuleInstance = function(moduleName, instance, settings) {
+        notificationSvc.actionsCount++;
+        managementSvc.addModuleInstance(moduleName, instance, settings, function() {
+            $scope.refreshModuleInstances();
+        }, function() {
+            notificationSvc.error('Error adding module instance');
         }).finally(function() {
             notificationSvc.actionsCount--;
         });
@@ -40,6 +95,7 @@ frontendApp.controller('managementCtrl', ['$scope', 'managementSvc', 'notificati
 
     var init = function() {
         $scope.refreshModules();
+        $scope.refreshModuleInstances();
     };
 
     init();

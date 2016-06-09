@@ -12,7 +12,7 @@ public class ModuleViewModule implements StandaloneModule {
 
     public static final String NAME = "module.view";
 
-    public static final Set<String> DEPENDENCIES = Collections.unmodifiableSet(Utils.set("module.runner", "common.web"));
+    public static final Set<String> DEPENDENCIES = Collections.unmodifiableSet(Utils.set("module.runner", "module.store", "common.web"));
 
     public static final String DESCRIPTION = "Module View";
 

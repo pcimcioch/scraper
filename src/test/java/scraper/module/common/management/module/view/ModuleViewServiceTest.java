@@ -9,12 +9,11 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import scraper.module.common.management.module.runner.ModuleRunner;
 import scraper.module.common.management.module.runner.WorkerDescriptor;
+import scraper.module.common.management.module.store.ModuleStoreService;
 import scraper.module.core.ModuleContainer;
-import scraper.module.core.context.ModuleDetails;
 import scraper.module.core.testclasses.TestServiceModule;
 import scraper.module.core.testclasses.TestStandaloneModule;
 import scraper.module.core.testclasses.TestWorkerModule;
-import scraper.module.core.testclasses.TestWorkerSettings;
 import scraper.util.Utils;
 
 import java.util.Arrays;
@@ -24,10 +23,8 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -41,9 +38,12 @@ public class ModuleViewServiceTest {
     @Mock
     private ModuleRunner moduleRunner;
 
+    @Mock
+    private ModuleStoreService moduleStoreService;
+
     @Before
     public void setUp() {
-        service = new ModuleViewService(moduleContainer, moduleRunner);
+        service = new ModuleViewService(moduleContainer, moduleRunner, moduleStoreService);
     }
 
     @Test
@@ -112,54 +112,6 @@ public class ModuleViewServiceTest {
 
         // then
         verify(moduleRunner).stopWorker("workerId");
-    }
-
-    @Test
-    public void testRunModule_moduleMissing() {
-        // given
-        when(moduleContainer.getWorkerModule("module.worker")).thenReturn(null);
-
-        // when
-        try {
-            service.runModule("module.worker", toJson(new TestWorkerSettings("test")), "ins");
-            fail();
-        } catch (IllegalArgumentException ex) {
-            assertTrue(ex.getMessage().contains("not found"));
-        }
-
-        // then
-        verifyNoMoreInteractions(moduleRunner);
-    }
-
-    @Test
-    public void testRunModule_incorrectSettings() {
-        // given
-        TestWorkerModule workerModule = new TestWorkerModule("module.worker", "description");
-        when(moduleContainer.getWorkerModule("module.worker")).thenReturn(workerModule);
-
-        // when
-        try {
-            service.runModule("module.worker", toJson(new TestIncorrectSettings("test", 12)), "ins");
-            fail();
-        } catch (IllegalArgumentException ex) {
-            assertTrue(ex.getMessage().contains("Incorrect settings"));
-        }
-
-        // then
-        verifyNoMoreInteractions(moduleRunner);
-    }
-
-    @Test
-    public void testRunModule() {
-        // given
-        TestWorkerModule workerModule = new TestWorkerModule("module.worker", "description");
-        when(moduleContainer.getWorkerModule("module.worker")).thenReturn(workerModule);
-
-        // when
-        service.runModule("module.worker", toJson(new TestWorkerSettings("test")), "ins");
-
-        // then
-        verify(moduleRunner).runWorkerAsync(new ModuleDetails("module.worker", "ins"), new TestWorkerSettings("test"));
     }
 
     private ObjectNode toJson(Object obj) {

@@ -9,7 +9,6 @@ import scraper.module.chan.collector.BoardProcessedThreadDs;
 import scraper.module.chan.collector.BoardProcessedThreadDsRepository;
 
 @Service
-// TODO add tests
 public class ThreadSaver {
 
     private final BoardProcessedThreadDsRepository boardProcessedThreadRepository;

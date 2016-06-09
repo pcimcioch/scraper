@@ -4,12 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.neo4j.transaction.Neo4jTransactional;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import scraper.module.common.management.module.runner.ModuleRunner;
 import scraper.module.common.management.module.runner.WorkerDescriptor;
+import scraper.module.common.management.module.store.ModuleInstance;
+import scraper.module.common.management.module.store.ModuleStoreService;
 import scraper.module.core.ModuleContainer;
 import scraper.module.core.WorkerModule;
 import scraper.module.core.context.ModuleDetails;
@@ -19,22 +18,28 @@ import java.util.List;
 import static scraper.util.FuncUtils.map;
 
 @Service
-@Neo4jTransactional
-@Transactional(propagation = Propagation.REQUIRED)
+// TODO add mising tests
 public class ModuleViewService {
 
     private final ModuleContainer moduleContainer;
 
     private final ModuleRunner moduleRunner;
 
+    private final ModuleStoreService moduleStoreService;
+
     @Autowired
-    public ModuleViewService(ModuleContainer moduleContainer, ModuleRunner moduleRunner) {
+    public ModuleViewService(ModuleContainer moduleContainer, ModuleRunner moduleRunner, ModuleStoreService moduleStoreService) {
         this.moduleContainer = moduleContainer;
         this.moduleRunner = moduleRunner;
+        this.moduleStoreService = moduleStoreService;
     }
 
     public List<ModuleDescriptorJsonDto> getModules() {
         return map(moduleContainer.getModules().values(), ModuleDescriptorJsonDto::new);
+    }
+
+    public List<ModuleInstanceJsonDto> getModuleInstances() {
+        return map(moduleStoreService.getModuleInstances(), ModuleInstanceJsonDto::new);
     }
 
     public List<WorkerDescriptor> getModuleStatuses() {
@@ -45,21 +50,35 @@ public class ModuleViewService {
         moduleRunner.stopWorker(workerId);
     }
 
-    public void runModule(String moduleName, ObjectNode settingsJson, String instance) {
-        ModuleDetails moduleDetails = new ModuleDetails(moduleName, instance);
+    public void addModuleInstance(String moduleName, String instance, ObjectNode settingsJson) {
         Object settings = buildSettings(moduleName, settingsJson);
+        moduleStoreService.addModuleInstance(new ModuleInstance(moduleName, instance, settings));
+    }
 
-        moduleRunner.runWorkerAsync(moduleDetails, settings);
+    public void runModuleInstance(long id) {
+        ModuleInstance moduleInstance = moduleStoreService.getModuleInstance(id);
+        ModuleDetails moduleDetails = new ModuleDetails(moduleInstance.getModule(), moduleInstance.getInstance());
+
+        moduleRunner.runWorkerAsync(moduleDetails, moduleInstance.getSettings());
+    }
+
+    public void deleteModuleInstance(long id) {
+        moduleStoreService.deleteModuleInstance(id);
     }
 
     private Object buildSettings(String moduleName, ObjectNode settingsJson) {
+        Class<?> settingsType = getSettingsType(moduleName);
+
+        return transform(settingsJson, settingsType);
+    }
+
+    private Class<?> getSettingsType(String moduleName) {
         WorkerModule<?> module = moduleContainer.getWorkerModule(moduleName);
         if (module == null) {
             throw new IllegalArgumentException("Worker Module " + moduleName + " not found");
         }
-        Class<?> settingsType = module.getSettingsClass();
 
-        return transform(settingsJson, settingsType);
+        return module.getSettingsClass();
     }
 
     private <T> T transform(ObjectNode settingsJson, Class<T> settingsType) {

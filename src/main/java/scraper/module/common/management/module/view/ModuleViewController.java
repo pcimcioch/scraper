@@ -36,11 +36,29 @@ public class ModuleViewController {
         return moduleService.getModuleStatuses();
     }
 
-    // TODO do not start instance ad-hoc. User need to first create instance
-    @RequestMapping(path = "/module/{moduleName}/{instance}/run", method = RequestMethod.POST, consumes = "application/json")
-    public StatusMessage runModule(@PathVariable("moduleName") String moduleName, @PathVariable("instance") String instance, @RequestBody ObjectNode settings) {
-        moduleService.runModule(moduleName, settings, instance);
+    @RequestMapping(path = "/module/instance", method = RequestMethod.GET)
+    public List<ModuleInstanceJsonDto> getModuleInstances() {
+        return moduleService.getModuleInstances();
+    }
+
+    // TODO add "edit settings"
+
+    @RequestMapping(path = "/module/instance/{id}/run", method = RequestMethod.GET)
+    public StatusMessage runModuleInstance(@PathVariable("id") long id) {
+        moduleService.runModuleInstance(id);
         return new StatusMessage("Started");
+    }
+
+    @RequestMapping(path = "/module/instance/{id}", method = RequestMethod.DELETE)
+    public StatusMessage deleteModuleInstance(@PathVariable("id") long id) {
+        moduleService.deleteModuleInstance(id);
+        return new StatusMessage("Deleted");
+    }
+
+    @RequestMapping(path = "/module/{moduleName}/{instance}/", method = RequestMethod.POST, consumes = "application/json")
+    public StatusMessage createModuleInstance(@PathVariable("moduleName") String moduleName, @PathVariable("instance") String instance, @RequestBody ObjectNode settings) {
+        moduleService.addModuleInstance(moduleName, instance, settings);
+        return new StatusMessage("Added");
     }
 
     @RequestMapping(path = "/module/{id}/stop", method = RequestMethod.GET)
