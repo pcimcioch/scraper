@@ -1,6 +1,8 @@
 var frontendApp = angular.module('commonApp');
 
 frontendApp.directive('dynamicForm', function() {
+    "use strict";
+    
     return {
         restrict: 'E',
         scope: {

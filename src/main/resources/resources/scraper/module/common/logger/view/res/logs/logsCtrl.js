@@ -1,6 +1,8 @@
 var frontendApp = angular.module('loggerViewApp');
 
 frontendApp.controller('logsCtrl', ['$scope', 'logsSvc', 'notificationSvc', function($scope, logsSvc, notificationSvc) {
+    "use strict";
+    
     $scope.GLYPHICON_MAP = {
         'ERROR': 'glyphicon-exclamation-sign',
         'WARNING': 'glyphicon-warning-sign',
@@ -17,14 +19,9 @@ frontendApp.controller('logsCtrl', ['$scope', 'logsSvc', 'notificationSvc', func
     $scope.logs = {};
 
     $scope.refreshLogs = function() {
-        notificationSvc.actionsCount++;
-        return logsSvc.getLogs(function(response) {
+        return notificationSvc.wrap(logsSvc.getLogs(), function(response) {
             setLogs(response.data);
-        }, function() {
-            notificationSvc.error('Error refeshing logs list');
-        }).finally(function() {
-            notificationSvc.actionsCount--;
-        });
+        }, 'Error refeshing logs list');
     };
 
     var setLogs = function(logs) {
@@ -40,24 +37,14 @@ frontendApp.controller('logsCtrl', ['$scope', 'logsSvc', 'notificationSvc', func
     };
 
     $scope.removeModuleLogs = function(moduleName) {
-        notificationSvc.actionsCount++;
-        return logsSvc.removeModuleLogs(moduleName, function(response) {
-        }, function() {
-            notificationSvc.error('Error removing logs for module: ' + moduleName);
-        }).finally(function() {
+        notificationSvc.wrap(logsSvc.removeModuleLogs(moduleName), null, 'Error removing logs for module: ' + moduleName, function() {
             $scope.refreshLogs();
-            notificationSvc.actionsCount--;
         });
     };
 
     $scope.removeAllLogs = function() {
-        notificationSvc.actionsCount++;
-        return logsSvc.removeAllLogs(function(response) {
-        }, function() {
-            notificationSvc.error('Error removing all logs');
-        }).finally(function() {
+        notificationSvc.wrap(logsSvc.removeAllLogs(), null, 'Error removing all logs', function() {
             $scope.refreshLogs();
-            notificationSvc.actionsCount--;
         });
     };
 

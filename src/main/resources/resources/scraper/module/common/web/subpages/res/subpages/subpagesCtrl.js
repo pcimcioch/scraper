@@ -1,17 +1,14 @@
 var frontendApp = angular.module('subpagesApp');
 
 frontendApp.controller('subpagesCtrl', ['$scope', 'subpagesSvc', 'notificationSvc', function($scope, subpagesSvc, notificationSvc) {
+    "use strict";
+    
     $scope.subpages = [];
 
     $scope.refreshSubpages = function() {
-        notificationSvc.actionsCount++;
-        return subpagesSvc.getSubpages(function(response) {
+        return notificationSvc.wrap(subpagesSvc.getSubpages(), function(response) {
             $scope.subpages = response.data;
-        }, function() {
-            notificationSvc.error('Error refeshing sub pages list');
-        }).finally(function() {
-            notificationSvc.actionsCount--;
-        });
+        }, 'Error refeshing sub pages list');
     };
 
     var init = function() {

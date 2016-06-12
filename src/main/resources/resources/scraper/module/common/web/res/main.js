@@ -1,6 +1,8 @@
 var frontendApp = angular.module('commonApp', ['ui.bootstrap']);
 
 frontendApp.directive('spinner', function($timeout) {
+    "use strict";
+    
     return {
         restrict: 'E',
         template: '<span class="glyphicon glyphicon-hourglass spinning"></span>',

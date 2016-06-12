@@ -1,6 +1,8 @@
 var frontendApp = angular.module('moduleManagerViewApp');
 
 frontendApp.service('statusSvc', ['$http', '$rootScope', 'notificationSvc', function($http, $rootScope, notificationSvc) {
+    "use strict";
+    
     var self = this;
 
     var connected = false;
@@ -8,23 +10,18 @@ frontendApp.service('statusSvc', ['$http', '$rootScope', 'notificationSvc', func
 
     self.statuses = {};
 
-    self.getModuleStatuses = function(successCallback, errorCallback) {
-        return $http.get('./api/module/status').then(successCallback, errorCallback);
+    self.getModuleStatuses = function() {
+        return $http.get('./api/module/status');
     };
 
     self.refreshModuleStatuses = function() {
-        notificationSvc.actionsCount++;
-        return self.getModuleStatuses(function(response) {
+        return notificationSvc.wrap(self.getModuleStatuses(), function(response) {
             self.statuses = {};
             var statuses = response.data;
             for (var i = 0; i < statuses.length; ++i) {
                 updateStatus(statuses[i]);
             }
-        }, function() {
-            notificationSvc.error('Error refeshing module states');
-        }).finally(function() {
-            notificationSvc.actionsCount--;
-        });
+        }, 'Error refeshing module states');
     };
     
     var connect = function() {
