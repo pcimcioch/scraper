@@ -8,13 +8,12 @@ frontendApp.directive('dynamicForm', function() {
         scope: {
             metamodel: '=',
             settings: '=',
-            valid: '='
+            form: '='
         },
         templateUrl: '/common.web/res/metamodel/metamodel.html',
         link: function(scope) {
-            scope.settings = scope.metamodel.defaultObject ? scope.metamodel.defaultObject : {};
-            scope.$watch("metamodelForm.$valid", function(newVal, oldVal) {
-                scope.valid = newVal;
+            scope.$watch("metamodelForm", function(newVal, oldVal) {
+                scope.form = newVal;
             });
         }
     };

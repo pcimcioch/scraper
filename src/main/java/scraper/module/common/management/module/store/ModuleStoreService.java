@@ -19,7 +19,6 @@ import static scraper.util.FuncUtils.map;
 @Service
 @Neo4jTransactional
 @Transactional(propagation = Propagation.REQUIRED)
-// TODO add tests
 public class ModuleStoreService {
 
     private final ModuleInstanceDsRepository instanceRepository;
@@ -32,8 +31,8 @@ public class ModuleStoreService {
         this.moduleContainer = moduleContainer;
     }
 
-    public ModuleInstance getModuleInstance(long id) {
-        ModuleInstanceDs instanceDs = instanceRepository.findOne(id);
+    public ModuleInstance getModuleInstance(long instanceId) {
+        ModuleInstanceDs instanceDs = instanceRepository.findOne(instanceId);
         return buildModuleInstance(instanceDs);
     }
 
@@ -41,15 +40,26 @@ public class ModuleStoreService {
         return map(instanceRepository.findAll(), this::buildModuleInstance);
     }
 
-    public void deleteModuleInstance(long id) {
-        instanceRepository.delete(id);
+    public void deleteModuleInstance(long instanceId) {
+        instanceRepository.delete(instanceId);
     }
 
     public void addModuleInstance(ModuleInstance instance) {
         validateModuleInstance(instance);
-        validateSettings(instance);
+        validateSettings(instance.getModuleName(), instance.getSettings());
 
         instanceRepository.save(buildModuleInstanceDs(instance));
+    }
+
+    public void updateSettings(long instanceId, Object newSettings) {
+        ModuleInstanceDs instanceDs = instanceRepository.findOne(instanceId);
+        if (instanceDs == null) {
+            throw new IllegalArgumentException("Instance [id=" + instanceId + "] not found");
+        }
+        validateSettings(instanceDs.getModuleName(), newSettings);
+
+        instanceDs.setSettings(toJson(newSettings));
+        instanceRepository.save(instanceDs);
     }
 
     private ModuleInstance buildModuleInstance(ModuleInstanceDs instanceDs) {
@@ -57,22 +67,27 @@ public class ModuleStoreService {
             return null;
         }
 
-        Object settings = buildSettings(instanceDs.getModule(), instanceDs.getSettings());
-        return new ModuleInstance(instanceDs.getId(), instanceDs.getModule(), instanceDs.getInstance(), settings);
+        Object settings = buildSettings(instanceDs.getModuleName(), instanceDs.getSettings());
+        return new ModuleInstance(instanceDs.getId(), instanceDs.getModuleName(), instanceDs.getInstanceName(), settings);
     }
 
     private ModuleInstanceDs buildModuleInstanceDs(ModuleInstance instance) {
-        return instance == null ? null : new ModuleInstanceDs(instance.getModule(), instance.getInstance(), toJson(instance.getSettings()));
+        return instance == null ? null : new ModuleInstanceDs(instance.getModuleName(), instance.getInstanceName(), toJson(instance.getSettings()));
     }
 
     private void validateModuleInstance(ModuleInstance instance) {
-        if (instanceRepository.findByModuleAndInstance(instance.getModule(), instance.getInstance()) != null) {
-            throw new IllegalArgumentException("Instance " + instance.getInstance() + " of worker module " + instance.getModule() + " already exists");
+        if (instanceRepository.findByModuleNameAndInstanceName(instance.getModuleName(), instance.getInstanceName()) != null) {
+            throw new IllegalArgumentException("Instance " + instance.getInstanceName() + " of worker module " + instance.getModuleName() + " already exists");
         }
     }
 
-    private void validateSettings(ModuleInstance instance){
-        ClassPropertyDescriptorFactory.validate(instance.getSettings());
+    private void validateSettings(String moduleName, Object settings) {
+        Class<?> settingsType = getSettingsType(moduleName);
+        if (!settingsType.isAssignableFrom(settings.getClass())) {
+            throw new IllegalArgumentException("Incorrect settings type passed");
+        }
+
+        ClassPropertyDescriptorFactory.validate(settings);
     }
 
     private Object buildSettings(String moduleName, String settingsJson) {

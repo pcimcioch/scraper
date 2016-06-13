@@ -1,26 +1,28 @@
 package scraper.module.common.management.module.store;
 
+import scraper.util.Utils;
+
 public class ModuleInstance {
 
     private long id;
 
-    private String module;
+    private String moduleName;
 
-    private String instance;
+    private String instanceName;
 
     private Object settings;
 
     public ModuleInstance() {
     }
 
-    public ModuleInstance(String module, String instance, Object settings) {
-        this(0, module, instance, settings);
+    public ModuleInstance(String moduleName, String instanceName, Object settings) {
+        this(0, moduleName, instanceName, settings);
     }
 
-    public ModuleInstance(long id, String module, String instance, Object settings) {
+    public ModuleInstance(long id, String moduleName, String instanceName, Object settings) {
         this.id = id;
-        this.module = module;
-        this.instance = instance;
+        this.moduleName = moduleName;
+        this.instanceName = instanceName;
         this.settings = settings;
     }
 
@@ -32,20 +34,20 @@ public class ModuleInstance {
         this.id = id;
     }
 
-    public String getModule() {
-        return module;
+    public String getModuleName() {
+        return moduleName;
     }
 
-    public void setModule(String module) {
-        this.module = module;
+    public void setModuleName(String moduleName) {
+        this.moduleName = moduleName;
     }
 
-    public String getInstance() {
-        return instance;
+    public String getInstanceName() {
+        return instanceName;
     }
 
-    public void setInstance(String instance) {
-        this.instance = instance;
+    public void setInstanceName(String instanceName) {
+        this.instanceName = instanceName;
     }
 
     public Object getSettings() {
@@ -54,5 +56,24 @@ public class ModuleInstance {
 
     public void setSettings(Object settings) {
         this.settings = settings;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        ModuleInstance other = (ModuleInstance) o;
+
+        return Utils.computeEq(id, other.id, moduleName, other.moduleName, instanceName, other.instanceName, settings, other.settings);
+    }
+
+    @Override
+    public int hashCode() {
+        return Utils.computeHash(id, moduleName, instanceName, settings);
     }
 }

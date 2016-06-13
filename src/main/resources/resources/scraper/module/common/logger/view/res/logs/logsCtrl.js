@@ -37,13 +37,13 @@ frontendApp.controller('logsCtrl', ['$scope', 'logsSvc', 'notificationSvc', func
     };
 
     $scope.removeModuleLogs = function(moduleName) {
-        notificationSvc.wrap(logsSvc.removeModuleLogs(moduleName), null, 'Error removing logs for module: ' + moduleName, function() {
+        notificationSvc.wrap(logsSvc.removeModuleLogs(moduleName), 'Logs removed', 'Error removing logs for module: ' + moduleName, function() {
             $scope.refreshLogs();
         });
     };
 
     $scope.removeAllLogs = function() {
-        notificationSvc.wrap(logsSvc.removeAllLogs(), null, 'Error removing all logs', function() {
+        notificationSvc.wrap(logsSvc.removeAllLogs(), 'All logs removed', 'Error removing all logs', function() {
             $scope.refreshLogs();
         });
     };

@@ -5,7 +5,7 @@ import scraper.util.Utils;
 
 public class TestWorkerSettings {
 
-    @StringProperty(viewName = "Option", description = "")
+    @StringProperty(viewName = "Option", description = "", maxLength = 10)
     private String option;
 
     public TestWorkerSettings() {

@@ -3,6 +3,7 @@ package scraper.module.common.management.module.store;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.GraphProperty;
 import org.springframework.data.neo4j.annotation.NodeEntity;
+import scraper.util.Utils;
 
 @NodeEntity
 public class ModuleInstanceDs {
@@ -10,11 +11,11 @@ public class ModuleInstanceDs {
     @GraphId
     private Long id;
 
-    @GraphProperty(propertyName = "module")
-    private String module;
+    @GraphProperty(propertyName = "moduleName")
+    private String moduleName;
 
-    @GraphProperty(propertyName = "instance")
-    private String instance;
+    @GraphProperty(propertyName = "instanceName")
+    private String instanceName;
 
     @GraphProperty(propertyName = "settings")
     private String settings;
@@ -22,9 +23,9 @@ public class ModuleInstanceDs {
     public ModuleInstanceDs() {
     }
 
-    public ModuleInstanceDs(String module, String instance, String settings) {
-        this.module = module;
-        this.instance = instance;
+    public ModuleInstanceDs(String moduleName, String instanceName, String settings) {
+        this.moduleName = moduleName;
+        this.instanceName = instanceName;
         this.settings = settings;
     }
 
@@ -32,20 +33,24 @@ public class ModuleInstanceDs {
         return id;
     }
 
-    public String getModule() {
-        return module;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setModule(String module) {
-        this.module = module;
+    public String getModuleName() {
+        return moduleName;
     }
 
-    public String getInstance() {
-        return instance;
+    public void setModuleName(String moduleName) {
+        this.moduleName = moduleName;
     }
 
-    public void setInstance(String instance) {
-        this.instance = instance;
+    public String getInstanceName() {
+        return instanceName;
+    }
+
+    public void setInstanceName(String instanceName) {
+        this.instanceName = instanceName;
     }
 
     public String getSettings() {
@@ -54,5 +59,24 @@ public class ModuleInstanceDs {
 
     public void setSettings(String settings) {
         this.settings = settings;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        ModuleInstanceDs other = (ModuleInstanceDs) o;
+
+        return Utils.computeEq(id, other.id, moduleName, other.moduleName, instanceName, other.instanceName, settings, other.settings);
+    }
+
+    @Override
+    public int hashCode() {
+        return Utils.computeHash(id, moduleName, instanceName, settings);
     }
 }

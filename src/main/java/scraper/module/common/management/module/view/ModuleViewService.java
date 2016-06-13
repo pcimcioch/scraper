@@ -18,7 +18,6 @@ import java.util.List;
 import static scraper.util.FuncUtils.map;
 
 @Service
-// TODO add mising tests
 public class ModuleViewService {
 
     private final ModuleContainer moduleContainer;
@@ -50,20 +49,33 @@ public class ModuleViewService {
         moduleRunner.stopWorker(workerId);
     }
 
-    public void addModuleInstance(String moduleName, String instance, ObjectNode settingsJson) {
+    public void addModuleInstance(String moduleName, String instanceName, ObjectNode settingsJson) {
         Object settings = buildSettings(moduleName, settingsJson);
-        moduleStoreService.addModuleInstance(new ModuleInstance(moduleName, instance, settings));
+        moduleStoreService.addModuleInstance(new ModuleInstance(moduleName, instanceName, settings));
     }
 
-    public void runModuleInstance(long id) {
-        ModuleInstance moduleInstance = moduleStoreService.getModuleInstance(id);
-        ModuleDetails moduleDetails = new ModuleDetails(moduleInstance.getModule(), moduleInstance.getInstance());
+    public void updateModuleInstanceSettings(long instanceId, ObjectNode settingsJson) {
+        ModuleInstance instance = moduleStoreService.getModuleInstance(instanceId);
+        if (instance == null) {
+            throw new IllegalArgumentException("Instance [id=" + instanceId + "] not found");
+        }
 
-        moduleRunner.runWorkerAsync(moduleDetails, moduleInstance.getSettings());
+        Object settings = buildSettings(instance.getModuleName(), settingsJson);
+        moduleStoreService.updateSettings(instanceId, settings);
     }
 
-    public void deleteModuleInstance(long id) {
-        moduleStoreService.deleteModuleInstance(id);
+    public void runModuleInstance(long instanceId) {
+        ModuleInstance instance = moduleStoreService.getModuleInstance(instanceId);
+        if (instance == null) {
+            throw new IllegalArgumentException("Instance [id=" + instanceId + "] not found");
+        }
+        ModuleDetails moduleDetails = new ModuleDetails(instance.getModuleName(), instance.getInstanceName());
+
+        moduleRunner.runWorkerAsync(moduleDetails, instance.getSettings());
+    }
+
+    public void deleteModuleInstance(long instanceId) {
+        moduleStoreService.deleteModuleInstance(instanceId);
     }
 
     private Object buildSettings(String moduleName, ObjectNode settingsJson) {

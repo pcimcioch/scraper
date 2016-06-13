@@ -25,6 +25,10 @@ frontendApp.service('managementSvc', ['$http', function($http) {
         return $http.post('./api/module/' + moduleName + '/' + instance + '/', settings, {headers: {'Content-Type': 'application/json'}});
     };
 
+    self.updateModuleInstanceSettings = function(id, settings) {
+        return $http.put('./api/module/instance/' + id + '/settings', settings, {headers: {'Content-Type': 'application/json'}});  
+    };
+
     self.stopWorkerModule = function(workerId) {
         return $http.get('./api/module/' + workerId + '/stop');
     };

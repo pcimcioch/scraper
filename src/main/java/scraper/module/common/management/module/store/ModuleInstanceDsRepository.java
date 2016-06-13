@@ -4,5 +4,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface ModuleInstanceDsRepository extends CrudRepository<ModuleInstanceDs, Long> {
 
-    ModuleInstanceDs findByModuleAndInstance(String module, String instance);
+    ModuleInstanceDs findByModuleNameAndInstanceName(String moduleName, String instanceName);
 }

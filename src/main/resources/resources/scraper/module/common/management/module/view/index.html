@@ -19,6 +19,7 @@
     <script src="res/main.js"></script>
     <script src="res/management/managementCtrl.js"></script>
     <script src="res/management/workerModuleCtrl.js"></script>
+    <script src="res/management/workerInstanceCtrl.js"></script>
     <script src="res/management/managementSvc.js"></script>
     <script src="res/management/statusSvc.js"></script>
 </head>
@@ -32,23 +33,6 @@
             <div class="col-lg-12">
                 <span class="glyphicon" data-ng-class=":: GLYPHICON_MAP[module.type]"></span>
                 {{:: module.description}}
-            </div>
-        </div>
-
-        <div class="row light-border instance-description module-description" data-ng-repeat="instance in moduleInstances[module.name]">
-            <div class="col-lg-2">
-                <span class="glyphicon glyphicon-chevron-right"></span>
-                {{:: instance.instance}}
-            </div>
-            <div class="col-lg-10">
-                <button type="button" class="btn btn-success btn-xs" data-ng-click="runModuleInstance(instance.id)">
-                    <span class="glyphicon glyphicon-play"></span>
-                    Run
-                </button>
-                <button type="button" class="btn btn-danger btn-xs" data-ng-click="removeModuleInstance(instance.id)">
-                    <span class="glyphicon glyphicon-remove"></span>
-                    Remove
-                </button>
             </div>
         </div>
 
@@ -75,18 +59,44 @@
                 <div class="col-lg-11">{{:: module.description}}</div>
             </div>
 
+            <div class="row light-border instance-description module-description" data-ng-repeat="instance in moduleInstances[module.name]"
+                data-ng-controller="workerInstanceCtrl">
+                <div class="col-lg-2">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                    {{:: instance.instanceName}}
+                </div>
+                <div class="col-lg-2">
+                    <button type="button" class="btn btn-success btn-xs" data-ng-click="runModuleInstance(instance.id)">
+                        <span class="glyphicon glyphicon-play"></span>
+                        Run
+                    </button>
+                    <button type="button" class="btn btn-danger btn-xs" data-ng-click="removeModuleInstance(instance.id)">
+                        <span class="glyphicon glyphicon-remove"></span>
+                        Remove
+                    </button>
+                </div>
+                <div class="col-lg-8">
+                    <dynamic-form metamodel="module.propertyDescriptor" settings="instance.settings" form="form"></dynamic-form>
+                    <button data-ng-disabled="!form.$valid || !form.$dirty" type="button" class="btn btn-primary btn-xs"
+                            data-ng-click="updateModuleInstanceSettings(instance.id, instance.settings)">
+                        <span class="glyphicon glyphicon-edit"></span>
+                        Edit
+                    </button>
+                </div>
+            </div>
+
             <div class="row light-border module-description" data-ng-controller="workerModuleCtrl" data-ng-if=":: module.type ==='WORKER'">
                 <ng-form name="instanceForm">
-                    <label for="instanceInput" class="col-lg-2">Instance</label>
+                    <label for="instanceInput" class="col-lg-3">Instance</label>
                     <input type="text" id="instanceInput" name="instanceInput" data-ng-model="instance" data-ng-pattern="'[A-Za-z_]*'"
                            data-ng-required="true" data-ng-minLength="2" data-ng-maxLength="10">
                         <span class="glyphicon glyphicon-warning-sign text-danger" data-ng-show="!instanceForm.instanceInput.$valid"
                               data-tooltip-placement="right" data-uib-tooltip="Instance name must be 2 to 10 characters long, only letters or underscore"></span>
                 </ng-form>
 
-                <div class="col-lg-12">
-                    <dynamic-form metamodel="module.propertyDescriptor" settings="settings" valid="valid"></dynamic-form>
-                    <button data-ng-disabled="!valid || !instanceForm.$valid" type="button" class="btn btn-primary btn-xs"
+                <div class="col-lg-12" data-ng-init="settings = module.propertyDescriptor.defaultObject">
+                    <dynamic-form metamodel="module.propertyDescriptor" settings="settings" form="form"></dynamic-form>
+                    <button data-ng-disabled="!form.$valid || !instanceForm.$valid" type="button" class="btn btn-primary btn-xs"
                             data-ng-click="addModuleInstance(module.name, instance, settings)">
                         <span class="glyphicon glyphicon-plus"></span>
                         Save

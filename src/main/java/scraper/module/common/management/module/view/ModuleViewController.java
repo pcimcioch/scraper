@@ -41,28 +41,32 @@ public class ModuleViewController {
         return moduleService.getModuleInstances();
     }
 
-    // TODO add "edit settings"
-
-    @RequestMapping(path = "/module/instance/{id}/run", method = RequestMethod.GET)
-    public StatusMessage runModuleInstance(@PathVariable("id") long id) {
-        moduleService.runModuleInstance(id);
+    @RequestMapping(path = "/module/instance/{instanceId}/run", method = RequestMethod.GET)
+    public StatusMessage runModuleInstance(@PathVariable("instanceId") long instanceId) {
+        moduleService.runModuleInstance(instanceId);
         return new StatusMessage("Started");
     }
 
-    @RequestMapping(path = "/module/instance/{id}", method = RequestMethod.DELETE)
-    public StatusMessage deleteModuleInstance(@PathVariable("id") long id) {
-        moduleService.deleteModuleInstance(id);
+    @RequestMapping(path = "/module/instance/{instanceId}", method = RequestMethod.DELETE)
+    public StatusMessage deleteModuleInstance(@PathVariable("instanceId") long instanceId) {
+        moduleService.deleteModuleInstance(instanceId);
         return new StatusMessage("Deleted");
     }
 
-    @RequestMapping(path = "/module/{moduleName}/{instance}/", method = RequestMethod.POST, consumes = "application/json")
-    public StatusMessage createModuleInstance(@PathVariable("moduleName") String moduleName, @PathVariable("instance") String instance, @RequestBody ObjectNode settings) {
-        moduleService.addModuleInstance(moduleName, instance, settings);
+    @RequestMapping(path = "/module/instance/{instanceId}/settings", method = RequestMethod.PUT, consumes = "application/json")
+    public StatusMessage updateModuleInstanceSettings(@PathVariable("instanceId") long instanceId, @RequestBody ObjectNode settings) {
+        moduleService.updateModuleInstanceSettings(instanceId, settings);
+        return new StatusMessage("Updated");
+    }
+
+    @RequestMapping(path = "/module/{moduleName}/{instanceName}/", method = RequestMethod.POST, consumes = "application/json")
+    public StatusMessage createModuleInstance(@PathVariable("moduleName") String moduleName, @PathVariable("instanceName") String instanceName, @RequestBody ObjectNode settings) {
+        moduleService.addModuleInstance(moduleName, instanceName, settings);
         return new StatusMessage("Added");
     }
 
-    @RequestMapping(path = "/module/{id}/stop", method = RequestMethod.GET)
-    public StatusMessage stopModule(@PathVariable("id") String workerId) {
+    @RequestMapping(path = "/module/{workerId}/stop", method = RequestMethod.GET)
+    public StatusMessage stopModule(@PathVariable("workerId") String workerId) {
         moduleService.stopWorkerModule(workerId);
         return new StatusMessage("Stopped");
     }

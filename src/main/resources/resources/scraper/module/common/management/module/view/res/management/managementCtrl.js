@@ -35,10 +35,10 @@ frontendApp.controller('managementCtrl', ['$scope', 'managementSvc', 'notificati
     var setModuleInstances = function(instances) {
         $scope.moduleInstances = {};
         for(var i = 0; i< instances.length; ++i) {
-            if($scope.moduleInstances[instances[i].module]) {
-                $scope.moduleInstances[instances[i].module].push(instances[i]);
+            if($scope.moduleInstances[instances[i].moduleName]) {
+                $scope.moduleInstances[instances[i].moduleName].push(instances[i]);
             } else {
-                $scope.moduleInstances[instances[i].module] = [instances[i]];
+                $scope.moduleInstances[instances[i].moduleName] = [instances[i]];
             }
         }
     };
@@ -59,6 +59,12 @@ frontendApp.controller('managementCtrl', ['$scope', 'managementSvc', 'notificati
 
     $scope.addModuleInstance = function(moduleName, instance, settings) {
         notificationSvc.wrap(managementSvc.addModuleInstance(moduleName, instance, settings), null, 'Error adding module instance', function() {
+            $scope.refreshModuleInstances();
+        });
+    };
+
+    $scope.updateModuleInstanceSettings = function(id, settings) {
+        notificationSvc.wrap(managementSvc.updateModuleInstanceSettings(id, settings), 'Settings updated', 'Error updating module instance settings', function() {
             $scope.refreshModuleInstances();
         });
     };

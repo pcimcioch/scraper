@@ -54,7 +54,16 @@ commonApp.service('notificationSvc', [function() {
             }
         };
 
-        var callbackSuccess = successAction ? successAction : function(){};
+        var callbackSuccess = function(response) {
+            if(successAction) {
+                if (typeof successAction === "function") {
+                    successAction(response);
+                } else {
+                    self.success(successAction);
+                }
+            }
+        };
+        
         var callbackFinally = function() {
             self.actionsCount--;
             if(finallyAction) {

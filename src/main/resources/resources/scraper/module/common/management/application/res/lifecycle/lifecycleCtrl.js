@@ -4,8 +4,6 @@ frontendApp.controller('lifecycleCtrl', ['$scope', 'lifecycleSvc', 'notification
     "use strict";
     
     $scope.stopApplication = function() {
-        notificationSvc.wrap(lifecycleSvc.stopApplication(), function() {
-            notificationSvc.success('Application stopped');
-        }, 'Error stopping application');
+        notificationSvc.wrap(lifecycleSvc.stopApplication(), 'Application stopped', 'Error stopping application');
     };
 }]);

@@ -4,6 +4,6 @@ frontendApp.controller('workerModuleCtrl', ['$scope', function($scope) {
     "use strict";
     
     $scope.settings = {};
-    $scope.valid = false;
+    $scope.form = {$valid: false};
     $scope.instance = "";
 }]);
