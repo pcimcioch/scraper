@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import scraper.exception.ResourceNotFoundException;
 import scraper.module.common.management.module.runner.ModuleRunner;
 import scraper.module.common.management.module.runner.WorkerDescriptor;
 import scraper.module.common.management.module.store.ModuleInstance;
@@ -57,7 +58,7 @@ public class ModuleViewService {
     public void updateModuleInstanceSettings(long instanceId, ObjectNode settingsJson) {
         ModuleInstance instance = moduleStoreService.getModuleInstance(instanceId);
         if (instance == null) {
-            throw new IllegalArgumentException("Instance [id=" + instanceId + "] not found");
+            throw new ResourceNotFoundException("Instance [id=%d] not found", instanceId);
         }
 
         Object settings = buildSettings(instance.getModuleName(), settingsJson);
@@ -67,7 +68,7 @@ public class ModuleViewService {
     public void runModuleInstance(long instanceId) {
         ModuleInstance instance = moduleStoreService.getModuleInstance(instanceId);
         if (instance == null) {
-            throw new IllegalArgumentException("Instance [id=" + instanceId + "] not found");
+            throw new ResourceNotFoundException("Instance [id=%d] not found", instanceId);
         }
         ModuleDetails moduleDetails = new ModuleDetails(instance.getModuleName(), instance.getInstanceName());
 
@@ -87,7 +88,7 @@ public class ModuleViewService {
     private Class<?> getSettingsType(String moduleName) {
         WorkerModule<?> module = moduleContainer.getWorkerModule(moduleName);
         if (module == null) {
-            throw new IllegalArgumentException("Worker Module " + moduleName + " not found");
+            throw new ResourceNotFoundException("Worker Module %s not found", moduleName);
         }
 
         return module.getSettingsClass();

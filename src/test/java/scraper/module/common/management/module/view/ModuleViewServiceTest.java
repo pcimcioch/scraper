@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import scraper.exception.ResourceNotFoundException;
 import scraper.module.common.management.module.runner.ModuleRunner;
 import scraper.module.common.management.module.runner.WorkerDescriptor;
 import scraper.module.common.management.module.store.ModuleInstance;
@@ -181,7 +182,7 @@ public class ModuleViewServiceTest {
         try {
             service.runModuleInstance(15L);
             fail();
-        } catch (IllegalArgumentException ex) {
+        } catch (ResourceNotFoundException ex) {
             // then
             assertTrue(ex.getMessage().contains("not found"));
         }
@@ -196,7 +197,7 @@ public class ModuleViewServiceTest {
         try {
             service.addModuleInstance("module.worker", "inst", correctSettingsJson);
             fail();
-        } catch (IllegalArgumentException ex) {
+        } catch (ResourceNotFoundException ex) {
             // then
             assertTrue(ex.getMessage().contains("not found"));
         }
@@ -232,7 +233,7 @@ public class ModuleViewServiceTest {
         try {
             service.updateModuleInstanceSettings(45L, correctSettingsJson);
             fail();
-        } catch (IllegalArgumentException ex) {
+        } catch (ResourceNotFoundException ex) {
             // then
             assertTrue(ex.getMessage().contains("Instance [id=45] not found"));
         }
@@ -250,7 +251,7 @@ public class ModuleViewServiceTest {
         try {
             service.updateModuleInstanceSettings(45L, correctSettingsJson);
             fail();
-        } catch (IllegalArgumentException ex) {
+        } catch (ResourceNotFoundException ex) {
             // then
             assertTrue(ex.getMessage().contains("Worker Module module.worker not found"));
         }

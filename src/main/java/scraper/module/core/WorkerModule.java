@@ -1,6 +1,7 @@
 package scraper.module.core;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import scraper.exception.IllegalAnnotationException;
 import scraper.module.common.logger.LoggerService;
 import scraper.module.core.context.ModuleContext;
 import scraper.module.core.properties.ClassPropertyDescriptor;
@@ -52,8 +53,7 @@ public abstract class WorkerModule<T> implements Module {
         Class<?> expectedSettingsClass = getSettingsClass();
 
         if (!actualSettingsClass.equals(expectedSettingsClass)) {
-            String msg = String.format("Expected Settings class: %s. Actual: %s", expectedSettingsClass.getName(), actualSettingsClass.getName());
-            throw new IllegalArgumentException(msg);
+            throw new IllegalAnnotationException("Expected Settings class: %s. Actual: %s", expectedSettingsClass.getName(), actualSettingsClass.getName());
         }
     }
 

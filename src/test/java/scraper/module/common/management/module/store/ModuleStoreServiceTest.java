@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import scraper.exception.ResourceNotFoundException;
 import scraper.exception.ValidationException;
 import scraper.module.core.ModuleContainer;
 import scraper.module.core.testclasses.TestWorkerModule;
@@ -84,7 +85,7 @@ public class ModuleStoreServiceTest {
         try {
             ModuleInstance instance = service.getModuleInstance(12L);
             fail();
-        } catch (IllegalArgumentException ex) {
+        } catch (ResourceNotFoundException ex) {
             // then
             assertTrue(ex.getMessage().contains("not found"));
         }
@@ -133,7 +134,7 @@ public class ModuleStoreServiceTest {
         try {
             List<ModuleInstance> instances = service.getModuleInstances();
             fail();
-        } catch (IllegalArgumentException ex) {
+        } catch (ResourceNotFoundException ex) {
             // then
             assertTrue(ex.getMessage().contains("not found"));
         }
@@ -226,7 +227,7 @@ public class ModuleStoreServiceTest {
         try {
             service.addModuleInstance(new ModuleInstance("module.worker", "ins", correctSettings));
             fail();
-        } catch (IllegalArgumentException ex) {
+        } catch (ResourceNotFoundException ex) {
             // then
             assertTrue(ex.getMessage().contains("not found"));
         }
@@ -288,7 +289,7 @@ public class ModuleStoreServiceTest {
         try {
             service.updateSettings(12L, correctSettings);
             fail();
-        } catch (IllegalArgumentException ex) {
+        } catch (ResourceNotFoundException ex) {
             // then
             assertTrue(ex.getMessage().contains("Instance [id=12] not found"));
         }
@@ -309,7 +310,7 @@ public class ModuleStoreServiceTest {
         try {
             service.updateSettings(12L, correctSettings);
             fail();
-        } catch (IllegalArgumentException ex) {
+        } catch (ResourceNotFoundException ex) {
             // then
             assertTrue(ex.getMessage().contains("Worker Module module.worker not found"));
         }

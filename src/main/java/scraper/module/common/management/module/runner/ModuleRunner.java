@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import scraper.exception.ResourceNotFoundException;
 import scraper.module.common.logger.LoggerService;
 import scraper.module.core.ModuleContainer;
 import scraper.module.core.WorkerModule;
@@ -70,7 +71,7 @@ public class ModuleRunner {
         initWorkerRun(moduleDetails);
         WorkerModule<?> module = moduleContainer.getWorkerModule(moduleDetails.getModule());
         if (module == null) {
-            throw new IllegalArgumentException("Worker module " + moduleDetails.getModule() + " not found");
+            throw new ResourceNotFoundException("Worker module %s not found", moduleDetails.getModule());
         }
 
         runWorker(module, settings);

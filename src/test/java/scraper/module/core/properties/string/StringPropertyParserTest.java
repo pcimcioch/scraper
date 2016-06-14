@@ -1,6 +1,7 @@
 package scraper.module.core.properties.string;
 
 import org.junit.Test;
+import scraper.exception.IllegalAnnotationException;
 import scraper.exception.ValidationException;
 
 import java.lang.annotation.Annotation;
@@ -39,7 +40,7 @@ public class StringPropertyParserTest {
                 }
             });
             fail();
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalAnnotationException ex) {
             assertEquals("Annotation must be StringProperty annotation", ex.getMessage());
         }
     }
@@ -49,7 +50,7 @@ public class StringPropertyParserTest {
         try {
             parser.getDescriptor("a", int.class, annotation("b", "c", 23, 34, "d", false));
             fail();
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalAnnotationException ex) {
             assertEquals("Annotation StringProperty cannot be applied to field a with type int", ex.getMessage());
         }
     }
@@ -71,7 +72,7 @@ public class StringPropertyParserTest {
                 }
             });
             fail();
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalAnnotationException ex) {
             assertEquals("Annotation must be StringProperty annotation", ex.getMessage());
         }
     }
@@ -81,7 +82,7 @@ public class StringPropertyParserTest {
         try {
             parser.validate(12, annotation("a", "b", 1, 2, "", false));
             fail();
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalAnnotationException ex) {
             assertEquals("Value must be a String", ex.getMessage());
         }
     }

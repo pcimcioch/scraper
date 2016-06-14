@@ -1,5 +1,6 @@
 package scraper.module.core.properties.number;
 
+import scraper.exception.IllegalAnnotationException;
 import scraper.exception.ValidationException;
 import scraper.module.core.properties.PropertyDescriptor;
 import scraper.module.core.properties.PropertyParser;
@@ -11,11 +12,11 @@ public class NumberPropertyParser implements PropertyParser<NumberProperty> {
     @Override
     public void validate(Object value, Annotation annotation) {
         if (!(annotation instanceof NumberProperty)) {
-            throw new IllegalArgumentException("Annotation must be NumberProperty annotation");
+            throw new IllegalAnnotationException("Annotation must be NumberProperty annotation");
         }
 
         if (value != null && !isApplicable(value.getClass())) {
-            throw new IllegalArgumentException("Value must be a number");
+            throw new IllegalAnnotationException("Value must be a number");
         }
 
         validate(value == null ? null : ((Number) value).longValue(), (NumberProperty) annotation);
@@ -56,10 +57,10 @@ public class NumberPropertyParser implements PropertyParser<NumberProperty> {
     @Override
     public PropertyDescriptor getDescriptor(String propertyName, Class<?> fieldType, Annotation annotation) {
         if (!(annotation instanceof NumberProperty)) {
-            throw new IllegalArgumentException("Annotation must be NumberProperty annotation");
+            throw new IllegalAnnotationException("Annotation must be NumberProperty annotation");
         }
         if (!isApplicable(fieldType)) {
-            throw new IllegalArgumentException("Annotation NumberProperty cannot be applied to field " + propertyName + " with type " + fieldType.getCanonicalName());
+            throw new IllegalAnnotationException("Annotation NumberProperty cannot be applied to field %s with type %s", propertyName, fieldType.getCanonicalName());
         }
 
         return new NumberPropertyDescriptor(propertyName, fieldType, (NumberProperty) annotation);

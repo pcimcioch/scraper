@@ -1,6 +1,7 @@
 package scraper.module.core.properties;
 
 import org.junit.Test;
+import scraper.exception.IllegalAnnotationException;
 import scraper.exception.ValidationException;
 import scraper.module.core.properties.bool.BoolPropertyDescriptor;
 import scraper.module.core.properties.string.StringPropertyDescriptor;
@@ -39,15 +40,13 @@ public class ClassPropertyDescriptorFactoryTest {
 
     @Test
     public void testValidate_multipleDescriptors() {
-        assertValidateFailed(new MultiplePropertiesTestClass("value1"),
-                "Field scraper.module.core.properties.testclasses.MultiplePropertiesTestClass.field1 exception: Field scraper.module.core.properties.testclasses"
-                        + ".MultiplePropertiesTestClass.field1 has more than one Property Descriptor");
+        assertValidateAnnotationFailed(new MultiplePropertiesTestClass("value1"),
+                "Field scraper.module.core.properties.testclasses.MultiplePropertiesTestClass.field1 has more than one Property Descriptor");
     }
 
     @Test
     public void testValidate_inapplicableType() {
-        assertValidateFailed(new InapplicablePropertyTypeTestClass(10),
-                "Field scraper.module.core.properties.testclasses.InapplicablePropertyTypeTestClass.field1 exception: Value must be a String");
+        assertValidateAnnotationFailed(new InapplicablePropertyTypeTestClass(10), "Value must be a String");
     }
 
     @Test
@@ -76,6 +75,15 @@ public class ClassPropertyDescriptorFactoryTest {
         }
     }
 
+    private void assertValidateAnnotationFailed(Object obj, String exceptionMsg) {
+        try {
+            ClassPropertyDescriptorFactory.validate(obj);
+            fail();
+        } catch (IllegalAnnotationException ex) {
+            assertEquals(exceptionMsg, ex.getMessage());
+        }
+    }
+
     private <T> void assertBuild(Class<T> type, T defaultObject, PropertyDescriptor... descriptors) {
         ClassPropertyDescriptor descriptor = ClassPropertyDescriptorFactory.buildClassPropertyDescriptor(type, defaultObject);
         assertEquals(new ClassPropertyDescriptor(Arrays.asList(descriptors), defaultObject), descriptor);
@@ -85,7 +93,7 @@ public class ClassPropertyDescriptorFactoryTest {
         try {
             ClassPropertyDescriptorFactory.buildClassPropertyDescriptor(type, defaultObject);
             fail();
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalAnnotationException ex) {
             assertEquals(exceptionMsg, ex.getMessage());
         }
     }

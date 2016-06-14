@@ -1,5 +1,6 @@
 package scraper.module.core.properties.string;
 
+import scraper.exception.IllegalAnnotationException;
 import scraper.exception.ValidationException;
 import scraper.module.core.properties.PropertyDescriptor;
 import scraper.module.core.properties.PropertyParser;
@@ -14,11 +15,11 @@ public class StringPropertyParser implements PropertyParser<StringProperty> {
     @Override
     public void validate(Object value, Annotation annotation) {
         if (!(annotation instanceof StringProperty)) {
-            throw new IllegalArgumentException("Annotation must be StringProperty annotation");
+            throw new IllegalAnnotationException("Annotation must be StringProperty annotation");
         }
 
         if (value != null && !isApplicable(value.getClass())) {
-            throw new IllegalArgumentException("Value must be a String");
+            throw new IllegalAnnotationException("Value must be a String");
         }
 
         validate((String) value, (StringProperty) annotation);
@@ -75,10 +76,10 @@ public class StringPropertyParser implements PropertyParser<StringProperty> {
     @Override
     public PropertyDescriptor getDescriptor(String propertyName, Class<?> fieldType, Annotation annotation) {
         if (!(annotation instanceof StringProperty)) {
-            throw new IllegalArgumentException("Annotation must be StringProperty annotation");
+            throw new IllegalAnnotationException("Annotation must be StringProperty annotation");
         }
         if (!isApplicable(fieldType)) {
-            throw new IllegalArgumentException("Annotation StringProperty cannot be applied to field " + propertyName + " with type " + fieldType.getCanonicalName());
+            throw new IllegalAnnotationException("Annotation StringProperty cannot be applied to field %s with type %s", propertyName, fieldType.getCanonicalName());
         }
 
         return new StringPropertyDescriptor(propertyName, (StringProperty) annotation);

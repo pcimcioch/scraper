@@ -1,6 +1,7 @@
 package scraper.module.core.properties.bool;
 
 import org.junit.Test;
+import scraper.exception.IllegalAnnotationException;
 
 import java.lang.annotation.Annotation;
 
@@ -40,7 +41,7 @@ public class BoolPropertyParserTest {
                 }
             });
             fail();
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalAnnotationException ex) {
             assertEquals("Annotation must be BoolProperty annotation", ex.getMessage());
         }
     }
@@ -50,7 +51,7 @@ public class BoolPropertyParserTest {
         try {
             parser.getDescriptor("name", Integer.class, annotation("b", "c"));
             fail();
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalAnnotationException ex) {
             assertEquals("Annotation BoolProperty cannot be applied to field name with type java.lang.Integer", ex.getMessage());
         }
     }
@@ -71,7 +72,7 @@ public class BoolPropertyParserTest {
                 }
             });
             fail();
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalAnnotationException ex) {
             assertEquals("Annotation must be BoolProperty annotation", ex.getMessage());
         }
     }
@@ -81,7 +82,7 @@ public class BoolPropertyParserTest {
         try {
             parser.validate(12, annotation("a", "b"));
             fail();
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalAnnotationException ex) {
             assertEquals("Value must be a Boolean", ex.getMessage());
         }
     }

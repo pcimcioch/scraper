@@ -7,6 +7,7 @@ import org.springframework.data.neo4j.transaction.Neo4jTransactional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import scraper.exception.ResourceNotFoundException;
 import scraper.module.core.ModuleContainer;
 import scraper.module.core.WorkerModule;
 import scraper.module.core.properties.ClassPropertyDescriptorFactory;
@@ -54,7 +55,7 @@ public class ModuleStoreService {
     public void updateSettings(long instanceId, Object newSettings) {
         ModuleInstanceDs instanceDs = instanceRepository.findOne(instanceId);
         if (instanceDs == null) {
-            throw new IllegalArgumentException("Instance [id=" + instanceId + "] not found");
+            throw new ResourceNotFoundException("Instance [id=%d] not found", instanceId);
         }
         validateSettings(instanceDs.getModuleName(), newSettings);
 
@@ -99,7 +100,7 @@ public class ModuleStoreService {
     private Class<?> getSettingsType(String moduleName) {
         WorkerModule<?> module = moduleContainer.getWorkerModule(moduleName);
         if (module == null) {
-            throw new IllegalArgumentException("Worker Module " + moduleName + " not found");
+            throw new ResourceNotFoundException("Worker Module %s not found", moduleName);
         }
 
         return module.getSettingsClass();

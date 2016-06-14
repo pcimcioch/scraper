@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import scraper.exception.ResourceNotFoundException;
 import scraper.module.common.logger.LoggerService;
 import scraper.module.core.ModuleContainer;
 import scraper.module.core.context.ModuleContext;
@@ -201,7 +202,7 @@ public class ModuleRunnerTest {
         try {
             runner.runWorkerAsync(moduleDetails, settings);
             fail();
-        } catch (IllegalArgumentException ex) {
+        } catch (ResourceNotFoundException ex) {
             // then
             assertTrue(ex.getMessage().contains("not found"));
         }

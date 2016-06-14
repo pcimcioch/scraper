@@ -1,5 +1,6 @@
 package scraper.module.core.properties;
 
+import scraper.exception.IllegalAnnotationException;
 import scraper.exception.ValidationException;
 import scraper.module.core.properties.bool.BoolPropertyParser;
 import scraper.module.core.properties.number.NumberPropertyParser;
@@ -65,7 +66,7 @@ public final class ClassPropertyDescriptorFactory {
         for (Annotation annotation : field.getAnnotations()) {
             PropertyParser<?> parser = getParser(annotation.annotationType());
             if (parser != null && alreadyParsed) {
-                throw new IllegalArgumentException("Field " + fieldName(field) + " has more than one Property Descriptor");
+                throw new IllegalAnnotationException("Field %s has more than one Property Descriptor", fieldName(field));
             } else if (parser != null) {
                 alreadyParsed = true;
                 field.setAccessible(true);
@@ -79,7 +80,7 @@ public final class ClassPropertyDescriptorFactory {
         for (Annotation annotation : field.getAnnotations()) {
             PropertyParser<?> parser = getParser(annotation.annotationType());
             if (parser != null && propertyDescriptor != null) {
-                throw new IllegalArgumentException("Field " + fieldName(field) + " has more than one Property Descriptor");
+                throw new IllegalAnnotationException("Field %s has more than one Property Descriptor", fieldName(field));
             } else if (parser != null) {
                 propertyDescriptor = parser.getDescriptor(field.getName(), field.getType(), annotation);
             }

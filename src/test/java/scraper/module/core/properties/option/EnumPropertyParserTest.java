@@ -1,6 +1,7 @@
 package scraper.module.core.properties.option;
 
 import org.junit.Test;
+import scraper.exception.IllegalAnnotationException;
 import scraper.exception.ValidationException;
 import scraper.util.Utils;
 
@@ -42,7 +43,7 @@ public class EnumPropertyParserTest {
                 }
             });
             fail();
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalAnnotationException ex) {
             assertEquals("Annotation must be EnumProperty annotation", ex.getMessage());
         }
     }
@@ -52,7 +53,7 @@ public class EnumPropertyParserTest {
         try {
             parser.getDescriptor("name", Integer.class, annotation("b", "c", true));
             fail();
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalAnnotationException ex) {
             assertEquals("Annotation EnumProperty cannot be applied to field name with type java.lang.Integer", ex.getMessage());
         }
     }
@@ -74,7 +75,7 @@ public class EnumPropertyParserTest {
                 }
             });
             fail();
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalAnnotationException ex) {
             assertEquals("Annotation must be EnumProperty annotation", ex.getMessage());
         }
     }
@@ -84,7 +85,7 @@ public class EnumPropertyParserTest {
         try {
             parser.validate(12, annotation("a", "b", true));
             fail();
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalAnnotationException ex) {
             assertEquals("Value must be an Enum", ex.getMessage());
         }
     }

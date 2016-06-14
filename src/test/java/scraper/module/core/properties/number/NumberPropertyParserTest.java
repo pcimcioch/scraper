@@ -1,6 +1,7 @@
 package scraper.module.core.properties.number;
 
 import org.junit.Test;
+import scraper.exception.IllegalAnnotationException;
 import scraper.exception.ValidationException;
 import scraper.module.core.properties.string.StringProperty;
 
@@ -47,7 +48,7 @@ public class NumberPropertyParserTest {
                 }
             });
             fail();
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalAnnotationException ex) {
             assertEquals("Annotation must be NumberProperty annotation", ex.getMessage());
         }
     }
@@ -57,7 +58,7 @@ public class NumberPropertyParserTest {
         try {
             parser.getDescriptor("a", String.class, annotation("b", "c", 23, 34, false));
             fail();
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalAnnotationException ex) {
             assertEquals("Annotation NumberProperty cannot be applied to field a with type java.lang.String", ex.getMessage());
         }
     }
@@ -119,7 +120,7 @@ public class NumberPropertyParserTest {
                 }
             });
             fail();
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalAnnotationException ex) {
             assertEquals("Annotation must be NumberProperty annotation", ex.getMessage());
         }
     }
@@ -129,7 +130,7 @@ public class NumberPropertyParserTest {
         try {
             parser.validate("as", annotation("a", "b", 1, 2, false));
             fail();
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalAnnotationException ex) {
             assertEquals("Value must be a number", ex.getMessage());
         }
     }
