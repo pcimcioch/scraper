@@ -49,7 +49,11 @@ commonApp.service('notificationSvc', [function() {
                 if (typeof errorAction === "function") {
                     errorAction(response);
                 } else {
-                    self.error(errorAction);
+                    if(response.data && response.data.message) {
+                        self.error(errorAction + ': ' + response.data.message);
+                    } else {
+                        self.error(errorAction);
+                    }
                 }
             }
         };

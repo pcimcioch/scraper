@@ -16,7 +16,6 @@ import java.util.List;
 @RestController
 @RequestMapping(ModuleViewModule.NAME + "/api")
 @InModuleScope(module = ModuleViewModule.NAME)
-// TODO add something to handle exceptions and return correct status codes/error messeges
 public class ModuleViewController {
 
     private final ModuleViewService moduleService;
