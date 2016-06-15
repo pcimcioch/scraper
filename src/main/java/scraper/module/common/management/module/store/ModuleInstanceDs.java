@@ -20,13 +20,17 @@ public class ModuleInstanceDs {
     @GraphProperty(propertyName = "settings")
     private String settings;
 
+    @GraphProperty(propertyName = "schedule")
+    private String schedule;
+
     public ModuleInstanceDs() {
     }
 
-    public ModuleInstanceDs(String moduleName, String instanceName, String settings) {
+    public ModuleInstanceDs(String moduleName, String instanceName, String settings, String schedule) {
         this.moduleName = moduleName;
         this.instanceName = instanceName;
         this.settings = settings;
+        this.schedule = schedule;
     }
 
     public Long getId() {
@@ -61,6 +65,14 @@ public class ModuleInstanceDs {
         this.settings = settings;
     }
 
+    public String getSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(String schedule) {
+        this.schedule = schedule;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -72,11 +84,11 @@ public class ModuleInstanceDs {
 
         ModuleInstanceDs other = (ModuleInstanceDs) o;
 
-        return Utils.computeEq(id, other.id, moduleName, other.moduleName, instanceName, other.instanceName, settings, other.settings);
+        return Utils.computeEq(id, other.id, moduleName, other.moduleName, instanceName, other.instanceName, settings, other.settings, schedule, other.schedule);
     }
 
     @Override
     public int hashCode() {
-        return Utils.computeHash(id, moduleName, instanceName, settings);
+        return Utils.computeHash(id, moduleName, instanceName, settings, schedule);
     }
 }

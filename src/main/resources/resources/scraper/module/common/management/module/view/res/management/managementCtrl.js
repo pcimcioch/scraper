@@ -57,8 +57,8 @@ frontendApp.controller('managementCtrl', ['$scope', 'managementSvc', 'notificati
         });
     };
 
-    $scope.addModuleInstance = function(moduleName, instance, settings) {
-        notificationSvc.wrap(managementSvc.addModuleInstance(moduleName, instance, settings), null, 'Error adding module instance', function() {
+    $scope.addModuleInstance = function(moduleName, instance, settings, schedule) {
+        notificationSvc.wrap(managementSvc.addModuleInstance(moduleName, instance, settings, schedule), null, 'Error adding module instance', function() {
             $scope.refreshModuleInstances();
         });
     };
@@ -68,6 +68,13 @@ frontendApp.controller('managementCtrl', ['$scope', 'managementSvc', 'notificati
             $scope.refreshModuleInstances();
         });
     };
+
+    $scope.updateModuleInstanceSchedule = function(id, schedule) {
+        notificationSvc.wrap(managementSvc.updateModuleInstanceSchedule(id, schedule), 'Schedule updated', 'Error updating module instance schedule', function() {
+            $scope.refreshModuleInstances();
+        });
+    };
+
 
     var init = function() {
         $scope.refreshModules();

@@ -47,6 +47,13 @@ public class FileUtilsTest {
     }
 
     @Test
+    public void testGetExtension_complexUrl() {
+        assertEquals("txt", FileUtils.getExtension("foobar.com/file.txt"));
+        assertNull(FileUtils.getExtension("foobar.com/file"));
+        assertEquals("txt", FileUtils.getExtension("foobar.com/file", "txt"));
+    }
+
+    @Test
     public void testResolve() {
         assertEquals(fs.getPath("one", "two"), FileUtils.resolve(fs.getPath("one"), "two"));
         assertEquals(fs.getPath("one", "two", "three"), FileUtils.resolve(fs.getPath("one", "two"), "three"));

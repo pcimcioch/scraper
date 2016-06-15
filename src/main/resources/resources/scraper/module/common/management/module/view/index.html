@@ -97,7 +97,7 @@
                 <div class="col-lg-12" data-ng-init="settings = module.propertyDescriptor.defaultObject">
                     <dynamic-form metamodel="module.propertyDescriptor" settings="settings" form="form"></dynamic-form>
                     <button data-ng-disabled="!form.$valid || !instanceForm.$valid" type="button" class="btn btn-primary btn-xs"
-                            data-ng-click="addModuleInstance(module.name, instance, settings)">
+                            data-ng-click="addModuleInstance(module.name, instance, settings, schedule)">
                         <span class="glyphicon glyphicon-plus"></span>
                         Save
                     </button>

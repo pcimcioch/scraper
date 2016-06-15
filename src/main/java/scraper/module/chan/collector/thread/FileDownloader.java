@@ -37,7 +37,7 @@ public class FileDownloader {
 
         Path thumbnailPath = createFilePath(md5 + "_s", FileUtils.getExtension(thumbnailUrl, DEFAULT_EXTENSION));
         if (thumbnailPath != null) {
-            download(thumbnailPath, fileUrl);
+            download(thumbnailPath, thumbnailUrl);
         }
     }
 

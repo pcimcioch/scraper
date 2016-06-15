@@ -36,7 +36,7 @@ public class ModuleViewController {
     }
 
     @RequestMapping(path = "/module/instance", method = RequestMethod.GET)
-    public List<ModuleInstanceJsonDto> getModuleInstances() {
+    public List<ModuleInstanceJsonReadDto> getModuleInstances() {
         return moduleService.getModuleInstances();
     }
 
@@ -55,12 +55,18 @@ public class ModuleViewController {
     @RequestMapping(path = "/module/instance/{instanceId}/settings", method = RequestMethod.PUT, consumes = "application/json")
     public StatusMessage updateModuleInstanceSettings(@PathVariable("instanceId") long instanceId, @RequestBody ObjectNode settings) {
         moduleService.updateModuleInstanceSettings(instanceId, settings);
-        return new StatusMessage("Updated");
+        return new StatusMessage("Settings Updated");
     }
 
-    @RequestMapping(path = "/module/{moduleName}/{instanceName}/", method = RequestMethod.POST, consumes = "application/json")
-    public StatusMessage createModuleInstance(@PathVariable("moduleName") String moduleName, @PathVariable("instanceName") String instanceName, @RequestBody ObjectNode settings) {
-        moduleService.addModuleInstance(moduleName, instanceName, settings);
+    @RequestMapping(path = "/module/instance/{instanceId}/schedule", method = RequestMethod.PUT, consumes = "text/plain")
+    public StatusMessage updateModuleInstanceSchedule(@PathVariable("instanceId") long instanceId, @RequestBody String schedule) {
+        moduleService.updateModuleInstanceSchedule(instanceId, schedule);
+        return new StatusMessage("Schedule Updated");
+    }
+
+    @RequestMapping(path = "/module/instance/", method = RequestMethod.POST, consumes = "application/json")
+    public StatusMessage createModuleInstance(@RequestBody ModuleInstanceJsonWriteDto moduleInstance) {
+        moduleService.addModuleInstance(moduleInstance);
         return new StatusMessage("Added");
     }
 

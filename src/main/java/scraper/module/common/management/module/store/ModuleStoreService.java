@@ -4,13 +4,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.transaction.Neo4jTransactional;
+import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import scraper.exception.ResourceNotFoundException;
+import scraper.exception.ValidationException;
 import scraper.module.core.ModuleContainer;
 import scraper.module.core.WorkerModule;
 import scraper.module.core.properties.ClassPropertyDescriptorFactory;
+import scraper.util.StringUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -48,6 +51,7 @@ public class ModuleStoreService {
     public void addModuleInstance(ModuleInstance instance) {
         validateModuleInstance(instance);
         validateSettings(instance.getModuleName(), instance.getSettings());
+        validateSchedule(instance.getSchedule());
 
         instanceRepository.save(buildModuleInstanceDs(instance));
     }
@@ -63,17 +67,28 @@ public class ModuleStoreService {
         instanceRepository.save(instanceDs);
     }
 
+    public void updateSchedule(long instanceId, String newSchedule) {
+        ModuleInstanceDs instanceDs = instanceRepository.findOne(instanceId);
+        if (instanceDs == null) {
+            throw new ResourceNotFoundException("Instance [id=%d] not found", instanceId);
+        }
+        validateSchedule(newSchedule);
+
+        instanceDs.setSchedule(newSchedule);
+        instanceRepository.save(instanceDs);
+    }
+
     private ModuleInstance buildModuleInstance(ModuleInstanceDs instanceDs) {
         if (instanceDs == null) {
             return null;
         }
 
         Object settings = buildSettings(instanceDs.getModuleName(), instanceDs.getSettings());
-        return new ModuleInstance(instanceDs.getId(), instanceDs.getModuleName(), instanceDs.getInstanceName(), settings);
+        return new ModuleInstance(instanceDs.getId(), instanceDs.getModuleName(), instanceDs.getInstanceName(), settings, instanceDs.getSchedule());
     }
 
     private ModuleInstanceDs buildModuleInstanceDs(ModuleInstance instance) {
-        return instance == null ? null : new ModuleInstanceDs(instance.getModuleName(), instance.getInstanceName(), toJson(instance.getSettings()));
+        return instance == null ? null : new ModuleInstanceDs(instance.getModuleName(), instance.getInstanceName(), toJson(instance.getSettings()), instance.getSchedule());
     }
 
     private void validateModuleInstance(ModuleInstance instance) {
@@ -89,6 +104,18 @@ public class ModuleStoreService {
         }
 
         ClassPropertyDescriptorFactory.validate(settings);
+    }
+
+    private void validateSchedule(String schedule) {
+        if (StringUtils.isBlank(schedule)) {
+            return;
+        }
+
+        try {
+            new CronTrigger(schedule);
+        } catch (IllegalArgumentException ex) {
+            throw new ValidationException("Schedule expression [%s] is incorrect. %s", ex, schedule, ex.getMessage());
+        }
     }
 
     private Object buildSettings(String moduleName, String settingsJson) {

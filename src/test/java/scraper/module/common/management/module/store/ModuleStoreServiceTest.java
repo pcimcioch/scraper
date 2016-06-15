@@ -76,7 +76,7 @@ public class ModuleStoreServiceTest {
     @Test
     public void testGetModuleInstance_noModule() {
         // given
-        ModuleInstanceDs instanceDs = new ModuleInstanceDs("module.worker", "ins", correctSettingsStr);
+        ModuleInstanceDs instanceDs = new ModuleInstanceDs("module.worker", "ins", correctSettingsStr, "0 15 9-17 * * MON-FRI");
         instanceDs.setId(12L);
         when(instanceRepository.findOne(12L)).thenReturn(instanceDs);
         when(moduleContainer.getWorkerModule("module.worker")).thenReturn(null);
@@ -94,7 +94,7 @@ public class ModuleStoreServiceTest {
     @Test
     public void testGetModuleInstance_transformFailed() {
         // given
-        ModuleInstanceDs instanceDs = new ModuleInstanceDs("module.worker", "ins", incorrectTypeSettingsStr);
+        ModuleInstanceDs instanceDs = new ModuleInstanceDs("module.worker", "ins", incorrectTypeSettingsStr, "0 15 9-17 * * MON-FRI");
         instanceDs.setId(12L);
         when(instanceRepository.findOne(12L)).thenReturn(instanceDs);
 
@@ -111,7 +111,7 @@ public class ModuleStoreServiceTest {
     @Test
     public void testGetModuleInstance() {
         // given
-        ModuleInstanceDs instanceDs = new ModuleInstanceDs("module.worker", "ins", correctSettingsStr);
+        ModuleInstanceDs instanceDs = new ModuleInstanceDs("module.worker", "ins", correctSettingsStr, "0 15 9-17 * * MON-FRI");
         instanceDs.setId(12L);
         when(instanceRepository.findOne(12L)).thenReturn(instanceDs);
 
@@ -119,13 +119,13 @@ public class ModuleStoreServiceTest {
         ModuleInstance instance = service.getModuleInstance(12L);
 
         // then
-        assertEquals(new ModuleInstance(12L, "module.worker", "ins", correctSettings), instance);
+        assertEquals(new ModuleInstance(12L, "module.worker", "ins", correctSettings, "0 15 9-17 * * MON-FRI"), instance);
     }
 
     @Test
     public void testGetModuleInstances_noModule() {
         // given
-        ModuleInstanceDs instanceDs = new ModuleInstanceDs("module.worker", "ins", correctSettingsStr);
+        ModuleInstanceDs instanceDs = new ModuleInstanceDs("module.worker", "ins", correctSettingsStr, "0 15 9-17 * * MON-FRI");
         instanceDs.setId(12L);
         when(instanceRepository.findAll()).thenReturn(Collections.singleton(instanceDs));
         when(moduleContainer.getWorkerModule("module.worker")).thenReturn(null);
@@ -155,7 +155,7 @@ public class ModuleStoreServiceTest {
     @Test
     public void testGetModuleInstances_transformFailed() {
         // given
-        ModuleInstanceDs instanceDs = new ModuleInstanceDs("module.worker", "ins", incorrectTypeSettingsStr);
+        ModuleInstanceDs instanceDs = new ModuleInstanceDs("module.worker", "ins", incorrectTypeSettingsStr, "0 15 9-17 * * MON-FRI");
         instanceDs.setId(12L);
         when(instanceRepository.findAll()).thenReturn(Collections.singletonList(instanceDs));
 
@@ -176,8 +176,8 @@ public class ModuleStoreServiceTest {
         String settingsStr1 = toJson(settings1);
         TestWorkerSettings settings2 = new TestWorkerSettings("option2");
         String settingsStr2 = toJson(settings2);
-        ModuleInstanceDs instanceDs1 = new ModuleInstanceDs("module.worker", "ins", settingsStr1);
-        ModuleInstanceDs instanceDs2 = new ModuleInstanceDs("module.worker", "ins2", settingsStr2);
+        ModuleInstanceDs instanceDs1 = new ModuleInstanceDs("module.worker", "ins", settingsStr1, "0 15 9-17 * * MON-FRI");
+        ModuleInstanceDs instanceDs2 = new ModuleInstanceDs("module.worker", "ins2", settingsStr2, "0 15 9-17 * * MON-TUE");
         instanceDs1.setId(12L);
         instanceDs2.setId(13L);
         when(instanceRepository.findAll()).thenReturn(Arrays.asList(instanceDs1, instanceDs2));
@@ -186,8 +186,8 @@ public class ModuleStoreServiceTest {
         List<ModuleInstance> instances = service.getModuleInstances();
 
         // then
-        ModuleInstance exInstance1 = new ModuleInstance(12L, "module.worker", "ins", settings1);
-        ModuleInstance exInstance2 = new ModuleInstance(13L, "module.worker", "ins2", settings2);
+        ModuleInstance exInstance1 = new ModuleInstance(12L, "module.worker", "ins", settings1, "0 15 9-17 * * MON-FRI");
+        ModuleInstance exInstance2 = new ModuleInstance(13L, "module.worker", "ins2", settings2, "0 15 9-17 * * MON-TUE");
         assertEquals(Arrays.asList(exInstance1, exInstance2), instances);
     }
 
@@ -203,11 +203,11 @@ public class ModuleStoreServiceTest {
     @Test
     public void testAddModuleInstance_duplicatedInstance() {
         // given
-        when(instanceRepository.findByModuleNameAndInstanceName("module.worker", "ins")).thenReturn(new ModuleInstanceDs("module.worker", "ins", ""));
+        when(instanceRepository.findByModuleNameAndInstanceName("module.worker", "ins")).thenReturn(new ModuleInstanceDs("module.worker", "ins", "", "0 15 9-17 * * MON-FRI"));
 
         // when
         try {
-            service.addModuleInstance(new ModuleInstance("module.worker", "ins", correctSettings));
+            service.addModuleInstance(new ModuleInstance("module.worker", "ins", correctSettings, "0 15 9-17 * * MON-FRI"));
             fail();
         } catch (IllegalArgumentException ex) {
             // then
@@ -225,7 +225,7 @@ public class ModuleStoreServiceTest {
 
         // when
         try {
-            service.addModuleInstance(new ModuleInstance("module.worker", "ins", correctSettings));
+            service.addModuleInstance(new ModuleInstance("module.worker", "ins", correctSettings, "0 15 9-17 * * MON-FRI"));
             fail();
         } catch (ResourceNotFoundException ex) {
             // then
@@ -242,7 +242,7 @@ public class ModuleStoreServiceTest {
 
         // when
         try {
-            service.addModuleInstance(new ModuleInstance("module.worker", "ins", incorrectTypeSettings));
+            service.addModuleInstance(new ModuleInstance("module.worker", "ins", incorrectTypeSettings, "0 15 9-17 * * MON-FRI"));
             fail();
         } catch (IllegalArgumentException ex) {
             // then
@@ -259,7 +259,7 @@ public class ModuleStoreServiceTest {
 
         // when
         try {
-            service.addModuleInstance(new ModuleInstance("module.worker", "ins", incorrectValueSettings));
+            service.addModuleInstance(new ModuleInstance("module.worker", "ins", incorrectValueSettings, "0 15 9-17 * * MON-FRI"));
             fail();
         } catch (ValidationException ex) {
             // then
@@ -269,15 +269,44 @@ public class ModuleStoreServiceTest {
     }
 
     @Test
+    public void testAddModuleInstance_incorrectSchedule() {
+        // given
+        when(instanceRepository.findByModuleNameAndInstanceName("module.worker", "ins")).thenReturn(null);
+
+        // when
+        try {
+            service.addModuleInstance(new ModuleInstance("module.worker", "ins", correctSettings, "incorrect"));
+            fail();
+        } catch (ValidationException ex) {
+            // then
+            assertTrue(ex.getMessage().contains("Schedule"));
+        }
+
+        verify(instanceRepository, never()).save(any(ModuleInstanceDs.class));
+    }
+
+    @Test
+    public void testAddModuleInstance_nullSchedule() {
+        // given
+        when(instanceRepository.findByModuleNameAndInstanceName("module.worker", "ins")).thenReturn(null);
+
+        // when
+        service.addModuleInstance(new ModuleInstance("module.worker", "ins", correctSettings, null));
+
+        // then
+        verify(instanceRepository).save(new ModuleInstanceDs("module.worker", "ins", correctSettingsStr, null));
+    }
+
+    @Test
     public void testAddModuleInstance() {
         // given
         when(instanceRepository.findByModuleNameAndInstanceName("module.worker", "ins")).thenReturn(null);
 
         // when
-        service.addModuleInstance(new ModuleInstance("module.worker", "ins", correctSettings));
+        service.addModuleInstance(new ModuleInstance("module.worker", "ins", correctSettings, "0 15 9-17 * * MON-FRI"));
 
         // then
-        verify(instanceRepository).save(new ModuleInstanceDs("module.worker", "ins", correctSettingsStr));
+        verify(instanceRepository).save(new ModuleInstanceDs("module.worker", "ins", correctSettingsStr, "0 15 9-17 * * MON-FRI"));
     }
 
     @Test
@@ -301,7 +330,7 @@ public class ModuleStoreServiceTest {
     public void testUpdateSettings_missingModule() {
         // given
         TestWorkerSettings oldSettings = new TestWorkerSettings("oldOption");
-        ModuleInstanceDs instanceDs = new ModuleInstanceDs("module.worker", "ins", toJson(oldSettings));
+        ModuleInstanceDs instanceDs = new ModuleInstanceDs("module.worker", "ins", toJson(oldSettings), "0 15 9-17 * * MON-FRI");
         instanceDs.setId(12L);
         when(moduleContainer.getWorkerModule("module.worker")).thenReturn(null);
         when(instanceRepository.findOne(12L)).thenReturn(instanceDs);
@@ -322,7 +351,7 @@ public class ModuleStoreServiceTest {
     public void testUpdateSettings_incorrectSettingsType() {
         // given
         TestWorkerSettings oldSettings = new TestWorkerSettings("oldOption");
-        ModuleInstanceDs instanceDs = new ModuleInstanceDs("module.worker", "ins", toJson(oldSettings));
+        ModuleInstanceDs instanceDs = new ModuleInstanceDs("module.worker", "ins", toJson(oldSettings), "0 15 9-17 * * MON-FRI");
         instanceDs.setId(12L);
         when(instanceRepository.findOne(12L)).thenReturn(instanceDs);
 
@@ -342,7 +371,7 @@ public class ModuleStoreServiceTest {
     public void testUpdateSettings_settingsValidationFailed() {
         // given
         TestWorkerSettings oldSettings = new TestWorkerSettings("oldOption");
-        ModuleInstanceDs instanceDs = new ModuleInstanceDs("module.worker", "ins", toJson(oldSettings));
+        ModuleInstanceDs instanceDs = new ModuleInstanceDs("module.worker", "ins", toJson(oldSettings), "0 15 9-17 * * MON-FRI");
         instanceDs.setId(12L);
         when(instanceRepository.findOne(12L)).thenReturn(instanceDs);
 
@@ -361,7 +390,7 @@ public class ModuleStoreServiceTest {
     public void testUpdateSettings() {
         // given
         TestWorkerSettings oldSettings = new TestWorkerSettings("oldOption");
-        ModuleInstanceDs instanceDs = new ModuleInstanceDs("module.worker", "ins", toJson(oldSettings));
+        ModuleInstanceDs instanceDs = new ModuleInstanceDs("module.worker", "ins", toJson(oldSettings), "0 15 9-17 * * MON-FRI");
         instanceDs.setId(12L);
         when(instanceRepository.findOne(12L)).thenReturn(instanceDs);
 
@@ -369,7 +398,75 @@ public class ModuleStoreServiceTest {
         service.updateSettings(12L, correctSettings);
 
         // then
-        ModuleInstanceDs exInstance = new ModuleInstanceDs("module.worker", "ins", correctSettingsStr);
+        ModuleInstanceDs exInstance = new ModuleInstanceDs("module.worker", "ins", correctSettingsStr, "0 15 9-17 * * MON-FRI");
+        exInstance.setId(12L);
+        verify(instanceRepository).save(exInstance);
+    }
+
+    @Test
+    public void testUpdateSchedule_missingInstance() {
+        // given
+        when(instanceRepository.findOne(12L)).thenReturn(null);
+
+        // when
+        try {
+            service.updateSchedule(12L, "0 17 9-17 * * MON-FRI");
+            fail();
+        } catch (ResourceNotFoundException ex) {
+            // then
+            assertTrue(ex.getMessage().contains("Instance [id=12] not found"));
+        }
+
+        verify(instanceRepository, never()).save(any(ModuleInstanceDs.class));
+    }
+
+    @Test
+    public void testUpdateSchedule_incorrectSchedule() {
+        // given
+        ModuleInstanceDs instanceDs = new ModuleInstanceDs("module.worker", "ins", correctSettingsStr, "0 15 9-17 * * MON-FRI");
+        instanceDs.setId(12L);
+        when(instanceRepository.findOne(12L)).thenReturn(instanceDs);
+
+        // when
+        try {
+            service.updateSchedule(12L, "incorrect");
+            fail();
+        } catch (ValidationException ex) {
+            // then
+            assertTrue(ex.getMessage().contains("Schedule"));
+        }
+
+        verify(instanceRepository, never()).save(any(ModuleInstanceDs.class));
+    }
+
+    @Test
+    public void testUpdateSchedule_toNull() {
+        // given
+        ModuleInstanceDs instanceDs = new ModuleInstanceDs("module.worker", "ins", correctSettingsStr, "0 15 9-17 * * MON-FRI");
+        instanceDs.setId(12L);
+        when(instanceRepository.findOne(12L)).thenReturn(instanceDs);
+
+        // when
+        service.updateSchedule(12L, null);
+
+        // then
+        ModuleInstanceDs exInstance = new ModuleInstanceDs("module.worker", "ins", correctSettingsStr, null);
+        exInstance.setId(12L);
+        verify(instanceRepository).save(exInstance);
+    }
+
+    @Test
+    public void testUpdateSchedule() {
+        // given
+        ModuleInstanceDs instanceDs = new ModuleInstanceDs("module.worker", "ins", correctSettingsStr, "0 15 9-17 * * MON-FRI");
+        instanceDs.setId(12L);
+        when(instanceRepository.findOne(12L)).thenReturn(instanceDs);
+
+        // when
+        service.updateSchedule(12L, "0 17 9-17 * * MON-FRI");
+
+        // then
+        ModuleInstanceDs exInstance = new ModuleInstanceDs("module.worker", "ins", correctSettingsStr, "0 17 9-17 * * MON-FRI");
         exInstance.setId(12L);
         verify(instanceRepository).save(exInstance);
     }

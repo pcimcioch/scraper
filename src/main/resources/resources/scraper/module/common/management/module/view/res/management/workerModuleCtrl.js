@@ -6,4 +6,5 @@ frontendApp.controller('workerModuleCtrl', ['$scope', function($scope) {
     $scope.settings = {};
     $scope.form = {$valid: false};
     $scope.instance = "";
+    $scope.schedule = null;
 }]);

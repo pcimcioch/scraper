@@ -19,6 +19,7 @@ import java.util.List;
 import static scraper.util.FuncUtils.map;
 
 @Service
+// TODO add some synchronization
 public class ModuleViewService {
 
     private final ModuleContainer moduleContainer;
@@ -38,8 +39,8 @@ public class ModuleViewService {
         return map(moduleContainer.getModules().values(), ModuleDescriptorJsonDto::new);
     }
 
-    public List<ModuleInstanceJsonDto> getModuleInstances() {
-        return map(moduleStoreService.getModuleInstances(), ModuleInstanceJsonDto::new);
+    public List<ModuleInstanceJsonReadDto> getModuleInstances() {
+        return map(moduleStoreService.getModuleInstances(), ModuleInstanceJsonReadDto::new);
     }
 
     public List<WorkerDescriptor> getModuleStatuses() {
@@ -50,9 +51,9 @@ public class ModuleViewService {
         moduleRunner.stopWorker(workerId);
     }
 
-    public void addModuleInstance(String moduleName, String instanceName, ObjectNode settingsJson) {
-        Object settings = buildSettings(moduleName, settingsJson);
-        moduleStoreService.addModuleInstance(new ModuleInstance(moduleName, instanceName, settings));
+    public void addModuleInstance(ModuleInstanceJsonWriteDto moduleInstanceDto) {
+        Object settings = buildSettings(moduleInstanceDto.getModuleName(), moduleInstanceDto.getSettings());
+        moduleStoreService.addModuleInstance(new ModuleInstance(moduleInstanceDto.getModuleName(), moduleInstanceDto.getInstanceName(), settings, moduleInstanceDto.getSchedule()));
     }
 
     public void updateModuleInstanceSettings(long instanceId, ObjectNode settingsJson) {
@@ -63,6 +64,10 @@ public class ModuleViewService {
 
         Object settings = buildSettings(instance.getModuleName(), settingsJson);
         moduleStoreService.updateSettings(instanceId, settings);
+    }
+
+    public void updateModuleInstanceSchedule(long instanceId, String schedule) {
+        moduleStoreService.updateSchedule(instanceId, schedule);
     }
 
     public void runModuleInstance(long instanceId) {

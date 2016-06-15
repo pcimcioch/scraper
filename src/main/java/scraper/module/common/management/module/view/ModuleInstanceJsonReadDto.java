@@ -3,7 +3,7 @@ package scraper.module.common.management.module.view;
 import scraper.module.common.management.module.store.ModuleInstance;
 import scraper.util.Utils;
 
-public class ModuleInstanceJsonDto {
+public class ModuleInstanceJsonReadDto {
 
     private long id;
 
@@ -13,18 +13,21 @@ public class ModuleInstanceJsonDto {
 
     private Object settings;
 
-    public ModuleInstanceJsonDto() {
+    private String schedule;
+
+    public ModuleInstanceJsonReadDto() {
     }
 
-    public ModuleInstanceJsonDto(ModuleInstance instance) {
-        this(instance.getId(), instance.getModuleName(), instance.getInstanceName(), instance.getSettings());
+    public ModuleInstanceJsonReadDto(ModuleInstance instance) {
+        this(instance.getId(), instance.getModuleName(), instance.getInstanceName(), instance.getSettings(), instance.getSchedule());
     }
 
-    public ModuleInstanceJsonDto(long id, String moduleName, String instanceName, Object settings) {
+    public ModuleInstanceJsonReadDto(long id, String moduleName, String instanceName, Object settings, String schedule) {
         this.id = id;
         this.moduleName = moduleName;
         this.instanceName = instanceName;
         this.settings = settings;
+        this.schedule = schedule;
     }
 
     public long getId() {
@@ -59,6 +62,14 @@ public class ModuleInstanceJsonDto {
         this.settings = settings;
     }
 
+    public String getSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(String schedule) {
+        this.schedule = schedule;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -68,13 +79,13 @@ public class ModuleInstanceJsonDto {
             return false;
         }
 
-        ModuleInstanceJsonDto other = (ModuleInstanceJsonDto) o;
+        ModuleInstanceJsonReadDto other = (ModuleInstanceJsonReadDto) o;
 
-        return Utils.computeEq(id, other.id, moduleName, other.moduleName, instanceName, other.instanceName, settings, other.settings);
+        return Utils.computeEq(id, other.id, moduleName, other.moduleName, instanceName, other.instanceName, settings, other.settings, schedule, other.schedule);
     }
 
     @Override
     public int hashCode() {
-        return  Utils.computeHash(id, moduleName, instanceName, settings);
+        return  Utils.computeHash(id, moduleName, instanceName, settings, schedule);
     }
 }

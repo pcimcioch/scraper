@@ -105,7 +105,7 @@ public class ModuleViewServiceTest {
         when(moduleStoreService.getModuleInstances()).thenReturn(Collections.emptyList());
 
         // when
-        List<ModuleInstanceJsonDto> instances = service.getModuleInstances();
+        List<ModuleInstanceJsonReadDto> instances = service.getModuleInstances();
 
         // then
         assertTrue(instances.isEmpty());
@@ -118,21 +118,21 @@ public class ModuleViewServiceTest {
         Object settings2 = 12L;
         Object settings3 = new TestWorkerSettings("option");
 
-        ModuleInstance instance1 = new ModuleInstance("module.worker1", "ins1", settings1);
+        ModuleInstance instance1 = new ModuleInstance("module.worker1", "ins1", settings1, "0 15 9-17 * * MON-FRI");
         instance1.setId(1L);
-        ModuleInstance instance2 = new ModuleInstance("module.worker1", "ins2", settings2);
+        ModuleInstance instance2 = new ModuleInstance("module.worker1", "ins2", settings2, "0 15 9-16 * * MON-FRI");
         instance2.setId(2L);
-        ModuleInstance instance3 = new ModuleInstance("module.worker2", "ins1", settings3);
+        ModuleInstance instance3 = new ModuleInstance("module.worker2", "ins1", settings3, "0 15 9-15 * * MON-FRI");
         instance3.setId(3L);
         when(moduleStoreService.getModuleInstances()).thenReturn(Arrays.asList(instance1, instance2, instance3));
 
         // when
-        List<ModuleInstanceJsonDto> instances = service.getModuleInstances();
+        List<ModuleInstanceJsonReadDto> instances = service.getModuleInstances();
 
         // then
-        ModuleInstanceJsonDto exInstance1 = new ModuleInstanceJsonDto(1L, "module.worker1", "ins1", settings1);
-        ModuleInstanceJsonDto exInstance2 = new ModuleInstanceJsonDto(2L, "module.worker1", "ins2", settings2);
-        ModuleInstanceJsonDto exInstance3 = new ModuleInstanceJsonDto(3L, "module.worker2", "ins1", settings3);
+        ModuleInstanceJsonReadDto exInstance1 = new ModuleInstanceJsonReadDto(1L, "module.worker1", "ins1", settings1, "0 15 9-17 * * MON-FRI");
+        ModuleInstanceJsonReadDto exInstance2 = new ModuleInstanceJsonReadDto(2L, "module.worker1", "ins2", settings2, "0 15 9-16 * * MON-FRI");
+        ModuleInstanceJsonReadDto exInstance3 = new ModuleInstanceJsonReadDto(3L, "module.worker2", "ins1", settings3, "0 15 9-15 * * MON-FRI");
 
         assertEquals(Arrays.asList(exInstance1, exInstance2, exInstance3), instances);
     }
@@ -195,7 +195,7 @@ public class ModuleViewServiceTest {
 
         // when
         try {
-            service.addModuleInstance("module.worker", "inst", correctSettingsJson);
+            service.addModuleInstance(new ModuleInstanceJsonWriteDto("module.worker", "inst", correctSettingsJson, "0 15 9-17 * * MON-FRI"));
             fail();
         } catch (ResourceNotFoundException ex) {
             // then
@@ -207,7 +207,7 @@ public class ModuleViewServiceTest {
     public void testAddModuleInstance_incorrectSettingsClass() {
         // when
         try {
-            service.addModuleInstance("module.worker", "inst", incorrectTypeSettingsJson);
+            service.addModuleInstance(new ModuleInstanceJsonWriteDto("module.worker", "inst", incorrectTypeSettingsJson, "0 15 9-17 * * MON-FRI"));
             fail();
         } catch (IllegalArgumentException ex) {
             // then
@@ -218,10 +218,10 @@ public class ModuleViewServiceTest {
     @Test
     public void testAddModuleInstance() {
         // when
-        service.addModuleInstance("module.worker", "inst", correctSettingsJson);
+        service.addModuleInstance(new ModuleInstanceJsonWriteDto("module.worker", "inst", correctSettingsJson, "0 15 9-17 * * MON-FRI"));
 
         // then
-        verify(moduleStoreService).addModuleInstance(new ModuleInstance("module.worker", "inst", correctSettings));
+        verify(moduleStoreService).addModuleInstance(new ModuleInstance("module.worker", "inst", correctSettings, "0 15 9-17 * * MON-FRI"));
     }
 
     @Test
@@ -243,7 +243,7 @@ public class ModuleViewServiceTest {
     public void testUpdateModuleInstnceSettings_missingModule() {
         // given
         TestWorkerSettings oldSettings = new TestWorkerSettings("oldOption");
-        ModuleInstance instance = new ModuleInstance("module.worker", "ins", oldSettings);
+        ModuleInstance instance = new ModuleInstance("module.worker", "ins", oldSettings, "0 15 9-17 * * MON-FRI");
         when(moduleStoreService.getModuleInstance(45L)).thenReturn(instance);
         when(moduleContainer.getWorkerModule("module.worker")).thenReturn(null);
 
@@ -261,7 +261,7 @@ public class ModuleViewServiceTest {
     public void testUpdateModuleInstnceSettings_incorrectSettingsClass() {
         // given
         TestWorkerSettings oldSettings = new TestWorkerSettings("oldOption");
-        ModuleInstance instance = new ModuleInstance("module.worker", "ins", oldSettings);
+        ModuleInstance instance = new ModuleInstance("module.worker", "ins", oldSettings, "0 15 9-17 * * MON-FRI");
         when(moduleStoreService.getModuleInstance(45L)).thenReturn(instance);
 
         // when
@@ -278,7 +278,7 @@ public class ModuleViewServiceTest {
     public void testUpdateModuleInstnceSettings() {
         // given
         TestWorkerSettings oldSettings = new TestWorkerSettings("oldOption");
-        ModuleInstance instance = new ModuleInstance("module.worker", "ins", oldSettings);
+        ModuleInstance instance = new ModuleInstance("module.worker", "ins", oldSettings, "0 15 9-17 * * MON-FRI");
         when(moduleStoreService.getModuleInstance(45L)).thenReturn(instance);
 
         // when
@@ -289,9 +289,36 @@ public class ModuleViewServiceTest {
     }
 
     @Test
+    public void testUpdateModuleInstanceSchedule_nullSchedule() {
+        // when
+        service.updateModuleInstanceSchedule(45L, null);
+
+        // then
+        verify(moduleStoreService).updateSchedule(45L, null);
+    }
+
+    @Test
+    public void testUpdateModuleInstanceSchedule_incorrectSettings() {
+        // when
+        service.updateModuleInstanceSchedule(45L, "incorrect");
+
+        // then
+        verify(moduleStoreService).updateSchedule(45L, "incorrect");
+    }
+
+    @Test
+    public void testUpdateModuleInstanceSchedule() {
+        // when
+        service.updateModuleInstanceSchedule(45L, "0 15 9-17 * * MON-FRI");
+
+        // then
+        verify(moduleStoreService).updateSchedule(45L, "0 15 9-17 * * MON-FRI");
+    }
+
+    @Test
     public void testRunModuleInstance() {
         // given
-        when(moduleStoreService.getModuleInstance(17L)).thenReturn(new ModuleInstance("module.worker", "ins1", correctSettings));
+        when(moduleStoreService.getModuleInstance(17L)).thenReturn(new ModuleInstance("module.worker", "ins1", correctSettings, "0 15 9-17 * * MON-FRI"));
 
         // when
         service.runModuleInstance(17L);

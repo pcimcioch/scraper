@@ -12,18 +12,21 @@ public class ModuleInstance {
 
     private Object settings;
 
+    private String schedule;
+
     public ModuleInstance() {
     }
 
-    public ModuleInstance(String moduleName, String instanceName, Object settings) {
-        this(0, moduleName, instanceName, settings);
+    public ModuleInstance(String moduleName, String instanceName, Object settings, String schedule) {
+        this(0, moduleName, instanceName, settings, schedule);
     }
 
-    public ModuleInstance(long id, String moduleName, String instanceName, Object settings) {
+    public ModuleInstance(long id, String moduleName, String instanceName, Object settings, String schedule) {
         this.id = id;
         this.moduleName = moduleName;
         this.instanceName = instanceName;
         this.settings = settings;
+        this.schedule = schedule;
     }
 
     public long getId() {
@@ -58,6 +61,14 @@ public class ModuleInstance {
         this.settings = settings;
     }
 
+    public String getSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(String schedule) {
+        this.schedule = schedule;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -69,11 +80,11 @@ public class ModuleInstance {
 
         ModuleInstance other = (ModuleInstance) o;
 
-        return Utils.computeEq(id, other.id, moduleName, other.moduleName, instanceName, other.instanceName, settings, other.settings);
+        return Utils.computeEq(id, other.id, moduleName, other.moduleName, instanceName, other.instanceName, settings, other.settings, schedule, other.schedule);
     }
 
     @Override
     public int hashCode() {
-        return Utils.computeHash(id, moduleName, instanceName, settings);
+        return Utils.computeHash(id, moduleName, instanceName, settings, schedule);
     }
 }
