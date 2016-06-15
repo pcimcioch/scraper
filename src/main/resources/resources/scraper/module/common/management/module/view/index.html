@@ -3,10 +3,12 @@
     <title>Module Management</title>
 
     <link rel="stylesheet" href="/common.web/thirdparty/bootstrap.css">
+    <link rel="stylesheet" href="/common.web/thirdparty/angular-cron-jobs.css">
     <script src="/common.web/thirdparty/angular.js"></script>
     <script src="/common.web/thirdparty/ui-bootstrap-tpls-1.3.2.js"></script>
     <script src="/common.web/thirdparty/sockjs-0.3.4.js"></script>
     <script src="/common.web/thirdparty/stomp.js"></script>
+    <script src="/common.web/thirdparty/angular-cron-jobs.js"></script>
 
     <link rel="stylesheet" href="/common.web/res/main.css">
     <script src="/common.web/res/main.js"></script>
@@ -28,6 +30,7 @@
     <ng-include src="'/common.web/res/notification/notificationPanel.html'"></ng-include>
 
     <div class="container main-container" data-ng-controller="managementCtrl">
+        <!-- Module Info Bar -->
         <div class="row light-border module-row clickable" data-ng-repeat-start="module in modules | orderBy: 'type'" data-ng-class=":: ROW_CLASS_MAP[module.type]"
              data-ng-init="expanded=false" data-ng-click="expanded = !expanded">
             <div class="col-lg-12">
@@ -36,15 +39,21 @@
             </div>
         </div>
 
+        <!-- Statuses -->
         <div class="row light-border instance-description module-description" data-ng-repeat="status in statusSvc.statuses[module.name]">
+            <!-- Status Info -->
             <div class="col-lg-2">
                 <span class="glyphicon glyphicon-refresh spinning"></span>
                 {{:: status.moduleDetails.instance}}
             </div>
+
+            <!-- Status Progress -->
             <div class="col-lg-2">
                 <uib-progressbar type="success" max="status.executionFlow.status.steps" value="status.executionFlow.status.currentStep"></uib-progressbar>
                 <uib-progressbar max="status.executionFlow.status.subSteps" value="status.executionFlow.status.currentSubStep"></uib-progressbar>
             </div>
+
+            <!-- Status Actions -->
             <div class="col-lg-8">
                 <span data-ng-click="stopWorkerModule(status.id)" class="glyphicon glyphicon-stop pull-left clickable"
                       data-ng-class="status.executionFlow.stopped ? 'text-warning' : 'text-danger'"></span>
@@ -52,6 +61,7 @@
         </div>
 
         <div data-ng-repeat-end="" data-ng-show="expanded">
+            <!-- Module Info -->
             <div class="row light-border module-description">
                 <div class="col-lg-1">Name:</div>
                 <div class="col-lg-11">{{:: module.name}}</div>
@@ -59,12 +69,17 @@
                 <div class="col-lg-11">{{:: module.description}}</div>
             </div>
 
+            <!-- Instances List -->
             <div class="row light-border instance-description module-description" data-ng-repeat="instance in moduleInstances[module.name]"
-                data-ng-controller="workerInstanceCtrl">
+                 data-ng-controller="workerInstanceCtrl" data-ng-init="settings = instance.settings; isSchedule = instance.schedule ? true : false">
+
+                <!-- Instance Info -->
                 <div class="col-lg-2">
                     <span class="glyphicon glyphicon-chevron-right"></span>
                     {{:: instance.instanceName}}
                 </div>
+
+                <!-- Instance Actions -->
                 <div class="col-lg-2">
                     <button type="button" class="btn btn-success btn-xs" data-ng-click="runModuleInstance(instance.id)">
                         <span class="glyphicon glyphicon-play"></span>
@@ -75,32 +90,57 @@
                         Remove
                     </button>
                 </div>
-                <div class="col-lg-8">
-                    <dynamic-form metamodel="module.propertyDescriptor" settings="instance.settings" form="form"></dynamic-form>
+
+                <!-- Instance Settings Edit -->
+                <div class="col-lg-4">
+                    <dynamic-form metamodel="module.propertyDescriptor" settings="settings" form="form"></dynamic-form>
                     <button data-ng-disabled="!form.$valid || !form.$dirty" type="button" class="btn btn-primary btn-xs"
-                            data-ng-click="updateModuleInstanceSettings(instance.id, instance.settings)">
+                            data-ng-click="updateModuleInstanceSettings(instance.id, settings)">
                         <span class="glyphicon glyphicon-edit"></span>
                         Edit
                     </button>
                 </div>
+
+                <!-- Instance Schedule Edit -->
+                <div class="col-lg-4">
+                    <input type="checkbox" data-ng-model="isSchedule">
+                    <cron-selection output="schedule" init="instance.schedule ? instance.schedule : '0 * * * * *'"></cron-selection>
+                    <button type="button" class="btn btn-primary btn-xs"
+                            data-ng-click="updateModuleInstanceSchedule(instance.id, isSchedule ? schedule : null)">
+                        <span class="glyphicon glyphicon-edit"></span>
+                        Edit
+                    </button>
+                    {{schedule}}
+                </div>
             </div>
 
+            <!-- New Instance Configuration -->
             <div class="row light-border module-description" data-ng-controller="workerModuleCtrl" data-ng-if=":: module.type ==='WORKER'">
-                <ng-form name="instanceForm">
-                    <label for="instanceInput" class="col-lg-3">Instance</label>
-                    <input type="text" id="instanceInput" name="instanceInput" data-ng-model="instance" data-ng-pattern="'[A-Za-z_]*'"
-                           data-ng-required="true" data-ng-minLength="2" data-ng-maxLength="10">
+                <!-- New Instance Settings -->
+                <div class="col-lg-4">
+                    <ng-form name="instanceForm">
+                        <label for="instanceInput" class="col-lg-6">Instance</label>
+                        <input type="text" id="instanceInput" name="instanceInput" data-ng-model="instance" data-ng-pattern="'[A-Za-z_]*'"
+                               data-ng-required="true" data-ng-minLength="2" data-ng-maxLength="10">
                         <span class="glyphicon glyphicon-warning-sign text-danger" data-ng-show="!instanceForm.instanceInput.$valid"
                               data-tooltip-placement="right" data-uib-tooltip="Instance name must be 2 to 10 characters long, only letters or underscore"></span>
-                </ng-form>
+                    </ng-form>
 
-                <div class="col-lg-12" data-ng-init="settings = module.propertyDescriptor.defaultObject">
-                    <dynamic-form metamodel="module.propertyDescriptor" settings="settings" form="form"></dynamic-form>
-                    <button data-ng-disabled="!form.$valid || !instanceForm.$valid" type="button" class="btn btn-primary btn-xs"
-                            data-ng-click="addModuleInstance(module.name, instance, settings, schedule)">
-                        <span class="glyphicon glyphicon-plus"></span>
-                        Save
-                    </button>
+                    <div class="col-lg-12" data-ng-init="settings = module.propertyDescriptor.defaultObject">
+                        <dynamic-form metamodel="module.propertyDescriptor" settings="settings" form="form"></dynamic-form>
+                        <button data-ng-disabled="!form.$valid || !instanceForm.$valid" type="button" class="btn btn-primary btn-xs"
+                                data-ng-click="addModuleInstance(module.name, instance, settings, isSchedule ? schedule : null)">
+                            <span class="glyphicon glyphicon-plus"></span>
+                            Save
+                        </button>
+                    </div>
+                </div>
+
+                <!-- New Instance Schedule Settings -->
+                <div class="col-lg-4">
+                    <input type="checkbox" data-ng-model="isSchedule">
+                    <cron-selection output="schedule" init="'0 * * * * *'"></cron-selection>
+                    {{schedule}}
                 </div>
             </div>
         </div>

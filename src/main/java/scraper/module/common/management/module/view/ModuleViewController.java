@@ -59,7 +59,7 @@ public class ModuleViewController {
     }
 
     @RequestMapping(path = "/module/instance/{instanceId}/schedule", method = RequestMethod.PUT, consumes = "text/plain")
-    public StatusMessage updateModuleInstanceSchedule(@PathVariable("instanceId") long instanceId, @RequestBody String schedule) {
+    public StatusMessage updateModuleInstanceSchedule(@PathVariable("instanceId") long instanceId, @RequestBody(required = false) String schedule) {
         moduleService.updateModuleInstanceSchedule(instanceId, schedule);
         return new StatusMessage("Schedule Updated");
     }

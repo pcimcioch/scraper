@@ -1,1 +1,1 @@
-angular.module('moduleManagerViewApp', ['commonApp']);
+angular.module('moduleManagerViewApp', ['commonApp', 'angular-cron-jobs']);
