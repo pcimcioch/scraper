@@ -12,7 +12,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 @Service
-// TODO add tests
 public class FileDownloader {
 
     private static final String DEFAULT_EXTENSION = "tmp";

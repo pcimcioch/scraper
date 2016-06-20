@@ -10,8 +10,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import scraper.exception.ResourceNotFoundException;
 import scraper.exception.ValidationException;
+import scraper.module.common.management.module.runner.ModuleRunner;
 import scraper.module.core.ModuleContainer;
 import scraper.module.core.WorkerModule;
+import scraper.module.core.context.ModuleDetails;
 import scraper.module.core.properties.ClassPropertyDescriptorFactory;
 import scraper.util.StringUtils;
 
@@ -23,16 +25,31 @@ import static scraper.util.FuncUtils.map;
 @Service
 @Neo4jTransactional
 @Transactional(propagation = Propagation.REQUIRED)
+// TODO synchronization
 public class ModuleStoreService {
 
     private final ModuleInstanceDsRepository instanceRepository;
 
     private final ModuleContainer moduleContainer;
 
+    private final Scheduler scheduler;
+
+    private final ModuleRunner moduleRunner;
+
     @Autowired
-    public ModuleStoreService(ModuleInstanceDsRepository instanceRepository, ModuleContainer moduleContainer) {
+    public ModuleStoreService(ModuleInstanceDsRepository instanceRepository, ModuleContainer moduleContainer, Scheduler scheduler, ModuleRunner moduleRunner) {
         this.instanceRepository = instanceRepository;
         this.moduleContainer = moduleContainer;
+        this.scheduler = scheduler;
+        this.moduleRunner = moduleRunner;
+    }
+
+    // TODO add tests
+    // TODO call it in post initialize
+    protected void initScheduler() {
+        for (ModuleInstance instance : getModuleInstances()) {
+            reschedule(instance.getId(), instance.getSchedule());
+        }
     }
 
     public ModuleInstance getModuleInstance(long instanceId) {
@@ -46,6 +63,7 @@ public class ModuleStoreService {
 
     public void deleteModuleInstance(long instanceId) {
         instanceRepository.delete(instanceId);
+        scheduler.cancel(instanceId);
     }
 
     public void addModuleInstance(ModuleInstance instance) {
@@ -53,7 +71,10 @@ public class ModuleStoreService {
         validateSettings(instance.getModuleName(), instance.getSettings());
         validateSchedule(instance.getSchedule());
 
-        instanceRepository.save(buildModuleInstanceDs(instance));
+        ModuleInstanceDs instanceDs = buildModuleInstanceDs(instance);
+        instanceDs = instanceRepository.save(instanceDs);
+
+        reschedule(instanceDs.getId(), instanceDs.getSchedule());
     }
 
     public void updateSettings(long instanceId, Object newSettings) {
@@ -76,6 +97,19 @@ public class ModuleStoreService {
 
         instanceDs.setSchedule(newSchedule);
         instanceRepository.save(instanceDs);
+
+        reschedule(instanceDs.getId(), instanceDs.getSchedule());
+    }
+
+    // TODO add tests
+    public void runModuleInstance(long instanceId) {
+        ModuleInstance instance = getModuleInstance(instanceId);
+        if (instance == null) {
+            throw new ResourceNotFoundException("Instance [id=%d] not found", instanceId);
+        }
+        ModuleDetails moduleDetails = new ModuleDetails(instance.getModuleName(), instance.getInstanceName());
+
+        moduleRunner.runWorkerAsync(moduleDetails, instance.getSettings());
     }
 
     private ModuleInstance buildModuleInstance(ModuleInstanceDs instanceDs) {
@@ -85,10 +119,6 @@ public class ModuleStoreService {
 
         Object settings = buildSettings(instanceDs.getModuleName(), instanceDs.getSettings());
         return new ModuleInstance(instanceDs.getId(), instanceDs.getModuleName(), instanceDs.getInstanceName(), settings, instanceDs.getSchedule());
-    }
-
-    private ModuleInstanceDs buildModuleInstanceDs(ModuleInstance instance) {
-        return instance == null ? null : new ModuleInstanceDs(instance.getModuleName(), instance.getInstanceName(), toJson(instance.getSettings()), instance.getSchedule());
     }
 
     private void validateModuleInstance(ModuleInstance instance) {
@@ -106,18 +136,6 @@ public class ModuleStoreService {
         ClassPropertyDescriptorFactory.validate(settings);
     }
 
-    private void validateSchedule(String schedule) {
-        if (StringUtils.isBlank(schedule)) {
-            return;
-        }
-
-        try {
-            new CronTrigger(schedule);
-        } catch (IllegalArgumentException ex) {
-            throw new ValidationException("Schedule expression [%s] is incorrect. %s", ex, schedule, ex.getMessage());
-        }
-    }
-
     private Object buildSettings(String moduleName, String settingsJson) {
         Class<?> settingsType = getSettingsType(moduleName);
 
@@ -133,7 +151,38 @@ public class ModuleStoreService {
         return module.getSettingsClass();
     }
 
-    private <T> T transform(String settingsJson, Class<T> settingsType) {
+    private void reschedule(Long instanceId, String schedule) {
+        if (StringUtils.isBlank(schedule)) {
+            scheduler.cancel(instanceId);
+        } else {
+            scheduler.schedule(instanceId, new CronTrigger(schedule), () -> {
+                try {
+                    this.runModuleInstance(instanceId);
+                } catch (Exception ex) {
+                    // ignore
+                    // TODO log exception - need to be in scope
+                }
+            });
+        }
+    }
+
+    private static ModuleInstanceDs buildModuleInstanceDs(ModuleInstance instance) {
+        return instance == null ? null : new ModuleInstanceDs(instance.getModuleName(), instance.getInstanceName(), toJson(instance.getSettings()), instance.getSchedule());
+    }
+
+    private static void validateSchedule(String schedule) {
+        if (StringUtils.isBlank(schedule)) {
+            return;
+        }
+
+        try {
+            new CronTrigger(schedule);
+        } catch (IllegalArgumentException ex) {
+            throw new ValidationException("Schedule expression [%s] is incorrect. %s", ex, schedule, ex.getMessage());
+        }
+    }
+
+    private static <T> T transform(String settingsJson, Class<T> settingsType) {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.readValue(settingsJson, settingsType);
@@ -142,7 +191,7 @@ public class ModuleStoreService {
         }
     }
 
-    private String toJson(Object settingsJson) {
+    private static String toJson(Object settingsJson) {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.writeValueAsString(settingsJson);

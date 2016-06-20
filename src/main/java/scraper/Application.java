@@ -9,6 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import scraper.environment.LifeCycle;
 
 @EnableAutoConfiguration
@@ -16,6 +17,7 @@ import scraper.environment.LifeCycle;
 @Configuration
 @EnableAspectJAutoProxy
 @EnableAsync
+@EnableScheduling
 public class Application implements CommandLineRunner {
 
     @Autowired

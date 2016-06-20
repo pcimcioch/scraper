@@ -12,7 +12,6 @@ import scraper.module.common.management.module.store.ModuleInstance;
 import scraper.module.common.management.module.store.ModuleStoreService;
 import scraper.module.core.ModuleContainer;
 import scraper.module.core.WorkerModule;
-import scraper.module.core.context.ModuleDetails;
 
 import java.util.List;
 
@@ -71,13 +70,7 @@ public class ModuleViewService {
     }
 
     public void runModuleInstance(long instanceId) {
-        ModuleInstance instance = moduleStoreService.getModuleInstance(instanceId);
-        if (instance == null) {
-            throw new ResourceNotFoundException("Instance [id=%d] not found", instanceId);
-        }
-        ModuleDetails moduleDetails = new ModuleDetails(instance.getModuleName(), instance.getInstanceName());
-
-        moduleRunner.runWorkerAsync(moduleDetails, instance.getSettings());
+        moduleStoreService.runModuleInstance(instanceId);
     }
 
     public void deleteModuleInstance(long instanceId) {

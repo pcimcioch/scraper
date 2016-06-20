@@ -13,7 +13,6 @@ import scraper.module.common.management.module.runner.WorkerDescriptor;
 import scraper.module.common.management.module.store.ModuleInstance;
 import scraper.module.common.management.module.store.ModuleStoreService;
 import scraper.module.core.ModuleContainer;
-import scraper.module.core.context.ModuleDetails;
 import scraper.module.core.testclasses.TestServiceModule;
 import scraper.module.core.testclasses.TestStandaloneModule;
 import scraper.module.core.testclasses.TestWorkerModule;
@@ -174,21 +173,6 @@ public class ModuleViewServiceTest {
     }
 
     @Test
-    public void testRunModuleInstance_missingInstance() {
-        // given
-        when(moduleStoreService.getModuleInstance(15L)).thenReturn(null);
-
-        // when
-        try {
-            service.runModuleInstance(15L);
-            fail();
-        } catch (ResourceNotFoundException ex) {
-            // then
-            assertTrue(ex.getMessage().contains("not found"));
-        }
-    }
-
-    @Test
     public void testAddModuleInstance_missingModule() {
         // given
         when(moduleContainer.getWorkerModule("module.worker")).thenReturn(null);
@@ -317,14 +301,11 @@ public class ModuleViewServiceTest {
 
     @Test
     public void testRunModuleInstance() {
-        // given
-        when(moduleStoreService.getModuleInstance(17L)).thenReturn(new ModuleInstance("module.worker", "ins1", correctSettings, "0 15 9-17 * * MON-FRI"));
-
         // when
         service.runModuleInstance(17L);
 
         // then
-        verify(moduleRunner).runWorkerAsync(new ModuleDetails("module.worker", "ins1"), correctSettings);
+        verify(moduleStoreService).runModuleInstance(17L);
     }
 
     @Test

@@ -38,7 +38,6 @@ public final class FileUtils {
         return filename.replaceAll(FORBIDDEN_CHARS_REGEX, "_");
     }
 
-    // TODO add test
     public static String readFile(Path path, Charset encoding) throws IOException {
         byte[] encoded = Files.readAllBytes(path);
         return new String(encoded, encoding);

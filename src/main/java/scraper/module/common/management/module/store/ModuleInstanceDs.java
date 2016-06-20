@@ -27,6 +27,11 @@ public class ModuleInstanceDs {
     }
 
     public ModuleInstanceDs(String moduleName, String instanceName, String settings, String schedule) {
+        this(null, moduleName, instanceName, settings, schedule);
+    }
+
+    public ModuleInstanceDs(Long id, String moduleName, String instanceName, String settings, String schedule) {
+        this.id = id;
         this.moduleName = moduleName;
         this.instanceName = instanceName;
         this.settings = settings;

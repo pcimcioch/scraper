@@ -1,16 +1,32 @@
 package scraper.util;
 
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import scraper.test.FileSystemRule;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 public class FileUtilsTest {
 
-    private FileSystem fs = FileSystems.getDefault();
+    @Rule
+    public final FileSystemRule rule = new FileSystemRule();
+
+    private FileSystem fs;
+
+    @Before
+    public void setUp() {
+        fs = rule.getFileSystem();
+    }
 
     @Test
     public void testSanitize() {
@@ -59,5 +75,44 @@ public class FileUtilsTest {
         assertEquals(fs.getPath("one", "two", "three"), FileUtils.resolve(fs.getPath("one", "two"), "three"));
         assertEquals(fs.getPath("one", "two", "three"), FileUtils.resolve(fs.getPath("one"), "two", "three"));
         assertEquals(fs.getPath("one", "two", "three", "four", "five"), FileUtils.resolve(fs.getPath("one", "two"), "three", "four", "five"));
+    }
+
+    @Test(expected = NoSuchFileException.class)
+    public void testReadFile_noFile() throws IOException {
+        // given
+        Path path = fs.getPath("file.txt");
+
+        // when
+        String content = FileUtils.readFile(path, StandardCharsets.UTF_8);
+    }
+
+    @Test
+    public void testReadFile_emptyFile() throws IOException {
+        // given
+        Path path = fs.getPath("file.txt");
+        Files.createFile(path);
+
+        // when
+        String content = FileUtils.readFile(path, StandardCharsets.UTF_8);
+
+        // then
+        assertEquals("", content);
+    }
+
+    @Test
+    public void testReadFile() throws IOException {
+        // given
+        String savedContent = "Some Content\nAnd other stuff";
+        Path path = fs.getPath("file.txt");
+        Files.createFile(path);
+        try (OutputStream out = Files.newOutputStream(path)) {
+            out.write(savedContent.getBytes(StandardCharsets.UTF_8));
+        }
+
+        // when
+        String content = FileUtils.readFile(path, StandardCharsets.UTF_8);
+
+        // then
+        assertEquals(savedContent, content);
     }
 }

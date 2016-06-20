@@ -12,7 +12,7 @@ public class ModuleStoreModule implements ServiceModule {
 
     public static final String NAME = "module.store";
 
-    public static final Set<String> DEPENDENCIES = Collections.unmodifiableSet(Utils.set("logger"));
+    public static final Set<String> DEPENDENCIES = Collections.unmodifiableSet(Utils.set("logger", "module.runner"));
 
     public static final String DESCRIPTION = "Module Store";
 

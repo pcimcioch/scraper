@@ -7,8 +7,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.scheduling.support.CronTrigger;
 import scraper.exception.ResourceNotFoundException;
 import scraper.exception.ValidationException;
+import scraper.module.common.management.module.runner.ModuleRunner;
 import scraper.module.core.ModuleContainer;
 import scraper.module.core.testclasses.TestWorkerModule;
 import scraper.module.core.testclasses.TestWorkerSettings;
@@ -22,8 +24,10 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -37,6 +41,12 @@ public class ModuleStoreServiceTest {
     @Mock
     private ModuleContainer moduleContainer;
 
+    @Mock
+    private Scheduler scheduler;
+
+    @Mock
+    private ModuleRunner moduleRunner;
+
     private TestWorkerSettings correctSettings;
 
     private String correctSettingsStr;
@@ -49,7 +59,7 @@ public class ModuleStoreServiceTest {
 
     @Before
     public void setUp() {
-        service = new ModuleStoreService(instanceRepository, moduleContainer);
+        service = new ModuleStoreService(instanceRepository, moduleContainer, scheduler, moduleRunner);
 
         correctSettings = new TestWorkerSettings("option");
         correctSettingsStr = toJson(correctSettings);
@@ -198,6 +208,7 @@ public class ModuleStoreServiceTest {
 
         // then
         verify(instanceRepository).delete(12L);
+        verify(scheduler).cancel(12L);
     }
 
     @Test
@@ -215,6 +226,7 @@ public class ModuleStoreServiceTest {
         }
 
         verify(instanceRepository, never()).save(any(ModuleInstanceDs.class));
+        verifyNoMoreInteractions(scheduler);
     }
 
     @Test
@@ -233,6 +245,7 @@ public class ModuleStoreServiceTest {
         }
 
         verify(instanceRepository, never()).save(any(ModuleInstanceDs.class));
+        verifyNoMoreInteractions(scheduler);
     }
 
     @Test
@@ -250,6 +263,7 @@ public class ModuleStoreServiceTest {
         }
 
         verify(instanceRepository, never()).save(any(ModuleInstanceDs.class));
+        verifyNoMoreInteractions(scheduler);
     }
 
     @Test
@@ -266,6 +280,7 @@ public class ModuleStoreServiceTest {
         }
 
         verify(instanceRepository, never()).save(any(ModuleInstanceDs.class));
+        verifyNoMoreInteractions(scheduler);
     }
 
     @Test
@@ -283,30 +298,37 @@ public class ModuleStoreServiceTest {
         }
 
         verify(instanceRepository, never()).save(any(ModuleInstanceDs.class));
+        verifyNoMoreInteractions(scheduler);
     }
 
     @Test
     public void testAddModuleInstance_nullSchedule() {
         // given
         when(instanceRepository.findByModuleNameAndInstanceName("module.worker", "ins")).thenReturn(null);
+        when(instanceRepository.save(new ModuleInstanceDs("module.worker", "ins", correctSettingsStr, null)))
+                .thenReturn(new ModuleInstanceDs(10L, "module.worker", "ins", correctSettingsStr, null));
 
         // when
         service.addModuleInstance(new ModuleInstance("module.worker", "ins", correctSettings, null));
 
         // then
         verify(instanceRepository).save(new ModuleInstanceDs("module.worker", "ins", correctSettingsStr, null));
+        verify(scheduler).cancel(10L);
     }
 
     @Test
     public void testAddModuleInstance() {
         // given
         when(instanceRepository.findByModuleNameAndInstanceName("module.worker", "ins")).thenReturn(null);
+        when(instanceRepository.save(new ModuleInstanceDs("module.worker", "ins", correctSettingsStr, "0 15 9-17 * * MON-FRI")))
+                .thenReturn(new ModuleInstanceDs(12L, "module.worker", "ins", correctSettingsStr, "0 15 9-17 * * MON-FRI"));
 
         // when
         service.addModuleInstance(new ModuleInstance("module.worker", "ins", correctSettings, "0 15 9-17 * * MON-FRI"));
 
         // then
         verify(instanceRepository).save(new ModuleInstanceDs("module.worker", "ins", correctSettingsStr, "0 15 9-17 * * MON-FRI"));
+        verify(scheduler).schedule(eq(12L), eq(new CronTrigger("0 15 9-17 * * MON-FRI")), any(Runnable.class));
     }
 
     @Test
@@ -418,6 +440,7 @@ public class ModuleStoreServiceTest {
         }
 
         verify(instanceRepository, never()).save(any(ModuleInstanceDs.class));
+        verifyNoMoreInteractions(scheduler);
     }
 
     @Test
@@ -437,6 +460,7 @@ public class ModuleStoreServiceTest {
         }
 
         verify(instanceRepository, never()).save(any(ModuleInstanceDs.class));
+        verifyNoMoreInteractions(scheduler);
     }
 
     @Test
@@ -453,6 +477,7 @@ public class ModuleStoreServiceTest {
         ModuleInstanceDs exInstance = new ModuleInstanceDs("module.worker", "ins", correctSettingsStr, null);
         exInstance.setId(12L);
         verify(instanceRepository).save(exInstance);
+        verify(scheduler).cancel(12L);
     }
 
     @Test
@@ -469,6 +494,7 @@ public class ModuleStoreServiceTest {
         ModuleInstanceDs exInstance = new ModuleInstanceDs("module.worker", "ins", correctSettingsStr, "0 17 9-17 * * MON-FRI");
         exInstance.setId(12L);
         verify(instanceRepository).save(exInstance);
+        verify(scheduler).schedule(eq(12L), eq(new CronTrigger("0 17 9-17 * * MON-FRI")), any(Runnable.class));
     }
 
     private String toJson(Object settingsJson) {
