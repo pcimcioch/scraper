@@ -1,8 +1,8 @@
 package scraper.module.common.logger;
 
-import java.util.List;
-
 import org.springframework.data.repository.CrudRepository;
+
+import java.util.List;
 
 public interface LogEntryDsRepository extends CrudRepository<LogEntryDs, Long> {
     

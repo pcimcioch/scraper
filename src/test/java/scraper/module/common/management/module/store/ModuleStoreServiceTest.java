@@ -12,6 +12,7 @@ import scraper.exception.ResourceNotFoundException;
 import scraper.exception.ValidationException;
 import scraper.module.common.management.module.runner.ModuleRunner;
 import scraper.module.core.ModuleContainer;
+import scraper.module.core.context.ModuleDetails;
 import scraper.module.core.testclasses.TestWorkerModule;
 import scraper.module.core.testclasses.TestWorkerSettings;
 
@@ -93,7 +94,7 @@ public class ModuleStoreServiceTest {
 
         // when
         try {
-            ModuleInstance instance = service.getModuleInstance(12L);
+            service.getModuleInstance(12L);
             fail();
         } catch (ResourceNotFoundException ex) {
             // then
@@ -110,7 +111,7 @@ public class ModuleStoreServiceTest {
 
         // when
         try {
-            ModuleInstance instance = service.getModuleInstance(12L);
+            service.getModuleInstance(12L);
             fail();
         } catch (IllegalArgumentException ex) {
             // then
@@ -133,6 +134,37 @@ public class ModuleStoreServiceTest {
     }
 
     @Test
+    public void testRunModuleInstance_missingInstance() {
+        // given
+        when(instanceRepository.findOne(12L)).thenReturn(null);
+
+        // when
+        try {
+            service.runModuleInstance(12L);
+            fail();
+        } catch (ResourceNotFoundException ex) {
+            // then
+            assertTrue(ex.getMessage().contains("not found"));
+        }
+
+        verifyNoMoreInteractions(moduleRunner);
+    }
+
+    @Test
+    public void testRunModuleInstance() {
+        // given
+        ModuleInstanceDs instanceDs = new ModuleInstanceDs("module.worker", "ins", correctSettingsStr, "0 15 9-17 * * MON-FRI");
+        instanceDs.setId(12L);
+        when(instanceRepository.findOne(12L)).thenReturn(instanceDs);
+
+        // when
+        service.runModuleInstance(12L);
+
+        // then
+        verify(moduleRunner).runWorkerAsync(new ModuleDetails("module.worker", "ins"), correctSettings);
+    }
+
+    @Test
     public void testGetModuleInstances_noModule() {
         // given
         ModuleInstanceDs instanceDs = new ModuleInstanceDs("module.worker", "ins", correctSettingsStr, "0 15 9-17 * * MON-FRI");
@@ -142,7 +174,7 @@ public class ModuleStoreServiceTest {
 
         // when
         try {
-            List<ModuleInstance> instances = service.getModuleInstances();
+            service.getModuleInstances();
             fail();
         } catch (ResourceNotFoundException ex) {
             // then
@@ -171,7 +203,7 @@ public class ModuleStoreServiceTest {
 
         // when
         try {
-            List<ModuleInstance> instances = service.getModuleInstances();
+            service.getModuleInstances();
             fail();
         } catch (IllegalArgumentException ex) {
             // then
@@ -199,6 +231,39 @@ public class ModuleStoreServiceTest {
         ModuleInstance exInstance1 = new ModuleInstance(12L, "module.worker", "ins", settings1, "0 15 9-17 * * MON-FRI");
         ModuleInstance exInstance2 = new ModuleInstance(13L, "module.worker", "ins2", settings2, "0 15 9-17 * * MON-TUE");
         assertEquals(Arrays.asList(exInstance1, exInstance2), instances);
+    }
+
+    @Test
+    public void testInitScheduler_noInstances() {
+        // given
+        when(instanceRepository.findAll()).thenReturn(Collections.emptyList());
+
+        // when
+        service.initScheduler();
+
+        // then
+        verifyNoMoreInteractions(scheduler);
+    }
+
+    @Test
+    public void testInitScheduler() {
+        // given
+        TestWorkerSettings settings1 = new TestWorkerSettings("option");
+        String settingsStr1 = toJson(settings1);
+        TestWorkerSettings settings2 = new TestWorkerSettings("option2");
+        String settingsStr2 = toJson(settings2);
+        ModuleInstanceDs instanceDs1 = new ModuleInstanceDs("module.worker", "ins", settingsStr1, "0 15 9-17 * * MON-FRI");
+        ModuleInstanceDs instanceDs2 = new ModuleInstanceDs("module.worker", "ins2", settingsStr2, null);
+        instanceDs1.setId(12L);
+        instanceDs2.setId(13L);
+        when(instanceRepository.findAll()).thenReturn(Arrays.asList(instanceDs1, instanceDs2));
+
+        // when
+        service.initScheduler();
+
+        // then
+        verify(scheduler).schedule(eq(12L), eq(new CronTrigger("0 15 9-17 * * MON-FRI")), any(Runnable.class));
+        verify(scheduler).cancel(13L);
     }
 
     @Test
@@ -305,8 +370,8 @@ public class ModuleStoreServiceTest {
     public void testAddModuleInstance_nullSchedule() {
         // given
         when(instanceRepository.findByModuleNameAndInstanceName("module.worker", "ins")).thenReturn(null);
-        when(instanceRepository.save(new ModuleInstanceDs("module.worker", "ins", correctSettingsStr, null)))
-                .thenReturn(new ModuleInstanceDs(10L, "module.worker", "ins", correctSettingsStr, null));
+        when(instanceRepository.save(new ModuleInstanceDs("module.worker", "ins", correctSettingsStr, null))).thenReturn(
+                new ModuleInstanceDs(10L, "module.worker", "ins", correctSettingsStr, null));
 
         // when
         service.addModuleInstance(new ModuleInstance("module.worker", "ins", correctSettings, null));
@@ -320,8 +385,8 @@ public class ModuleStoreServiceTest {
     public void testAddModuleInstance() {
         // given
         when(instanceRepository.findByModuleNameAndInstanceName("module.worker", "ins")).thenReturn(null);
-        when(instanceRepository.save(new ModuleInstanceDs("module.worker", "ins", correctSettingsStr, "0 15 9-17 * * MON-FRI")))
-                .thenReturn(new ModuleInstanceDs(12L, "module.worker", "ins", correctSettingsStr, "0 15 9-17 * * MON-FRI"));
+        when(instanceRepository.save(new ModuleInstanceDs("module.worker", "ins", correctSettingsStr, "0 15 9-17 * * MON-FRI"))).thenReturn(
+                new ModuleInstanceDs(12L, "module.worker", "ins", correctSettingsStr, "0 15 9-17 * * MON-FRI"));
 
         // when
         service.addModuleInstance(new ModuleInstance("module.worker", "ins", correctSettings, "0 15 9-17 * * MON-FRI"));

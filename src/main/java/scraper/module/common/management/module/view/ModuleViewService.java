@@ -18,7 +18,6 @@ import java.util.List;
 import static scraper.util.FuncUtils.map;
 
 @Service
-// TODO add some synchronization
 public class ModuleViewService {
 
     private final ModuleContainer moduleContainer;

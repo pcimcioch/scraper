@@ -25,7 +25,6 @@ import static scraper.util.FuncUtils.map;
 @Service
 @Neo4jTransactional
 @Transactional(propagation = Propagation.REQUIRED)
-// TODO synchronization
 public class ModuleStoreService {
 
     private final ModuleInstanceDsRepository instanceRepository;
@@ -44,7 +43,6 @@ public class ModuleStoreService {
         this.moduleRunner = moduleRunner;
     }
 
-    // TODO add tests
     // TODO call it in post initialize
     protected void initScheduler() {
         for (ModuleInstance instance : getModuleInstances()) {
@@ -53,55 +51,66 @@ public class ModuleStoreService {
     }
 
     public ModuleInstance getModuleInstance(long instanceId) {
-        ModuleInstanceDs instanceDs = instanceRepository.findOne(instanceId);
+        ModuleInstanceDs instanceDs;
+        synchronized (instanceRepository) {
+            instanceDs = instanceRepository.findOne(instanceId);
+        }
         return buildModuleInstance(instanceDs);
     }
 
     public List<ModuleInstance> getModuleInstances() {
-        return map(instanceRepository.findAll(), this::buildModuleInstance);
+        synchronized (instanceRepository) {
+            return map(instanceRepository.findAll(), this::buildModuleInstance);
+        }
     }
 
     public void deleteModuleInstance(long instanceId) {
-        instanceRepository.delete(instanceId);
-        scheduler.cancel(instanceId);
+        synchronized (instanceRepository) {
+            instanceRepository.delete(instanceId);
+            scheduler.cancel(instanceId);
+        }
     }
 
     public void addModuleInstance(ModuleInstance instance) {
-        validateModuleInstance(instance);
-        validateSettings(instance.getModuleName(), instance.getSettings());
-        validateSchedule(instance.getSchedule());
+        synchronized (instanceRepository) {
+            validateModuleInstance(instance);
+            validateSettings(instance.getModuleName(), instance.getSettings());
+            validateSchedule(instance.getSchedule());
 
-        ModuleInstanceDs instanceDs = buildModuleInstanceDs(instance);
-        instanceDs = instanceRepository.save(instanceDs);
-
-        reschedule(instanceDs.getId(), instanceDs.getSchedule());
+            ModuleInstanceDs instanceDs = buildModuleInstanceDs(instance);
+            instanceDs = instanceRepository.save(instanceDs);
+            reschedule(instanceDs.getId(), instanceDs.getSchedule());
+        }
     }
 
     public void updateSettings(long instanceId, Object newSettings) {
-        ModuleInstanceDs instanceDs = instanceRepository.findOne(instanceId);
-        if (instanceDs == null) {
-            throw new ResourceNotFoundException("Instance [id=%d] not found", instanceId);
-        }
-        validateSettings(instanceDs.getModuleName(), newSettings);
+        synchronized (instanceRepository) {
+            ModuleInstanceDs instanceDs = instanceRepository.findOne(instanceId);
+            if (instanceDs == null) {
+                throw new ResourceNotFoundException("Instance [id=%d] not found", instanceId);
+            }
+            validateSettings(instanceDs.getModuleName(), newSettings);
 
-        instanceDs.setSettings(toJson(newSettings));
-        instanceRepository.save(instanceDs);
+            instanceDs.setSettings(toJson(newSettings));
+            instanceRepository.save(instanceDs);
+        }
     }
 
     public void updateSchedule(long instanceId, String newSchedule) {
-        ModuleInstanceDs instanceDs = instanceRepository.findOne(instanceId);
-        if (instanceDs == null) {
-            throw new ResourceNotFoundException("Instance [id=%d] not found", instanceId);
+        synchronized (instanceRepository) {
+            ModuleInstanceDs instanceDs = instanceRepository.findOne(instanceId);
+            if (instanceDs == null) {
+                throw new ResourceNotFoundException("Instance [id=%d] not found", instanceId);
+            }
+            validateSchedule(newSchedule);
+
+            instanceDs.setSchedule(newSchedule);
+            instanceRepository.save(instanceDs);
+
+            reschedule(instanceDs.getId(), instanceDs.getSchedule());
         }
-        validateSchedule(newSchedule);
-
-        instanceDs.setSchedule(newSchedule);
-        instanceRepository.save(instanceDs);
-
-        reschedule(instanceDs.getId(), instanceDs.getSchedule());
     }
 
-    // TODO add tests
     public void runModuleInstance(long instanceId) {
         ModuleInstance instance = getModuleInstance(instanceId);
         if (instance == null) {
@@ -155,14 +164,7 @@ public class ModuleStoreService {
         if (StringUtils.isBlank(schedule)) {
             scheduler.cancel(instanceId);
         } else {
-            scheduler.schedule(instanceId, new CronTrigger(schedule), () -> {
-                try {
-                    this.runModuleInstance(instanceId);
-                } catch (Exception ex) {
-                    // ignore
-                    // TODO log exception - need to be in scope
-                }
-            });
+            scheduler.schedule(instanceId, new CronTrigger(schedule), () -> runModuleInstance(instanceId));
         }
     }
 
