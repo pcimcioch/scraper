@@ -103,14 +103,17 @@
 
                 <!-- Instance Schedule Edit -->
                 <div class="col-lg-4">
-                    <input type="checkbox" data-ng-model="isSchedule">
-                    <cron-selection output="schedule" init="instance.schedule ? instance.schedule : '0 * * * * *'"></cron-selection>
-                    <button type="button" class="btn btn-primary btn-xs"
-                            data-ng-click="updateModuleInstanceSchedule(instance.id, isSchedule ? schedule : null)">
-                        <span class="glyphicon glyphicon-edit"></span>
-                        Edit
-                    </button>
-                    {{schedule}}
+                    <input type="checkbox" data-ng-model="isSchedule" id="schedule_edit_id">
+                    <label for="schedule_edit_id">Schedule</label>
+                    <cron-selection data-ng-show="isSchedule" output="schedule" init="instance.schedule ? instance.schedule : '0 * * * * *'"></cron-selection>
+
+                    <div>
+                        <button type="button" class="btn btn-primary btn-xs"
+                                data-ng-click="updateModuleInstanceSchedule(instance.id, isSchedule ? schedule : null)">
+                            <span class="glyphicon glyphicon-edit"></span>
+                            Edit
+                        </button> <!-- TODO disable button if non-dirty (pristine?) -->
+                    </div>
                 </div>
             </div>
 
@@ -118,16 +121,19 @@
             <div class="row light-border module-description" data-ng-controller="workerModuleCtrl" data-ng-if=":: module.type ==='WORKER'">
                 <!-- New Instance Settings -->
                 <div class="col-lg-4">
-                    <ng-form name="instanceForm">
-                        <label for="instanceInput" class="col-lg-6">Instance</label>
-                        <input type="text" id="instanceInput" name="instanceInput" data-ng-model="instance" data-ng-pattern="'[A-Za-z_]*'"
-                               data-ng-required="true" data-ng-minLength="2" data-ng-maxLength="10">
-                        <span class="glyphicon glyphicon-warning-sign text-danger" data-ng-show="!instanceForm.instanceInput.$valid"
-                              data-tooltip-placement="right" data-uib-tooltip="Instance name must be 2 to 10 characters long, only letters or underscore"></span>
-                    </ng-form>
+                    <div data-ng-init="settings = module.propertyDescriptor.defaultObject">
+                        <div class="row">
+                            <ng-form name="instanceForm">
+                                <label for="instanceInput" class="col-lg-6">Instance</label>
+                                <input type="text" id="instanceInput" name="instanceInput" data-ng-model="instance" data-ng-pattern="'[A-Za-z_]*'"
+                                       data-ng-required="true" data-ng-minLength="2" data-ng-maxLength="10">
+                            <span class="glyphicon glyphicon-warning-sign text-danger" data-ng-show="!instanceForm.instanceInput.$valid"
+                                  data-tooltip-placement="right" data-uib-tooltip="Instance name must be 2 to 10 characters long, only letters or underscore"></span>
+                            </ng-form>
+                        </div>
 
-                    <div class="col-lg-12" data-ng-init="settings = module.propertyDescriptor.defaultObject">
                         <dynamic-form metamodel="module.propertyDescriptor" settings="settings" form="form"></dynamic-form>
+
                         <button data-ng-disabled="!form.$valid || !instanceForm.$valid" type="button" class="btn btn-primary btn-xs"
                                 data-ng-click="addModuleInstance(module.name, instance, settings, isSchedule ? schedule : null)">
                             <span class="glyphicon glyphicon-plus"></span>
@@ -138,9 +144,9 @@
 
                 <!-- New Instance Schedule Settings -->
                 <div class="col-lg-4">
-                    <input type="checkbox" data-ng-model="isSchedule">
-                    <cron-selection output="schedule" init="'0 * * * * *'"></cron-selection>
-                    {{schedule}}
+                    <input type="checkbox" data-ng-model="isSchedule" id="schedule_create_id">
+                    <label for="schedule_create_id">Schedule</label>
+                    <cron-selection data-ng-show="isSchedule" output="schedule" init="'0 * * * * *'"></cron-selection>
                 </div>
             </div>
         </div>

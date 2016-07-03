@@ -12,6 +12,9 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import scraper.environment.LifeCycle;
 
+/**
+ * Main application class.
+ */
 @EnableAutoConfiguration
 @ComponentScan
 @Configuration

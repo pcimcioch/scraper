@@ -1,5 +1,8 @@
 package scraper.environment;
 
+/**
+ * Simple status message class wrapping messages.
+ */
 public class StatusMessage {
 
     private String message;

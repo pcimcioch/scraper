@@ -5,7 +5,6 @@ import org.springframework.data.neo4j.transaction.Neo4jTransactional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import scraper.module.common.logger.LogEntryDs;
 import scraper.module.common.logger.LogEntryDsRepository;
 
 import java.util.List;
@@ -34,8 +33,6 @@ public class LoggerViewService {
 
     public void removeModuleLogs(String module) {
         // TODO fix deleteByModule
-        for (LogEntryDs log : repository.findByModule(module)) {
-            repository.delete(log);
-        }
+        repository.findByModule(module).forEach(repository::delete);
     }
 }

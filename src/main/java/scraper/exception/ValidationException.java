@@ -1,5 +1,8 @@
 package scraper.exception;
 
+/**
+ * Exception indicating that validation requirements were not met.
+ */
 public class ValidationException extends RuntimeException {
 
     private static final long serialVersionUID = -6776472626295249831L;

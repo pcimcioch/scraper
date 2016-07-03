@@ -2,6 +2,7 @@ package scraper.module.common.management.module.store;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.zebasto.spring.post.initialize.PostInitialize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.transaction.Neo4jTransactional;
 import org.springframework.scheduling.support.CronTrigger;
@@ -43,8 +44,8 @@ public class ModuleStoreService {
         this.moduleRunner = moduleRunner;
     }
 
-    // TODO call it in post initialize
-    protected void initScheduler() {
+    @PostInitialize
+    public void initScheduler() {
         for (ModuleInstance instance : getModuleInstances()) {
             reschedule(instance.getId(), instance.getSchedule());
         }

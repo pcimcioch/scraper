@@ -10,6 +10,9 @@ import org.springframework.data.neo4j.config.Neo4jConfiguration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import scraper.environment.Workspace;
 
+/**
+ * Configuration of neo4j database.
+ */
 @Configuration
 @EnableNeo4jRepositories(basePackageClasses = Neo4JDatabaseConfiguration.class)
 @EnableTransactionManagement

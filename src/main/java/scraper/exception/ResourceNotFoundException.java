@@ -1,5 +1,8 @@
 package scraper.exception;
 
+/**
+ * Exception indicating that resource counld not be found.
+ */
 public class ResourceNotFoundException extends RuntimeException {
 
     private static final long serialVersionUID = -8504440463162665413L;

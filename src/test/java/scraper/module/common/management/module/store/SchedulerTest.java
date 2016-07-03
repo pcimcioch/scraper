@@ -10,7 +10,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.support.CronTrigger;
-import scraper.module.common.logger.LoggerService;
 
 import java.util.concurrent.ScheduledFuture;
 
@@ -44,7 +43,7 @@ public class SchedulerTest {
     private TaskScheduler taskScheduler;
 
     @Mock
-    private LoggerService logger;
+    private SchedulerRunner runner;
 
     @Captor
     private ArgumentCaptor<Runnable> runnableCaptor;
@@ -55,7 +54,7 @@ public class SchedulerTest {
 
     @Before
     public void setUp() {
-        scheduler = new Scheduler(taskScheduler, logger);
+        scheduler = new Scheduler(taskScheduler, runner);
     }
 
     @Test
@@ -163,12 +162,12 @@ public class SchedulerTest {
 
     private void verifyRunnable(Runnable runnable) {
         // sanity
-        verify(callback, never()).run();
+        verify(runner, never()).safeRun(any());
 
         // when
         runnable.run();
 
         // then
-        verify(callback).run();
+        verify(runner).safeRun(callback);
     }
 }

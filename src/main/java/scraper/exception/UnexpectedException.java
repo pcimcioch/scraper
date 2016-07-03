@@ -1,5 +1,8 @@
 package scraper.exception;
 
+/**
+ * Exception indicating that unexpected exception was cought, and it wasn't handled.
+ */
 public class UnexpectedException extends RuntimeException {
 
     private static final long serialVersionUID = -7124227246427519128L;
