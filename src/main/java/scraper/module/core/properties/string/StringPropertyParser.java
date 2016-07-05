@@ -10,6 +10,9 @@ import java.lang.annotation.Annotation;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+/**
+ * Parser for {@link StringProperty}.
+ */
 public class StringPropertyParser implements PropertyParser<StringProperty> {
 
     @Override

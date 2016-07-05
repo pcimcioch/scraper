@@ -7,11 +7,15 @@ public class StatusMessage {
 
     private String message;
 
-    public StatusMessage() {
+    protected StatusMessage() {
     }
 
     public StatusMessage(String message) {
         this.message = message;
+    }
+
+    public StatusMessage(String messageFormat, Object... args) {
+        this.message = String.format(messageFormat, args);
     }
 
     public String getMessage() {

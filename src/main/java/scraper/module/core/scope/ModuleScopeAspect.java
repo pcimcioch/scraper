@@ -8,6 +8,12 @@ import scraper.module.core.context.ModuleContext;
 import scraper.module.core.context.ModuleDetails;
 import scraper.util.StringUtils;
 
+/**
+ * Aspect that implements {@link InModuleScope} behaviour.
+ * <p>
+ * All methods annotated with {@link InModuleScope}, and methods of classes annotated with {@link InModuleScope} will be run in new {@link ModuleScope}. Moreover, {@link
+ * ModuleDetails} bean in module scope, will be configured according to annotation configuration.
+ */
 @Aspect
 public class ModuleScopeAspect {
 

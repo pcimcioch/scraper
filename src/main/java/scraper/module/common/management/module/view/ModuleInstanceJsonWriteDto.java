@@ -2,6 +2,11 @@ package scraper.module.common.management.module.view;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+/**
+ * Json DTO representing {@link scraper.module.core.WorkerModule} instance.
+ * <p>
+ * This DTO is only accepted by a server.
+ */
 public class ModuleInstanceJsonWriteDto {
 
     private String moduleName;

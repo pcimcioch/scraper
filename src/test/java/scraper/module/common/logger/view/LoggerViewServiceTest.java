@@ -87,7 +87,7 @@ public class LoggerViewServiceTest {
         when(repository.findByModule("module")).thenReturn(Arrays.asList(log1, log2, log3));
 
         // when
-        service.removeModuleLogs("module");
+        service.deleteModuleLogs("module");
 
         // verify
         verify(repository, times(3)).delete(any(LogEntryDs.class));
@@ -101,7 +101,7 @@ public class LoggerViewServiceTest {
         when(repository.findByModule("module")).thenReturn(Collections.emptyList());
 
         // when
-        service.removeModuleLogs("module");
+        service.deleteModuleLogs("module");
 
         // verify
         verify(repository, never()).delete(any(LogEntryDs.class));

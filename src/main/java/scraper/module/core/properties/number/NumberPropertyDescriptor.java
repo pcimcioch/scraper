@@ -5,6 +5,9 @@ import scraper.util.Utils;
 
 import java.util.Map;
 
+/**
+ * Descriptor for {@link NumberProperty}
+ */
 public class NumberPropertyDescriptor extends PropertyDescriptor {
 
     private static final String TYPE = "number";

@@ -1,5 +1,6 @@
 package scraper.module.common.service;
 
+import org.jsoup.Connection;
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -8,6 +9,9 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.OutputStream;
 
+/**
+ * Service implementing standard http operations.
+ */
 @Service
 public class HtmlService {
 
@@ -21,14 +25,29 @@ public class HtmlService {
 
     private static final String REFERRER = "http://www.google.com";
 
+    /**
+     * Get DOM document from given url.
+     *
+     * @param url url
+     * @return dom document
+     * @throws IOException if connection failed. See {@link Connection#execute()} for details
+     */
     public Document getDocument(String url) throws IOException {
         System.out.println("Getting " + url);
         return getStandardResponse(url);
     }
 
+    /**
+     * Get content from given url and save it to output stream {@code out}.
+     *
+     * @param url url
+     * @param out opened output stream
+     * @throws IOException if connection failed or stream operation I/O exception occurred. See {@link Connection#execute()} for details
+     */
     public void download(String url, OutputStream out) throws IOException {
         System.out.println("Download " + url);
         Response response = getDownloadResponse(url);
+        // TODO maybe stream it, instead of copying whole stream?
         out.write(response.bodyAsBytes());
     }
 

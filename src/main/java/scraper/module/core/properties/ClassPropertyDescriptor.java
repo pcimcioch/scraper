@@ -6,6 +6,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Property descriptor for the class.
+ * <p>
+ * This class describes required properties of the class and their constraints. It also keeps default instance of the described class.
+ */
 public class ClassPropertyDescriptor {
 
     private final List<PropertyDescriptor> descriptors;
@@ -21,14 +26,29 @@ public class ClassPropertyDescriptor {
         this.defaultObject = defaultObject;
     }
 
-    public boolean addDescriptor(PropertyDescriptor descriptor) {
-        return descriptors.add(descriptor);
+    /**
+     * Adds property descriptor.
+     *
+     * @param descriptor property descriptor to add
+     */
+    public void addDescriptor(PropertyDescriptor descriptor) {
+        descriptors.add(descriptor);
     }
 
+    /**
+     * Returns list of property descriptors for this class descriptor.
+     *
+     * @return list of property descriptors
+     */
     public List<PropertyDescriptor> getDescriptors() {
         return Collections.unmodifiableList(descriptors);
     }
 
+    /**
+     * Returns default instance of described class.
+     *
+     * @return default instance of described class
+     */
     public Object getDefaultObject() {
         return defaultObject;
     }

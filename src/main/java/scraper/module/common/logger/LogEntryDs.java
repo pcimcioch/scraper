@@ -7,6 +7,11 @@ import scraper.util.Utils;
 
 import java.util.Date;
 
+/**
+ * Data source for log entry.
+ * <p>
+ * This class represents entity, saved in neo4j database. It contains all properties for one log entry.
+ */
 @NodeEntity
 public class LogEntryDs {
 

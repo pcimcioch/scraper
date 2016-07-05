@@ -3,6 +3,11 @@ package scraper.module.common.management.module.view;
 import scraper.module.common.management.module.store.ModuleInstance;
 import scraper.util.Utils;
 
+/**
+ * Json DTO representing {@link scraper.module.core.WorkerModule} instance.
+ * <p>
+ * This DTO is only returned by a server.
+ */
 public class ModuleInstanceJsonReadDto {
 
     private long id;
@@ -86,6 +91,6 @@ public class ModuleInstanceJsonReadDto {
 
     @Override
     public int hashCode() {
-        return  Utils.computeHash(id, moduleName, instanceName, settings, schedule);
+        return Utils.computeHash(id, moduleName, instanceName, settings, schedule);
     }
 }

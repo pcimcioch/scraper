@@ -3,6 +3,9 @@ package scraper.module.core.properties.string;
 import scraper.module.core.properties.PropertyDescriptor;
 import scraper.util.Utils;
 
+/**
+ * Descriptor for {@link StringProperty}.
+ */
 public class StringPropertyDescriptor extends PropertyDescriptor {
 
     private static final String TYPE = "text";

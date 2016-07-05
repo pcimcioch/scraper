@@ -9,6 +9,11 @@ import scraper.util.Utils;
 
 import java.util.Set;
 
+/**
+ * Json DTO representing {@link Module}.
+ * <p>
+ * This DTO is only returned by a server.
+ */
 public class ModuleDescriptorJsonDto {
 
     private String name;
@@ -89,7 +94,7 @@ public class ModuleDescriptorJsonDto {
 
     private void setPropertyDescriptor(Module module) {
         if (module instanceof WorkerModule<?>) {
-            ClassPropertyDescriptor descriptor = ((WorkerModule<?>) module).getClassPropertyDescriptor();
+            ClassPropertyDescriptor descriptor = ((WorkerModule<?>) module).getSettingsClassPropertyDescriptor();
             setPropertyDescriptor(descriptor);
         }
     }

@@ -14,47 +14,47 @@ import java.nio.file.Path;
 @Service
 public class Workspace {
 
-    private final Path wokspacePath;
+    private final Path workspacePath;
 
     @Autowired
     public Workspace(Path workspacePath) {
-        this.wokspacePath = workspacePath;
+        this.workspacePath = workspacePath;
     }
 
     @PostConstruct
     protected void initWorkspace() throws IOException {
-        Files.createDirectories(wokspacePath);
+        Files.createDirectories(workspacePath);
     }
 
     /**
-     * Return workspace root path.
+     * Returns workspace root path.
      *
      * @return workspace root path.
      */
     public Path getRootPath() {
-        return wokspacePath;
+        return workspacePath;
     }
 
     /**
-     * Create file with random filename in given {@code path} with given {@code suffix}.
+     * Creates file with random filename in given {@code path} with given {@code suffix}.
      *
      * @param path   path where file should be created. Must be directory, doesn't have to exist. This can't be absolute path. It will be resolved against root directory ({@link
-     *               #getRootPath()}).
-     * @param suffix filename sufix. Optional, may be null.
-     * @return path to newly created file.
-     * @throws IOException if IO operation failed.
+     *               #getRootPath()})
+     * @param suffix filename suffix. Optional, may be null
+     * @return path to newly created file
+     * @throws IOException if IO operation failed
      */
     public Path createRandomFile(Path path, String suffix) throws IOException {
         return Files.createTempFile(getDirectory(path), "", suffix);
     }
 
     /**
-     * Create file under given {@code path}.
+     * Creates file under given {@code path}.
      *
      * @param path path to file. This path's directory structure doesn't have to exist. This can't be absolute path. It will be resolved against root directory ({@link
-     *             #getRootPath()}).
-     * @return path to newly created file.
-     * @throws IOException if IO operation failed.
+     *             #getRootPath()})
+     * @return path to newly created file
+     * @throws IOException if IO operation failed
      */
     public Path createFile(Path path) throws IOException {
         Path fullPath = resolvePath(path);
@@ -63,13 +63,14 @@ public class Workspace {
     }
 
     /**
-     * Create directory under given {@code path}. In contrary to {@link #getDirectory(Path)}, this method will throw {@link java.nio.file.FileAlreadyExistsException} if directory
-     * alredy exists.
+     * Creates directory under given {@code path}.
+     * <p>
+     * In contrary to {@link #getDirectory(Path)}, this method will throw {@link java.nio.file.FileAlreadyExistsException} if directory already exists.
      *
-     * @param path path to file. This path's whole diresctory structure doesn't have to exist. This can't be absolute path. It will be resolved against root directory ({@link
-     *             #getRootPath()}).
-     * @return path to newly created directory.
-     * @throws IOException if IO operation failed.
+     * @param path path to file. This path's whole directory structure doesn't have to exist. This can't be absolute path. It will be resolved against root directory ({@link
+     *             #getRootPath()})
+     * @return path to newly created directory
+     * @throws IOException if IO operation failed
      */
     public Path createDirectory(Path path) throws IOException {
         Path fullPath = resolvePath(path);
@@ -78,13 +79,14 @@ public class Workspace {
     }
 
     /**
-     * Create or get directory under given {@code path}. In contrary to {@link #createDirectory(Path)}, this method will <b>not</b> throw {@link
-     * java.nio.file.FileAlreadyExistsException} if directory alredy exists.
+     * Creates or gets directory under given {@code path}.
+     * <p>
+     * In contrary to {@link #createDirectory(Path)}, this method will <b>not</b> throw {@link java.nio.file.FileAlreadyExistsException} if directory already exists.
      *
-     * @param path path to file. This path's whole diresctory structure doesn't have to exist. This can't be absolute path. It will be resolved against root directory ({@link
-     *             #getRootPath()}).
-     * @return path to newly created directory or existing one.
-     * @throws IOException if IO operation failed.
+     * @param path path to file. This path's whole directory structure doesn't have to exist. This can't be absolute path. It will be resolved against root directory ({@link
+     *             #getRootPath()})
+     * @return path to newly created directory or existing one
+     * @throws IOException if IO operation failed
      */
     public Path getDirectory(Path path) throws IOException {
         Path fullPath = resolvePath(path);
@@ -92,6 +94,6 @@ public class Workspace {
     }
 
     private Path resolvePath(Path path) {
-        return wokspacePath.resolve(path);
+        return workspacePath.resolve(path);
     }
 }

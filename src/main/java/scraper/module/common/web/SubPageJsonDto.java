@@ -2,6 +2,9 @@ package scraper.module.common.web;
 
 import scraper.util.Utils;
 
+/**
+ * Json DTO representing available webpage.
+ */
 public class SubPageJsonDto {
 
     private final String name;

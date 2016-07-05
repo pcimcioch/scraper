@@ -7,6 +7,9 @@ import scraper.module.core.properties.PropertyParser;
 
 import java.lang.annotation.Annotation;
 
+/**
+ * Parser for {@link EnumProperty}.
+ */
 public class EnumPropertyParser implements PropertyParser<EnumProperty> {
 
     @Override

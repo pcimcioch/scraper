@@ -12,6 +12,9 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
 
+/**
+ * Service implementing file I/O operations.
+ */
 @Service
 public class WorkspaceService {
 
@@ -30,9 +33,19 @@ public class WorkspaceService {
         this.moduleContext = moduleContext;
     }
 
+    /**
+     * Creates file under given path.
+     * <p>
+     * Each module instance has it's own, separated workspace.
+     *
+     * @param first  first node of the path
+     * @param others next nodes of the path. May be empty
+     * @return path to created file
+     */
+    // TODO add test for sanitizing
     public Path createFile(String first, String... others) throws IOException {
         try {
-            return workspace.createFile(FileUtils.resolve(getModulePath(), first, others));
+            return workspace.createFile(FileUtils.resolve(getModulePath(), FileUtils.sanitize(first), FileUtils.sanitize(others)));
         } catch (FileAlreadyExistsException e) {
             return null;
         }
@@ -40,6 +53,8 @@ public class WorkspaceService {
 
     private Path getModulePath() {
         ModuleDetails moduleDetails = moduleContext.getModuleDetails();
-        return fileSystem.getPath(MODULES_DIR, moduleDetails.getModule(), moduleDetails.getInstance());
+        // TODO add support for empty instances
+        // TODO add tests for sanitizing. It should never be necessary, but just in case
+        return fileSystem.getPath(MODULES_DIR, FileUtils.sanitize(moduleDetails.getModule()), FileUtils.sanitize(moduleDetails.getInstance()));
     }
 }

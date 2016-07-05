@@ -6,6 +6,9 @@ import scraper.module.core.StandaloneModule;
 import java.util.Collections;
 import java.util.Set;
 
+/**
+ * Standalone module used to share commonly used web components. Main endpoint available in this module is {@link CommonWebController}.
+ */
 @Service
 public class CommonWebModule implements StandaloneModule {
 

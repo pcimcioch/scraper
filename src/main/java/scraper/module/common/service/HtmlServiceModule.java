@@ -6,6 +6,9 @@ import scraper.module.core.ServiceModule;
 import java.util.Collections;
 import java.util.Set;
 
+/**
+ * Service module for http operations. Main service available in this module is {@link HtmlService}.
+ */
 @Service
 public class HtmlServiceModule implements ServiceModule {
 

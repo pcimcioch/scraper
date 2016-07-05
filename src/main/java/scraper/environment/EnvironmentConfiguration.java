@@ -21,7 +21,7 @@ public class EnvironmentConfiguration {
     }
 
     @Bean
-    Path workspacePath(FileSystem filesystem, @Value("${workpspace.path}") String workspacePath) throws IOException {
+    Path workspacePath(FileSystem filesystem, @Value("${workspace.path}") String workspacePath) throws IOException {
         return filesystem.getPath(workspacePath);
     }
 }

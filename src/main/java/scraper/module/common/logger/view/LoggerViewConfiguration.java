@@ -5,6 +5,11 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import scraper.module.common.web.CommonWebConfigurer;
 
+/**
+ * Web configuration for logger view module.
+ * <p>
+ * Registers resource handlers for logger view webpage, and registers as webpage in {@link CommonWebConfigurer}.
+ */
 @Configuration
 public class LoggerViewConfiguration extends WebMvcConfigurerAdapter implements CommonWebConfigurer {
 

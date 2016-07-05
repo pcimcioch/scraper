@@ -7,6 +7,9 @@ import scraper.util.Utils;
 import java.util.Collections;
 import java.util.Set;
 
+/**
+ * Srandalone module displaying endpoint and webpage used to manage application lifecycle.
+ */
 @Service
 public class ApplicationLifecycleModule implements StandaloneModule {
 

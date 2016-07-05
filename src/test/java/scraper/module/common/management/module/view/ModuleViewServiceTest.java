@@ -91,7 +91,7 @@ public class ModuleViewServiceTest {
 
         // then
         ModuleDescriptorJsonDto expectedWorkerJson =
-                new ModuleDescriptorJsonDto("worker name", "worker desc", Utils.set("worker.dep1"), ModuleType.WORKER, workerModule.getClassPropertyDescriptor());
+                new ModuleDescriptorJsonDto("worker name", "worker desc", Utils.set("worker.dep1"), ModuleType.WORKER, workerModule.getSettingsClassPropertyDescriptor());
         ModuleDescriptorJsonDto expectedStandaloneJson = new ModuleDescriptorJsonDto("standalone name", "standalone desc", Collections.emptySet(), ModuleType.STANDALONE, null);
         ModuleDescriptorJsonDto expectedServiceJson =
                 new ModuleDescriptorJsonDto("service name", "service desc", Utils.set("service.dep1", "service.dep2"), ModuleType.SERVICE, null);

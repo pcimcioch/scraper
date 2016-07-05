@@ -11,6 +11,11 @@ import scraper.exception.ValidationException;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Handler for exceptions.
+ * <p>
+ * This handler will handle some of the exceptions that may be thrown to "http request" layer.
+ */
 @ControllerAdvice
 public class CommonControllerExceptionHandler {
 

@@ -9,6 +9,9 @@ import java.util.Set;
 
 import static scraper.util.FuncUtils.mapSet;
 
+/**
+ * Descriptor for {@link EnumProperty}.
+ */
 public class EnumPropertyDescriptor extends PropertyDescriptor {
 
     private static final String TYPE = "option";

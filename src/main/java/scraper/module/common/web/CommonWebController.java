@@ -8,6 +8,9 @@ import scraper.module.core.scope.InModuleScope;
 
 import java.util.List;
 
+/**
+ * REST controller for "subpages" webpage operations.
+ */
 @RestController
 @RequestMapping("/api")
 @InModuleScope(module = CommonWebModule.NAME)
@@ -20,6 +23,11 @@ public class CommonWebController {
         this.commonWebService = commonWebService;
     }
 
+    /**
+     * Gets information about all webpages available in application.
+     *
+     * @return list of json DTOs describing available webpages
+     */
     @RequestMapping(path = "/subpage", method = RequestMethod.GET)
     public List<SubPageJsonDto> getSubpages() {
         return commonWebService.getSubpages();

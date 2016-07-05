@@ -10,6 +10,9 @@ import scraper.module.core.context.ModuleDetails;
 
 import java.util.Date;
 
+/**
+ * Service used for logging logger messages.
+ */
 @Service
 @Neo4jTransactional
 @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -19,11 +22,14 @@ public class LoggerService {
 
     private final LogEntryDsRepository logRepository;
 
+    // TODO support configuring which level of logs should be displayed and which should be saved to db
     @Autowired
     public LoggerService(ModuleContext moduleContext, LogEntryDsRepository logRepository) {
         this.moduleContext = moduleContext;
         this.logRepository = logRepository;
     }
+
+    // TODO add methods to just log, providing level programatically
 
     public void trace(String message) {
         log(LoggerLevel.TRACE, message, null);

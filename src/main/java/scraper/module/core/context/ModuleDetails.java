@@ -6,8 +6,14 @@ import scraper.util.Utils;
 
 import java.util.logging.Logger;
 
+/**
+ * Class representing details of the module in current module context.
+ * <p>
+ * Contains information on module name, instance name, and physical logger used by the {@link scraper.module.core.Module} instance.
+ */
 public class ModuleDetails {
 
+    // TODO make sure module name and instance names match some pattern, so no forbidden chars are allowed
     private final String module;
 
     private final String instance;
@@ -28,14 +34,29 @@ public class ModuleDetails {
         logger = Logger.getLogger(getLoggerName(module, instance));
     }
 
+    /**
+     * Returns module name.
+     *
+     * @return module name
+     */
     public String getModule() {
         return module;
     }
 
+    /**
+     * Returns module instance name.
+     *
+     * @return module instance name. May be <tt>null</tt>
+     */
     public String getInstance() {
         return instance;
     }
 
+    /**
+     * Returns physical logger that should be used by module described by this details.
+     *
+     * @return logger to use
+     */
     @JsonIgnore
     public Logger getLogger() {
         return logger;

@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Container for storing and managing all modules available in current application instance.
+ */
 @Service
 public class ModuleContainer {
 
@@ -84,35 +87,79 @@ public class ModuleContainer {
         }
     }
 
+    /**
+     * Returns if module with given name exists.
+     *
+     * @param moduleName module name
+     * @return <tt>true</tt> if module with given name exists, <tt>false</tt> otherwise.
+     */
     public boolean existsModule(String moduleName) {
         return modules.containsKey(moduleName);
     }
 
+    /**
+     * Returns worker module with given name.
+     *
+     * @param moduleName module name
+     * @return worker module with given name or <tt>null</tt> if such worker module doesn't exists
+     */
     public WorkerModule getWorkerModule(String moduleName) {
         return workerModules.get(moduleName);
     }
 
+    /**
+     * Returns service module with given name.
+     *
+     * @param moduleName module name
+     * @return service module with given name or <tt>null</tt> if such service module doesn't exists
+     */
     public ServiceModule getServiceModule(String moduleName) {
         return serviceModules.get(moduleName);
     }
 
+    /**
+     * Returns standalone module with given name.
+     *
+     * @param moduleName module name
+     * @return standalone module with given name or <tt>null</tt> if such standalone module doesn't exists
+     */
     public StandaloneModule getStandaloneModule(String moduleName) {
         return standaloneModules.get(moduleName);
     }
 
+    /**
+     * Returns map of all modules.
+     *
+     * @return map of all modules. Key of the map is module name, value is module itself.
+     */
     public Map<String, Module> getModules() {
         return Collections.unmodifiableMap(modules);
     }
 
-    public Map<String, Module> getServiceModules() {
+    /**
+     * Returns map of all service modules.
+     *
+     * @return map of all service modules. Key of the map is module name, value is module itself.
+     */
+    public Map<String, ServiceModule> getServiceModules() {
         return Collections.unmodifiableMap(serviceModules);
     }
 
-    public Map<String, Module> getWorkerModules() {
+    /**
+     * Returns map of all worker modules.
+     *
+     * @return map of all worker modules. Key of the map is module name, value is module itself.
+     */
+    public Map<String, WorkerModule> getWorkerModules() {
         return Collections.unmodifiableMap(workerModules);
     }
 
-    public Map<String, Module> getStandaloneModules() {
+    /**
+     * Returns map of all standalone modules.
+     *
+     * @return map of all standalone modules. Key of the map is module name, value is module itself.
+     */
+    public Map<String, StandaloneModule> getStandaloneModules() {
         return Collections.unmodifiableMap(standaloneModules);
     }
 }

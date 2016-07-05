@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Service for common web operations.
+ */
 @Service
 public class CommonWebService {
 
@@ -14,7 +17,7 @@ public class CommonWebService {
 
     @Autowired
     public CommonWebService(List<CommonWebConfigurer> configurers) {
-        for(CommonWebConfigurer configurer : configurers) {
+        for (CommonWebConfigurer configurer : configurers) {
             subpages.add(toModel(configurer));
         }
     }
@@ -23,6 +26,11 @@ public class CommonWebService {
         return new SubPageJsonDto(configurer.getModuleName(), configurer.getModuleDescription());
     }
 
+    /**
+     * Gets descriptions of all webpages available in application.
+     *
+     * @return list of json DTOs describing available subpages
+     */
     public List<SubPageJsonDto> getSubpages() {
         return Collections.unmodifiableList(subpages);
     }

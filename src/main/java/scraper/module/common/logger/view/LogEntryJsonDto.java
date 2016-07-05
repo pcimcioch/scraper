@@ -6,6 +6,11 @@ import scraper.util.Utils;
 
 import java.util.Date;
 
+/**
+ * Json DTO describing {@link LogEntryDs}.
+ * <p>
+ * Used only for {@link LogEntryDs} -> {@link LogEntryJsonDto} conversions.
+ */
 public class LogEntryJsonDto {
 
     private LoggerLevel level;

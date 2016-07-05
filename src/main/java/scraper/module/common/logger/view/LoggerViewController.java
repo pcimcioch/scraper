@@ -6,10 +6,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import scraper.environment.StatusMessage;
 import scraper.module.core.scope.InModuleScope;
 
 import java.util.List;
 
+/**
+ * REST Controller for managing log entires operations.
+ */
 @RestController
 @RequestMapping(LoggerViewModule.NAME + "/api")
 @InModuleScope(module = LoggerViewModule.NAME)
@@ -22,20 +26,36 @@ public class LoggerViewController {
         this.logsService = logsService;
     }
 
+    /**
+     * Returns all logs from database, represented as json DTOs.
+     *
+     * @return list of log entry json DTOs
+     */
     @RequestMapping(path = "/log", method = RequestMethod.GET)
     public List<LogEntryJsonDto> getLogs() {
         return logsService.getAllLogs();
     }
 
+    /**
+     * Removes all logs from database.
+     *
+     * @return operation status message
+     */
     @RequestMapping(path = "/log", method = RequestMethod.DELETE, produces = MediaType.TEXT_PLAIN_VALUE)
-    public String removeAllLogs() {
+    public StatusMessage removeAllLogs() {
         logsService.deleteAllLogs();
-        return "All logs removed";
+        return new StatusMessage("All logs removed");
     }
 
+    /**
+     * Removes all logs that apply for given {@code module}.
+     *
+     * @param module module name
+     * @return operation status message
+     */
     @RequestMapping(path = "/log/{module}", method = RequestMethod.DELETE, produces = MediaType.TEXT_PLAIN_VALUE)
-    public String removeModuleLogs(@PathVariable("module") String module) {
-        logsService.removeModuleLogs(module);
-        return String.format("Module %s logs removed", module);
+    public StatusMessage removeModuleLogs(@PathVariable("module") String module) {
+        logsService.deleteModuleLogs(module);
+        return new StatusMessage("Module %s logs removed", module);
     }
 }

@@ -7,6 +7,10 @@ import scraper.util.Utils;
 import java.util.Collections;
 import java.util.Set;
 
+/**
+ * Standalone module used to display rest interface for saved in database {@link scraper.module.common.logger.LogEntryDs} operations. Main endpoint available in this module is
+ * {@link LoggerViewController}.
+ */
 @Service
 public class LoggerViewModule implements StandaloneModule {
 

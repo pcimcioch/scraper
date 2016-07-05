@@ -6,6 +6,9 @@ import scraper.module.core.ServiceModule;
 import java.util.Collections;
 import java.util.Set;
 
+/**
+ * Service module for workspace file I/O operations. Main serviceavailable in this module is {@link WorkspaceService}.
+ */
 @Service
 public class WorkspaceServiceModule implements ServiceModule {
 

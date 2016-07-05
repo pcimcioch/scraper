@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 import scraper.environment.LifeCycle;
 import scraper.module.common.logger.LoggerService;
 
+/**
+ * Service for managing application lifecycle.
+ */
 @Service
 public class ApplicationLifecycleService {
 
@@ -18,6 +21,9 @@ public class ApplicationLifecycleService {
         this.lifecycle = lifecycle;
     }
 
+    /**
+     * Requests application stop.
+     */
     // TODO graceful shutdown (for instance when workers are working, cancell them and wait for them. Don'e allow start new ones, block all http requests etc)
     public void stopApplication() {
         logger.info("Stopping application");

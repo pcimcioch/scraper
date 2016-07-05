@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.RestController;
 import scraper.environment.StatusMessage;
 import scraper.module.core.scope.InModuleScope;
 
+/**
+ * REST controller used to execute operations modifying application lifecycle.
+ */
 @RestController
 @RequestMapping(ApplicationLifecycleModule.NAME + "/api")
 @InModuleScope(module = ApplicationLifecycleModule.NAME)
@@ -19,6 +22,11 @@ public class ApplicationLifecycleController {
         this.applicationLifecycleService = applicationLifecycleService;
     }
 
+    /**
+     * Requests application stop.
+     *
+     * @return status message
+     */
     @RequestMapping(path = "/lifecycle/stop", method = RequestMethod.GET)
     public StatusMessage stopApplication() {
         applicationLifecycleService.stopApplication();

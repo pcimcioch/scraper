@@ -8,6 +8,9 @@ import scraper.module.core.context.ModuleContext;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Configuration for custom {@link ModuleScope}.
+ */
 @Configuration
 public class ModuleScopeConfiguration {
 

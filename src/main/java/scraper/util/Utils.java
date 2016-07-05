@@ -19,11 +19,11 @@ public final class Utils {
     }
 
     /**
-     * Return (modifiable) set of given {@code elements}.
+     * Returns (modifiable) set of given {@code elements}.
      *
-     * @param elements elements that should be added to the set. Can be empty.
-     * @param <T>      type of the lements in the set.
-     * @return set containg given {@code elements}.
+     * @param elements elements that should be added to the set. May be empty
+     * @param <T>      type of the elements in the set
+     * @return set containing given {@code elements}
      */
     @SafeVarargs
     public static <T> Set<T> set(T... elements) {
@@ -34,13 +34,13 @@ public final class Utils {
     }
 
     /**
-     * Return (modifiable) map of given {@code elements}.
+     * Returns (modifiable) map of given {@code elements}.
      *
-     * @param elements elements to add. Should be array of even lenght, containing desired keys an values alternately. Can be empty.
-     * @param <K>      type of the keys.
-     * @param <V>      type of the values.
-     * @return created map containg {@code elements}
-     * @throws IllegalArgumentException if given {@code elements} array has odd length.
+     * @param elements elements to add. Should be array of even length, containing desired keys an values alternately. May be empty
+     * @param <K>      type of the keys
+     * @param <V>      type of the values
+     * @return created map containing {@code elements
+     * @throws IllegalArgumentException if given {@code elements} array has odd length
      */
     public static <K, V> Map<K, V> map(Object... elements) {
         if ((elements.length % 2) != 0) {
@@ -56,30 +56,31 @@ public final class Utils {
     }
 
     /**
-     * Generate UUID in form of a string.
+     * Generates UUID in form of a string.
      *
-     * @return newly generated UUID.
+     * @return newly generated UUID
      */
     public static String generateUUID() {
         return UUID.randomUUID().toString();
     }
 
     /**
-     * Compare two elements using {@code o1} {@link Object#equals(Object)} method. If both elements are <tt>null</tt> or equal, it will return <tt>true</tt>. <tt>false</tt>
-     * otherwise.
+     * Compares two elements using {@code o1} {@link Object#equals(Object)} method.
+     * <p>
+     * If both elements are <tt>null</tt> or equal, it will return <tt>true</tt>. <tt>false</tt> otherwise.
      *
-     * @param o1 first element. Can be <tt>null</tt>.
-     * @param o2 second element. Can be <tt>null</tt>.
-     * @return <tt>true</tt> if elements are equal, or both <tt>null</tt>. <tt>false</tt> otherwise.
+     * @param o1 first element. May be <tt>null</tt>
+     * @param o2 second element. May be <tt>null</tt>
+     * @return <tt>true</tt> if elements are equal, or both <tt>null</tt>. <tt>false</tt> otherwise
      */
     public static boolean eq(Object o1, Object o2) {
         return o1 == null ? o2 == null : o1.equals(o2);
     }
 
     /**
-     * Return result of the {@link Object#hashCode()} of the passed {@code element} or 0 i <tt>null</tt> was passed.
+     * Returns result of the {@link Object#hashCode()} of the passed {@code element} or <tt>0</tt> if <tt>null</tt> was passed.
      *
-     * @param element elemnt to hash. Can be <tt>null</tt>.
+     * @param element element to hash. May be <tt>null</tt>
      * @return hash code of the {@code element}, or <tt>0</tt> if {@code element} is <tt>null</tt>
      */
     public static int hash(Object element) {
@@ -87,12 +88,13 @@ public final class Utils {
     }
 
     /**
-     * Check equality of all the given {@code elements} paired. That means, it will compare first element with second one, third with forth, etc. For comparison, uses {@link
-     * #eq(Object, Object)} method.
+     * Checks equality of all the given {@code elements} paired.
+     * <p>
+     * That means, it will compare first element with second one, third with forth, etc. For comparison, uses {@link #eq(Object, Object)} method.
      *
-     * @param elements array of the elements to check. Must has even length. Can be empty. Can contain <tt>null</tt> values.
-     * @return Result of the comparison.
-     * @throws IllegalArgumentException if given {@code elements} array has odd length.
+     * @param elements array of the elements to check. Must has even length. May be empty. May contain <tt>null</tt> values
+     * @return result of the comparison
+     * @throws IllegalArgumentException if given {@code elements} array has odd length
      */
     public static boolean computeEq(Object... elements) {
         if ((elements.length % 2) != 0) {
@@ -109,9 +111,9 @@ public final class Utils {
     }
 
     /**
-     * Compute hash code of all given {@code elements}.
+     * Computes hash code of all given {@code elements}.
      *
-     * @param elements array of obcjects rom which hash code should be computed. Can be empty. Can contain <tt>null</tt> values
+     * @param elements array of objects rom which hash code should be computed. May be empty. May contain <tt>null</tt> values
      * @return computed hash code
      */
     public static int computeHash(Object... elements) {

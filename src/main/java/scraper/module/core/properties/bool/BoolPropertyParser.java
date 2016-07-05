@@ -7,6 +7,9 @@ import scraper.module.core.properties.PropertyParser;
 
 import java.lang.annotation.Annotation;
 
+/**
+ * Parser for {@link BoolProperty}.
+ */
 public class BoolPropertyParser implements PropertyParser<BoolProperty> {
 
     @Override

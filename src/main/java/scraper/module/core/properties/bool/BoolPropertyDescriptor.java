@@ -2,6 +2,9 @@ package scraper.module.core.properties.bool;
 
 import scraper.module.core.properties.PropertyDescriptor;
 
+/**
+ * Descriptor of the {@link BoolProperty}.
+ */
 public class BoolPropertyDescriptor extends PropertyDescriptor {
 
     private static final String TYPE = "bool";

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import scraper.module.common.logger.LoggerService;
 import scraper.module.core.scope.InModuleScope;
 
+// TODO add tests
 @Service
 public class SchedulerRunner {
 
