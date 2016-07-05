@@ -47,13 +47,13 @@ public class NumberPropertyParser implements PropertyParser<NumberProperty> {
 
     private void validateMin(long min, Long value) {
         if (value < min) {
-            throw new ValidationException("Value \"%d\" must be greater or equal %d", value, min);
+            throw new ValidationException("Value [%d] must be greater or equal %d", value, min);
         }
     }
 
     private void validateMax(long max, Long value) {
         if (value > max) {
-            throw new ValidationException("Value \"%s\" must be lower or equal %d", value, max);
+            throw new ValidationException("Value [%s] must be lower or equal %d", value, max);
         }
     }
 
@@ -63,7 +63,7 @@ public class NumberPropertyParser implements PropertyParser<NumberProperty> {
             throw new IllegalAnnotationException("Annotation must be NumberProperty annotation");
         }
         if (!isApplicable(fieldType)) {
-            throw new IllegalAnnotationException("Annotation NumberProperty cannot be applied to field %s with type %s", propertyName, fieldType.getCanonicalName());
+            throw new IllegalAnnotationException("Annotation NumberProperty cannot be applied to field [%s] with type [%s]", propertyName, fieldType.getCanonicalName());
         }
 
         return new NumberPropertyDescriptor(propertyName, fieldType, (NumberProperty) annotation);

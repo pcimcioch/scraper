@@ -13,6 +13,8 @@ import java.util.List;
 
 /**
  * REST Controller for managing log entires operations.
+ * <p>
+ * All methods are called in {@link scraper.module.core.scope.ModuleScope}.
  */
 @RestController
 @RequestMapping(LoggerViewModule.NAME + "/api")
@@ -56,6 +58,6 @@ public class LoggerViewController {
     @RequestMapping(path = "/log/{module}", method = RequestMethod.DELETE, produces = MediaType.TEXT_PLAIN_VALUE)
     public StatusMessage removeModuleLogs(@PathVariable("module") String module) {
         logsService.deleteModuleLogs(module);
-        return new StatusMessage("Module %s logs removed", module);
+        return new StatusMessage("Module [%s] logs removed", module);
     }
 }

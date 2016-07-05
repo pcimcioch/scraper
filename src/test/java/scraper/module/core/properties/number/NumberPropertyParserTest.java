@@ -59,7 +59,7 @@ public class NumberPropertyParserTest {
             parser.getDescriptor("a", String.class, annotation("b", "c", 23, 34, false));
             fail();
         } catch (IllegalAnnotationException ex) {
-            assertEquals("Annotation NumberProperty cannot be applied to field a with type java.lang.String", ex.getMessage());
+            assertEquals("Annotation NumberProperty cannot be applied to field [a] with type [java.lang.String]", ex.getMessage());
         }
     }
 
@@ -146,9 +146,9 @@ public class NumberPropertyParserTest {
 
     @Test
     public void testValidate_min_invalid() {
-        assertInvalid(5L, annotation("", "", 6, 100, false), "Value \"5\" must be greater or equal 6");
+        assertInvalid(5L, annotation("", "", 6, 100, false), "Value [5] must be greater or equal 6");
         assertInvalid(null, annotation("", "", 1, 100, true), "Value must be present");
-        assertInvalid(1L, annotation("", "", 2, 100, true), "Value \"1\" must be greater or equal 2");
+        assertInvalid(1L, annotation("", "", 2, 100, true), "Value [1] must be greater or equal 2");
     }
 
     @Test
@@ -164,8 +164,8 @@ public class NumberPropertyParserTest {
 
     @Test
     public void testValidate_max_invalid() {
-        assertInvalid(5L, annotation("", "", 0, 4, false), "Value \"5\" must be lower or equal 4");
-        assertInvalid(5L, annotation("", "", 0, 1, false), "Value \"5\" must be lower or equal 1");
+        assertInvalid(5L, annotation("", "", 0, 4, false), "Value [5] must be lower or equal 4");
+        assertInvalid(5L, annotation("", "", 0, 1, false), "Value [5] must be lower or equal 1");
     }
 
     private void assertValid(Object value, NumberProperty annotation) {

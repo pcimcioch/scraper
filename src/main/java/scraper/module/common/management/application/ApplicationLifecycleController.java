@@ -9,6 +9,8 @@ import scraper.module.core.scope.InModuleScope;
 
 /**
  * REST controller used to execute operations modifying application lifecycle.
+ * <p>
+ * All methods are called in {@link scraper.module.core.scope.ModuleScope}.
  */
 @RestController
 @RequestMapping(ApplicationLifecycleModule.NAME + "/api")

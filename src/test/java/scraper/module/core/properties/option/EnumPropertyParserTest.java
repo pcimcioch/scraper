@@ -54,7 +54,7 @@ public class EnumPropertyParserTest {
             parser.getDescriptor("name", Integer.class, annotation("b", "c", true));
             fail();
         } catch (IllegalAnnotationException ex) {
-            assertEquals("Annotation EnumProperty cannot be applied to field name with type java.lang.Integer", ex.getMessage());
+            assertEquals("Annotation EnumProperty cannot be applied to field [name] with type [java.lang.Integer]", ex.getMessage());
         }
     }
 

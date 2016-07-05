@@ -7,6 +7,9 @@ import scraper.util.Utils;
 import java.util.Collections;
 import java.util.Set;
 
+/**
+ * Service module used to run {@link scraper.module.core.WorkerModule}. Main service available in this module is {@link ModuleRunner}.
+ */
 @Service
 public class ModuleRunnerModule implements ServiceModule {
 

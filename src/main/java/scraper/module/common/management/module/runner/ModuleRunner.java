@@ -18,6 +18,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Service used to run and manage runninag {@link WorkerModule}.
+ */
 @Service
 public class ModuleRunner {
 
@@ -41,6 +44,12 @@ public class ModuleRunner {
         this.template = template;
     }
 
+    /**
+     * Requests stop of the running {@link WorkerModule}.
+     *
+     * @param id id of the running worker. Can be otained from {@link WorkerDescriptor#getId()}
+     * @return <tt>true</tt> if worker was found and stopped, <tt>false</tt> if worker can not be found
+     */
     public boolean stopWorker(String id) {
         synchronized (workingWorkers) {
             for (WorkerDescriptor descriptor : workingWorkers) {
@@ -54,24 +63,51 @@ public class ModuleRunner {
         return false;
     }
 
+    /**
+     * Gets list of descriptors o running {@link WorkerModule}.
+     *
+     * @return list of running workers
+     */
     public List<WorkerDescriptor> getWorkingWorkers() {
         synchronized (workingWorkers) {
             return FuncUtils.map(workingWorkers, WorkerDescriptor::new);
         }
     }
 
+    /**
+     * Run worker asynchronously.
+     * <p>
+     * Run is performed in {@link scraper.module.core.scope.ModuleScope}. This method will return immediately, as it is asynchronous. To wait for worker finish, method {@link
+     * #runWorker(ModuleDetails, Object)} can be used.
+     *
+     * @param moduleDetails module details describing module and instance of the worker
+     * @param settings      worker settings
+     * @throws ResourceNotFoundException if worker module can not be found
+     * @throws IllegalStateException     if worker instance with the same name is already running
+     */
     @InModuleScope
     @Async
     public void runWorkerAsync(ModuleDetails moduleDetails, Object settings) {
         runWorker(moduleDetails, settings);
     }
 
+    /**
+     * Run worker.
+     * <p>
+     * Run is performed in {@link scraper.module.core.scope.ModuleScope}. This method will wait till the worker finished its work. To run asynchronously, method {@link
+     * #runWorkerAsync(ModuleDetails, Object)} can be used.
+     *
+     * @param moduleDetails module details describing module and instance of the worker
+     * @param settings      worker settings
+     * @throws ResourceNotFoundException if worker module can not be found
+     * @throws IllegalStateException     if worker instance with the same name is already running
+     */
     @InModuleScope
     public void runWorker(ModuleDetails moduleDetails, Object settings) {
         initWorkerRun(moduleDetails);
         WorkerModule<?> module = moduleContainer.getWorkerModule(moduleDetails.getModule());
         if (module == null) {
-            throw new ResourceNotFoundException("Worker module %s not found", moduleDetails.getModule());
+            throw new ResourceNotFoundException("Worker module [%s] not found", moduleDetails.getModule());
         }
 
         runWorker(module, settings);
@@ -100,7 +136,8 @@ public class ModuleRunner {
         synchronized (workingWorkers) {
             ModuleDetails currentModuleDetails = moduleContext.getModuleDetails();
             if (workingWorkers.stream().map(WorkerDescriptor::getModuleDetails).anyMatch(currentModuleDetails::equals)) {
-                throw new IllegalStateException(String.format("Worker %s instance %s already in progress", currentModuleDetails.getModule(), currentModuleDetails.getInstance()));
+                throw new IllegalStateException(
+                        String.format("Worker [%s] instance [%s] already in progress", currentModuleDetails.getModule(), currentModuleDetails.getInstance()));
             }
             workingWorkers.add(descriptor);
         }

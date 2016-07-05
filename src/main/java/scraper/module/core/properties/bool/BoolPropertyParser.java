@@ -29,7 +29,7 @@ public class BoolPropertyParser implements PropertyParser<BoolProperty> {
             throw new IllegalAnnotationException("Annotation must be BoolProperty annotation");
         }
         if (!isApplicable(fieldType)) {
-            throw new IllegalAnnotationException("Annotation BoolProperty cannot be applied to field %s with type %s", propertyName, fieldType.getCanonicalName());
+            throw new IllegalAnnotationException("Annotation BoolProperty cannot be applied to field [%s] with type [%s]", propertyName, fieldType.getCanonicalName());
         }
 
         return new BoolPropertyDescriptor(propertyName, (BoolProperty) annotation);

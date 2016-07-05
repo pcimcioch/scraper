@@ -2,6 +2,9 @@ package scraper.module.common.management.module.store;
 
 import scraper.util.Utils;
 
+/**
+ * Bean representing instance of {@link scraper.module.core.WorkerModule}.
+ */
 public class ModuleInstance {
 
     private long id;

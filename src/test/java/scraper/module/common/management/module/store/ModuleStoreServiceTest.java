@@ -428,7 +428,7 @@ public class ModuleStoreServiceTest {
             fail();
         } catch (ResourceNotFoundException ex) {
             // then
-            assertTrue(ex.getMessage().contains("Worker Module module.worker not found"));
+            assertTrue(ex.getMessage().contains("Worker Module [module.worker] not found"));
         }
 
         verify(instanceRepository, never()).save(any(ModuleInstanceDs.class));

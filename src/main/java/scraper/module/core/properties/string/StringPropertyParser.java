@@ -52,13 +52,13 @@ public class StringPropertyParser implements PropertyParser<StringProperty> {
 
     private void validateMinLength(int minLength, String value) {
         if (value.length() < minLength) {
-            throw new ValidationException("Value \"%s\" must be at least %d characters long", value, minLength);
+            throw new ValidationException("Value [%s] must be at least %d characters long", value, minLength);
         }
     }
 
     private void validateMaxLength(int maxLength, String value) {
         if (value.length() > maxLength) {
-            throw new ValidationException("Value \"%s\" must be maximum %d characters long", value, maxLength);
+            throw new ValidationException("Value [%s] must be maximum %d characters long", value, maxLength);
         }
     }
 
@@ -69,10 +69,10 @@ public class StringPropertyParser implements PropertyParser<StringProperty> {
 
         try {
             if (!Pattern.matches(pattern, value)) {
-                throw new ValidationException("Value \"%s\" does not match pattern \"%s\"", value, pattern);
+                throw new ValidationException("Value [%s] does not match pattern [%s]", value, pattern);
             }
         } catch (PatternSyntaxException ex) {
-            throw new ValidationException("Incorrect pattern \"%s\". %s", ex, pattern, ex.getMessage());
+            throw new ValidationException("Incorrect pattern [%s]. %s", ex, pattern, ex.getMessage());
         }
     }
 
@@ -82,7 +82,7 @@ public class StringPropertyParser implements PropertyParser<StringProperty> {
             throw new IllegalAnnotationException("Annotation must be StringProperty annotation");
         }
         if (!isApplicable(fieldType)) {
-            throw new IllegalAnnotationException("Annotation StringProperty cannot be applied to field %s with type %s", propertyName, fieldType.getCanonicalName());
+            throw new IllegalAnnotationException("Annotation StringProperty cannot be applied to field [%s] with type [%s]", propertyName, fieldType.getCanonicalName());
         }
 
         return new StringPropertyDescriptor(propertyName, (StringProperty) annotation);

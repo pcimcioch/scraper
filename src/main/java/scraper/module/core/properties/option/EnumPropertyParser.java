@@ -29,7 +29,7 @@ public class EnumPropertyParser implements PropertyParser<EnumProperty> {
             throw new IllegalAnnotationException("Annotation must be EnumProperty annotation");
         }
         if (!isApplicable(fieldType)) {
-            throw new IllegalAnnotationException("Annotation EnumProperty cannot be applied to field %s with type %s", propertyName, fieldType.getCanonicalName());
+            throw new IllegalAnnotationException("Annotation EnumProperty cannot be applied to field [%s] with type [%s]", propertyName, fieldType.getCanonicalName());
         }
 
         return new EnumPropertyDescriptor(propertyName, (Class<? extends Enum>) fieldType, (EnumProperty) annotation);

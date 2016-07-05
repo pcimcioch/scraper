@@ -6,6 +6,9 @@ import org.springframework.web.socket.config.annotation.AbstractWebSocketMessage
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import scraper.module.common.management.module.runner.ModuleRunnerModule;
 
+/**
+ * Configuration of the websocket endpoint, that sends running {@link scraper.module.core.WorkerModule} status updates.
+ */
 @Configuration
 public class ModuleViewEndpointConfiguration extends AbstractWebSocketMessageBrokerConfigurer {
 

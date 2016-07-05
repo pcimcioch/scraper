@@ -5,6 +5,9 @@ import org.springframework.data.neo4j.annotation.GraphProperty;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import scraper.util.Utils;
 
+/**
+ * Neo4j entity representing {@link ModuleInstance}.
+ */
 @NodeEntity
 public class ModuleInstanceDs {
 

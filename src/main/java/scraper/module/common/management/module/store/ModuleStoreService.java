@@ -51,6 +51,14 @@ public class ModuleStoreService {
         }
     }
 
+    /**
+     * Gets {@link WorkerModule} instance.
+     *
+     * @param instanceId worker module instance id
+     * @return worker module instance, or <tt>null</tt> if instance with such id can not be found
+     * @throws ResourceNotFoundException if module, that searched instance is refering to, do not exists
+     * @throws IllegalArgumentException  if settings data, saved in module instance, is incorrect
+     */
     public ModuleInstance getModuleInstance(long instanceId) {
         ModuleInstanceDs instanceDs;
         synchronized (instanceRepository) {
@@ -59,12 +67,26 @@ public class ModuleStoreService {
         return buildModuleInstance(instanceDs);
     }
 
+    /**
+     * Gets list of all {@link WorkerModule} instances.
+     *
+     * @return list of all worker module instances
+     * @throws ResourceNotFoundException if module, that any instance is refering to, do not exists
+     * @throws IllegalArgumentException  if settings data, saved in any module instance, is incorrect
+     */
     public List<ModuleInstance> getModuleInstances() {
         synchronized (instanceRepository) {
             return map(instanceRepository.findAll(), this::buildModuleInstance);
         }
     }
 
+    /**
+     * Deletes {@link WorkerModule} instance.
+     * <p>
+     * If instance can not be found, nothing will happen
+     *
+     * @param instanceId worker module instance id
+     */
     public void deleteModuleInstance(long instanceId) {
         synchronized (instanceRepository) {
             instanceRepository.delete(instanceId);
@@ -72,6 +94,14 @@ public class ModuleStoreService {
         }
     }
 
+    /**
+     * Creates new {@link WorkerModule} instance.
+     *
+     * @param instance instance to create
+     * @throws ResourceNotFoundException if worker module required by this instance can not be found
+     * @throws IllegalArgumentException  if settings are in incorrect format
+     * @throws ValidationException       if settings or schedule have incorrect values
+     */
     public void addModuleInstance(ModuleInstance instance) {
         synchronized (instanceRepository) {
             validateModuleInstance(instance);
@@ -84,6 +114,15 @@ public class ModuleStoreService {
         }
     }
 
+    /**
+     * Updates settings in existing {@link WorkerModule} instance.
+     *
+     * @param instanceId  worker module instance id
+     * @param newSettings new settings
+     * @throws ResourceNotFoundException if worker module instance can not be found
+     * @throws IllegalArgumentException  if settings are in incorrect format
+     * @throws ValidationException       if settings have incorrect values
+     */
     public void updateSettings(long instanceId, Object newSettings) {
         synchronized (instanceRepository) {
             ModuleInstanceDs instanceDs = instanceRepository.findOne(instanceId);
@@ -97,6 +136,14 @@ public class ModuleStoreService {
         }
     }
 
+    /**
+     * Updates schedule in existing {@link WorkerModule} instance.
+     *
+     * @param instanceId  worker module instance id
+     * @param newSchedule new schedule
+     * @throws ResourceNotFoundException if worker module instance can not be found
+     * @throws ValidationException       if schedule have incorrect values
+     */
     public void updateSchedule(long instanceId, String newSchedule) {
         synchronized (instanceRepository) {
             ModuleInstanceDs instanceDs = instanceRepository.findOne(instanceId);
@@ -112,6 +159,14 @@ public class ModuleStoreService {
         }
     }
 
+    /**
+     * Runs {@link WorkerModule} instance.
+     * <p>
+     * Run is asynchronous, so ths method will almost immediately return.
+     *
+     * @param instanceId worker module instance id
+     * @throws ResourceNotFoundException if worker module instance can not be found
+     */
     public void runModuleInstance(long instanceId) {
         ModuleInstance instance = getModuleInstance(instanceId);
         if (instance == null) {
@@ -133,7 +188,7 @@ public class ModuleStoreService {
 
     private void validateModuleInstance(ModuleInstance instance) {
         if (instanceRepository.findByModuleNameAndInstanceName(instance.getModuleName(), instance.getInstanceName()) != null) {
-            throw new IllegalArgumentException("Instance " + instance.getInstanceName() + " of worker module " + instance.getModuleName() + " already exists");
+            throw new IllegalArgumentException("Instance [" + instance.getInstanceName() + "] of worker module [" + instance.getModuleName() + "] already exists");
         }
     }
 
@@ -155,7 +210,7 @@ public class ModuleStoreService {
     private Class<?> getSettingsType(String moduleName) {
         WorkerModule<?> module = moduleContainer.getWorkerModule(moduleName);
         if (module == null) {
-            throw new ResourceNotFoundException("Worker Module %s not found", moduleName);
+            throw new ResourceNotFoundException("Worker Module [%s] not found", moduleName);
         }
 
         return module.getSettingsClass();

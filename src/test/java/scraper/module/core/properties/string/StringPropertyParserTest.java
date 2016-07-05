@@ -51,7 +51,7 @@ public class StringPropertyParserTest {
             parser.getDescriptor("a", int.class, annotation("b", "c", 23, 34, "d", false));
             fail();
         } catch (IllegalAnnotationException ex) {
-            assertEquals("Annotation StringProperty cannot be applied to field a with type int", ex.getMessage());
+            assertEquals("Annotation StringProperty cannot be applied to field [a] with type [int]", ex.getMessage());
         }
     }
 
@@ -98,9 +98,9 @@ public class StringPropertyParserTest {
 
     @Test
     public void testValidate_minLength_invalid() {
-        assertInvalid("value", annotation("", "", 6, 100, "", false), "Value \"value\" must be at least 6 characters long");
+        assertInvalid("value", annotation("", "", 6, 100, "", false), "Value [value] must be at least 6 characters long");
         assertInvalid("", annotation("", "", 1, 100, "", true), "Value must be present");
-        assertInvalid("1", annotation("", "", 2, 100, "", true), "Value \"1\" must be at least 2 characters long");
+        assertInvalid("1", annotation("", "", 2, 100, "", true), "Value [1] must be at least 2 characters long");
     }
 
     @Test
@@ -116,8 +116,8 @@ public class StringPropertyParserTest {
 
     @Test
     public void testValidate_maxLength_invalid() {
-        assertInvalid("value", annotation("", "", 0, 4, "", false), "Value \"value\" must be maximum 4 characters long");
-        assertInvalid("value", annotation("", "", 0, 1, "", false), "Value \"value\" must be maximum 1 characters long");
+        assertInvalid("value", annotation("", "", 0, 4, "", false), "Value [value] must be maximum 4 characters long");
+        assertInvalid("value", annotation("", "", 0, 1, "", false), "Value [value] must be maximum 1 characters long");
     }
 
     @Test
@@ -141,12 +141,12 @@ public class StringPropertyParserTest {
     public void testValidate_pattern_invalid() {
         assertInvalid(null, annotation("", "", 0, 100, ".*", true), "Value must be present");
         assertInvalid("", annotation("", "", 0, 100, ".+", true), "Value must be present");
-        assertInvalid("value", annotation("", "", 0, 100, "v.+u", false), "Value \"value\" does not match pattern \"v.+u\"");
+        assertInvalid("value", annotation("", "", 0, 100, "v.+u", false), "Value [value] does not match pattern [v.+u]");
     }
 
     @Test
     public void testValidate_pattern_invalidPattern() {
-        assertInvalid("value", annotation("", "", 0, 100, "v.+[", false), "Incorrect pattern \"v.+[\". Unclosed character class near index 3\r\nv.+[\r\n   ^");
+        assertInvalid("value", annotation("", "", 0, 100, "v.+[", false), "Incorrect pattern [v.+[]. Unclosed character class near index 3\r\nv.+[\r\n   ^");
     }
 
     private void assertValid(Object value, StringProperty annotation) {

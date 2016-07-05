@@ -10,6 +10,8 @@ import java.util.List;
 
 /**
  * REST controller for "subpages" webpage operations.
+ * <p>
+ * All methods are called in {@link scraper.module.core.scope.ModuleScope}.
  */
 @RestController
 @RequestMapping("/api")

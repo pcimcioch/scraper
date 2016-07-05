@@ -52,7 +52,7 @@ public class BoolPropertyParserTest {
             parser.getDescriptor("name", Integer.class, annotation("b", "c"));
             fail();
         } catch (IllegalAnnotationException ex) {
-            assertEquals("Annotation BoolProperty cannot be applied to field name with type java.lang.Integer", ex.getMessage());
+            assertEquals("Annotation BoolProperty cannot be applied to field [name] with type [java.lang.Integer]", ex.getMessage());
         }
     }
 

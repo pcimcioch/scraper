@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 
+/**
+ * Service used to schedule events and manage already scheduled tasks.
+ */
 @Service
 public class Scheduler {
 
@@ -24,22 +27,46 @@ public class Scheduler {
         this.runner = runner;
     }
 
-    public synchronized void schedule(long instanceId, Trigger trigger, Runnable callback) {
+    /**
+     * Schedules {@code callback} to run according to the {@code trigger}.
+     * <p>
+     * If task with {@code taskId} is already scheduled, it will be cancelled.
+     *
+     * @param taskId   taskId used to identify task
+     * @param trigger  trigger
+     * @param callback callback
+     */
+    public synchronized void schedule(long taskId, Trigger trigger, Runnable callback) {
         ScheduledFuture<?> newTask = taskScheduler.schedule(() -> runner.safeRun(callback), trigger);
-        ScheduledFuture previousTask = tasks.put(instanceId, newTask);
+        ScheduledFuture previousTask = tasks.put(taskId, newTask);
         if (previousTask != null) {
             previousTask.cancel(false);
         }
     }
 
-    public synchronized void cancel(long instanceId) {
-        ScheduledFuture previousTask = tasks.remove(instanceId);
+    /**
+     * Cancels task with given {@code taskId}.
+     * <p>
+     * Is such task is not scheduled, it will be ignored
+     *
+     * @param taskId task id
+     */
+    // TODO check if this works with repeatable tasks
+    // TODO maybe one-shot tasks should be automatically removed from "tasks" map?
+    public synchronized void cancel(long taskId) {
+        ScheduledFuture previousTask = tasks.remove(taskId);
         if (previousTask != null) {
             previousTask.cancel(false);
         }
     }
 
-    public synchronized boolean isScheduled(long instanceId) {
-        return tasks.containsKey(instanceId);
+    /**
+     * Cheks if task with given {@code taskId} is scheduled.
+     *
+     * @param taskId task id
+     * @return <tt>true</tt> if task with given id is scheduled, <tt>false</tt> otherwise
+     */
+    public synchronized boolean isScheduled(long taskId) {
+        return tasks.containsKey(taskId);
     }
 }

@@ -75,9 +75,9 @@ public final class ClassPropertyDescriptorFactory {
             try {
                 validate(object, field);
             } catch (IllegalArgumentException | IllegalAccessException e) {
-                throw new ValidationException("Field %s exception: %s", e, fieldName(field), e.getMessage());
+                throw new ValidationException("Field [%s] exception: %s", e, fieldName(field), e.getMessage());
             } catch (ValidationException e) {
-                throw new ValidationException("Field %s validation exception: %s", e, fieldName(field), e.getMessage());
+                throw new ValidationException("Field [%s] validation exception: %s", e, fieldName(field), e.getMessage());
             }
         }
     }
@@ -87,7 +87,7 @@ public final class ClassPropertyDescriptorFactory {
         for (Annotation annotation : field.getAnnotations()) {
             PropertyParser<?> parser = getParser(annotation.annotationType());
             if (parser != null && alreadyParsed) {
-                throw new IllegalAnnotationException("Field %s has more than one Property Descriptor", fieldName(field));
+                throw new IllegalAnnotationException("Field [%s] has more than one Property Descriptor", fieldName(field));
             } else if (parser != null) {
                 alreadyParsed = true;
                 field.setAccessible(true);
@@ -101,7 +101,7 @@ public final class ClassPropertyDescriptorFactory {
         for (Annotation annotation : field.getAnnotations()) {
             PropertyParser<?> parser = getParser(annotation.annotationType());
             if (parser != null && propertyDescriptor != null) {
-                throw new IllegalAnnotationException("Field %s has more than one Property Descriptor", fieldName(field));
+                throw new IllegalAnnotationException("Field [%s] has more than one Property Descriptor", fieldName(field));
             } else if (parser != null) {
                 propertyDescriptor = parser.getDescriptor(field.getName(), field.getType(), annotation);
             }

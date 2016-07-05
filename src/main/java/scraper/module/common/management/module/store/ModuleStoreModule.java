@@ -7,6 +7,9 @@ import scraper.util.Utils;
 import java.util.Collections;
 import java.util.Set;
 
+/**
+ * Service module used to store and manage {@link scraper.module.core.WorkerModule} instances. Main sevice for this module is {@link ModuleStoreService}.
+ */
 @Service
 public class ModuleStoreModule implements ServiceModule {
 

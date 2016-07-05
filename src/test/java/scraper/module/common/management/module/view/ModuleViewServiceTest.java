@@ -237,7 +237,7 @@ public class ModuleViewServiceTest {
             fail();
         } catch (ResourceNotFoundException ex) {
             // then
-            assertTrue(ex.getMessage().contains("Worker Module module.worker not found"));
+            assertTrue(ex.getMessage().contains("Worker Module [module.worker] not found"));
         }
     }
 

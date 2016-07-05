@@ -80,7 +80,7 @@ public class ModuleContainer {
         for (Module module : modules.values()) {
             for (String dependency : module.dependencies()) {
                 if (!existsModule(dependency)) {
-                    String msg = String.format("Module %s dependency %s not found", module.name(), dependency);
+                    String msg = String.format("Module [%s] dependency [%s] not found", module.name(), dependency);
                     throw new IllegalStateException(msg);
                 }
             }

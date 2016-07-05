@@ -4,6 +4,11 @@ import scraper.module.core.context.ExecutionFlow;
 import scraper.module.core.context.ModuleDetails;
 import scraper.util.Utils;
 
+/**
+ * Description of running {@link scraper.module.core.WorkerModule}.
+ * <p>
+ * Contains module and instance details, as well as {@link ExecutionFlow} details.
+ */
 public class WorkerDescriptor {
 
     private final String id;
@@ -24,6 +29,11 @@ public class WorkerDescriptor {
         this.executionFlow = new ExecutionFlow(descriptor.executionFlow);
     }
 
+    /**
+     * Returns id of running module, unique or each running instance.
+     *
+     * @return id
+     */
     public String getId() {
         return id;
     }
@@ -36,6 +46,9 @@ public class WorkerDescriptor {
         return executionFlow;
     }
 
+    /**
+     * Requests stop of the running {@link scraper.module.core.WorkerModule}.
+     */
     public void stop() {
         executionFlow.stop();
     }

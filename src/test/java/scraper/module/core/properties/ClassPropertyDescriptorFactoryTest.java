@@ -29,19 +29,19 @@ public class ClassPropertyDescriptorFactoryTest {
     @Test
     public void testBuildClassPropertyDescriptor_multipleDescriptors() {
         assertBuildFailed(MultiplePropertiesTestClass.class, new MultiplePropertiesTestClass("a"),
-                "Field scraper.module.core.properties.testclasses.MultiplePropertiesTestClass.field1 has more than one Property Descriptor");
+                "Field [scraper.module.core.properties.testclasses.MultiplePropertiesTestClass.field1] has more than one Property Descriptor");
     }
 
     @Test
     public void testBuildClassPropertyDescriptor_inapplicableType() {
         assertBuildFailed(InapplicablePropertyTypeTestClass.class, new InapplicablePropertyTypeTestClass(1),
-                "Annotation StringProperty cannot be applied to field field1 with type int");
+                "Annotation StringProperty cannot be applied to field [field1] with type [int]");
     }
 
     @Test
     public void testValidate_multipleDescriptors() {
         assertValidateAnnotationFailed(new MultiplePropertiesTestClass("value1"),
-                "Field scraper.module.core.properties.testclasses.MultiplePropertiesTestClass.field1 has more than one Property Descriptor");
+                "Field [scraper.module.core.properties.testclasses.MultiplePropertiesTestClass.field1] has more than one Property Descriptor");
     }
 
     @Test
@@ -52,7 +52,7 @@ public class ClassPropertyDescriptorFactoryTest {
     @Test
     public void testValidate_validationFailed() {
         assertValidateFailed(new SomePropertiesTestClass(12, "01", "value"),
-                "Field scraper.module.core.properties.testclasses.SomePropertiesTestClass.field2 validation exception: Value \"01\" must be at least 10 characters long");
+                "Field [scraper.module.core.properties.testclasses.SomePropertiesTestClass.field2] validation exception: Value [01] must be at least 10 characters long");
     }
 
     @Test

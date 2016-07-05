@@ -17,6 +17,9 @@ import java.util.List;
 
 import static scraper.util.FuncUtils.map;
 
+/**
+ * Service used to manage modules and their instances.
+ */
 @Service
 public class ModuleViewService {
 
@@ -33,27 +36,64 @@ public class ModuleViewService {
         this.moduleStoreService = moduleStoreService;
     }
 
+    /**
+     * Gets list of all {@link scraper.module.core.Module} available in application.
+     *
+     * @return list of available modules represented as json DTOs
+     */
     public List<ModuleDescriptorJsonDto> getModules() {
         return map(moduleContainer.getModules().values(), ModuleDescriptorJsonDto::new);
     }
 
+    /**
+     * Gets list of all {@link WorkerModule} instances.
+     *
+     * @return list of all worker mdule instances represented as json DTOs
+     */
     public List<ModuleInstanceJsonReadDto> getModuleInstances() {
         return map(moduleStoreService.getModuleInstances(), ModuleInstanceJsonReadDto::new);
     }
 
+    /**
+     * Gets list of currently running {@link WorkerModule}.
+     *
+     * @return list of running worker modules
+     */
     public List<WorkerDescriptor> getModuleStatuses() {
         return moduleRunner.getWorkingWorkers();
     }
 
+    /**
+     * Requests stop of the worker module.
+     *
+     * @param workerId worker id
+     */
     public void stopWorkerModule(String workerId) {
         moduleRunner.stopWorker(workerId);
     }
 
+    /**
+     * Creates new {@link WorkerModule} instance.
+     *
+     * @param moduleInstanceDto json DTO representing new module instance
+     * @throws ResourceNotFoundException             if {@link WorkerModule} with given name can not be found
+     * @throws IllegalArgumentException              if settings are in incorrect format
+     * @throws scraper.exception.ValidationException if settings have incorrect values
+     */
     public void addModuleInstance(ModuleInstanceJsonWriteDto moduleInstanceDto) {
         Object settings = buildSettings(moduleInstanceDto.getModuleName(), moduleInstanceDto.getSettings());
         moduleStoreService.addModuleInstance(new ModuleInstance(moduleInstanceDto.getModuleName(), moduleInstanceDto.getInstanceName(), settings, moduleInstanceDto.getSchedule()));
     }
 
+    /**
+     * Updates settings in existing {@link WorkerModule} instance.
+     *
+     * @param instanceId   worker module instance id
+     * @param settingsJson new settings represented by json DTO
+     * @throws ResourceNotFoundException             if {@link WorkerModule} with given name or instance of worker module can not be found
+     * @throws IllegalArgumentException              if settings are in incorrect format
+     * @throws scraper.exception.ValidationException if settings have incorrect values
+     */
     public void updateModuleInstanceSettings(long instanceId, ObjectNode settingsJson) {
         ModuleInstance instance = moduleStoreService.getModuleInstance(instanceId);
         if (instance == null) {
@@ -64,14 +104,33 @@ public class ModuleViewService {
         moduleStoreService.updateSettings(instanceId, settings);
     }
 
+    /**
+     * Updates schedule in existing {@link WorkerModule} instance.
+     *
+     * @param instanceId worker module instance id
+     * @param schedule   new schedule
+     * @throws ResourceNotFoundException             if instance of worker module can not be found
+     * @throws scraper.exception.ValidationException if schedule is in incorrect format
+     */
     public void updateModuleInstanceSchedule(long instanceId, String schedule) {
         moduleStoreService.updateSchedule(instanceId, schedule);
     }
 
+    /**
+     * Runs {@link WorkerModule} instance.
+     *
+     * @param instanceId worker module instance
+     * @throws ResourceNotFoundException if instance of worker module can not be found
+     */
     public void runModuleInstance(long instanceId) {
         moduleStoreService.runModuleInstance(instanceId);
     }
 
+    /**
+     * Deletes {@link WorkerModule} instance.
+     *
+     * @param instanceId worker module instance
+     */
     public void deleteModuleInstance(long instanceId) {
         moduleStoreService.deleteModuleInstance(instanceId);
     }
@@ -85,7 +144,7 @@ public class ModuleViewService {
     private Class<?> getSettingsType(String moduleName) {
         WorkerModule<?> module = moduleContainer.getWorkerModule(moduleName);
         if (module == null) {
-            throw new ResourceNotFoundException("Worker Module %s not found", moduleName);
+            throw new ResourceNotFoundException("Worker Module [%s] not found", moduleName);
         }
 
         return module.getSettingsClass();

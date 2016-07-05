@@ -15,6 +15,8 @@ import java.util.List;
 
 /**
  * REST Controller used to manage modules and their instances in the application.
+ * <p>
+ * All methods are called in {@link scraper.module.core.scope.ModuleScope}.
  */
 @RestController
 @RequestMapping(ModuleViewModule.NAME + "/api")
