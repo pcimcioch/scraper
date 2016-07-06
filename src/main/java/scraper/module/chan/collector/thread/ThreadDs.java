@@ -14,6 +14,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Neo4j entity representing 4chan thread structure.
+ */
 @NodeEntity
 public class ThreadDs {
 

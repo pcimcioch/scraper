@@ -44,12 +44,43 @@ public class WorkspaceServiceTest {
     @Test
     public void testCreateFile() throws IOException {
         // given
-        Path expectedPath = fileSystem.getPath("C", "workspace", "modules", "moduleName", "instance", "one", "two", "three");
+        Path expectedPath = fileSystem.getPath("C", "workspace", "modules", "moduleName", "instance", "one", "two", "three.txt");
         Path path = fileSystem.getPath("modules", "moduleName", "instance", "one", "two", "three.txt");
         when(workspace.createFile(path)).thenReturn(expectedPath);
 
         // when
         Path actualPath = service.createFile("one", "two", "three.txt");
+
+        // then
+        assertEquals(expectedPath, actualPath);
+        verify(workspace).createFile(path);
+    }
+
+    @Test
+    public void testCreateFile_nullInstance() throws IOException {
+        // given
+        stub(moduleContext.getModuleDetails()).toReturn(new ModuleDetails("moduleName", null));
+        Path expectedPath = fileSystem.getPath("C", "workspace", "modules", "moduleName", "_", "one", "two", "three.txt");
+        Path path = fileSystem.getPath("modules", "moduleName", "_", "one", "two", "three.txt");
+        when(workspace.createFile(path)).thenReturn(expectedPath);
+
+        // when
+        Path actualPath = service.createFile("one", "two", "three.txt");
+
+        // then
+        assertEquals(expectedPath, actualPath);
+        verify(workspace).createFile(path);
+    }
+
+    @Test
+    public void testCreateFile_sanitizePaths() throws IOException {
+        // given
+        Path expectedPath = fileSystem.getPath("C", "workspace", "modules", "moduleName", "instance", "one_", "_two", "three_.txt");
+        Path path = fileSystem.getPath("modules", "moduleName", "instance", "one_", "_two", "three_.txt");
+        when(workspace.createFile(path)).thenReturn(expectedPath);
+
+        // when
+        Path actualPath = service.createFile("one<", ">two", "three:.txt");
 
         // then
         assertEquals(expectedPath, actualPath);

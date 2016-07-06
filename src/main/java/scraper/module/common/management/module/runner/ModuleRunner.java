@@ -34,6 +34,7 @@ public class ModuleRunner {
 
     private final SimpMessagingTemplate template;
 
+    // TODO use readWriteLock for synchronization
     private final List<WorkerDescriptor> workingWorkers = Collections.synchronizedList(new ArrayList<>());
 
     @Autowired
@@ -120,12 +121,14 @@ public class ModuleRunner {
     private void runWorker(WorkerModule<?> module, Object settings) {
         WorkerDescriptor descriptor = registerWorker();
 
+        logger.trace("Started worker module [%s]", module.name());
         try {
             module.call(settings);
         } catch (Throwable th) {
-            logger.error("Error running worker module: %s", th, th.getMessage());
+            logger.error("Error running worker module [%s]: %s", th, module.name(), th.getMessage());
         } finally {
             unregisterWorker(descriptor);
+            logger.trace("Finished worker module [%s]", module.name());
         }
     }
 
@@ -141,7 +144,7 @@ public class ModuleRunner {
             }
             workingWorkers.add(descriptor);
         }
-        executionFlow.setObservator(flow -> this.handleStatusChange(new WorkerDescriptor(descriptor)));
+        executionFlow.setObserver(flow -> this.handleStatusChange(new WorkerDescriptor(descriptor)));
 
         return descriptor;
     }
@@ -150,7 +153,7 @@ public class ModuleRunner {
         ExecutionFlow executionFlow = descriptor.getExecutionFlow();
 
         workingWorkers.remove(descriptor);
-        executionFlow.setObservator(null);
+        executionFlow.setObserver(null);
     }
 
     private void handleStatusChange(WorkerDescriptor descriptor) {

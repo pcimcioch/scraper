@@ -10,6 +10,10 @@ import scraper.util.Utils;
 import java.util.Collections;
 import java.util.Set;
 
+/**
+ * Worker module that connect to 4chan board archive, then accesses all archived threads, and provided they are not already saved, saves all thread information it can extract. Main
+ * functionality is available in {@link ChanCollectorWorker}.
+ */
 @Service
 public class ChanCollectorModule extends WorkerModule<ChanCollectorModuleSettings> {
 

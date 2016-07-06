@@ -38,6 +38,48 @@ public class LoggerServiceTest {
     }
 
     @Test
+    public void testLog_message() {
+        // when
+        service.log(LoggerLevel.INFO, "Info message");
+
+        // then
+        verifyLog(LoggerLevel.INFO, "Info message");
+    }
+
+    @Test
+    public void testLog_formattedMessage() {
+        // when
+        service.log(LoggerLevel.TRACE, "Info message %s %s", "test", "-bar");
+
+        // then
+        verifyLog(LoggerLevel.TRACE, "Info message test -bar");
+    }
+
+    @Test
+    public void testLog_messageAndCause() {
+        // given
+        IOException cause = new IOException("Test");
+
+        // when
+        service.log(LoggerLevel.WARNING, "Info message", cause);
+
+        // then
+        verifyLog(LoggerLevel.WARNING, "Info message");
+    }
+
+    @Test
+    public void testLog_formattedMessageAndCause() {
+        // given
+        IOException cause = new IOException("Test");
+
+        // when
+        service.log(LoggerLevel.ERROR, "Info message %d", cause, 1078);
+
+        // then
+        verifyLog(LoggerLevel.ERROR, "Info message 1078");
+    }
+
+    @Test
     public void testTrace_message() {
         // when
         service.trace("Trace message");

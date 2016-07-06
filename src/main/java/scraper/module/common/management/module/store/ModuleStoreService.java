@@ -28,6 +28,7 @@ import static scraper.util.FuncUtils.map;
 @Transactional(propagation = Propagation.REQUIRED)
 public class ModuleStoreService {
 
+    // TODO use read write lock for synchronization
     private final ModuleInstanceDsRepository instanceRepository;
 
     private final ModuleContainer moduleContainer;
@@ -100,7 +101,7 @@ public class ModuleStoreService {
      * @param instance instance to create
      * @throws ResourceNotFoundException if worker module required by this instance can not be found
      * @throws IllegalArgumentException  if settings are in incorrect format
-     * @throws ValidationException       if settings or schedule have incorrect values
+     * @throws ValidationException       if settings or schedule or instance name have incorrect values
      */
     public void addModuleInstance(ModuleInstance instance) {
         synchronized (instanceRepository) {
@@ -187,6 +188,7 @@ public class ModuleStoreService {
     }
 
     private void validateModuleInstance(ModuleInstance instance) {
+        ModuleDetails.validateInstance(instance.getInstanceName());
         if (instanceRepository.findByModuleNameAndInstanceName(instance.getModuleName(), instance.getInstanceName()) != null) {
             throw new IllegalArgumentException("Instance [" + instance.getInstanceName() + "] of worker module [" + instance.getModuleName() + "] already exists");
         }

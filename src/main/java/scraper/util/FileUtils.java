@@ -79,7 +79,6 @@ public final class FileUtils {
      * @param filenames filenames to sanitize. May be empty
      * @return array of sanitized filenames
      */
-    // TODO add test
     public static String[] sanitize(String... filenames) {
         String[] sanitizedFilenames = new String[filenames.length];
         for (int i = 0; i < filenames.length; ++i) {

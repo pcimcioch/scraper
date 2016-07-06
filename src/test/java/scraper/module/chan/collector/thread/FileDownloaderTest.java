@@ -94,20 +94,6 @@ public class FileDownloaderTest {
     }
 
     @Test
-    public void testTryDownload_sanitizeName() throws IOException {
-        // given
-        when(workspaceService.createFile("12", "34", "123456__.jpg")).thenReturn(path1);
-        when(workspaceService.createFile("12", "34", "123456___s.txt")).thenReturn(path2);
-
-        // when
-        downloader.tryDownload("123456/<", "foobar.com/file1.jpg", "foobar.com/file2.txt");
-
-        // then
-        verifyDownload("foobar.com/file1.jpg", path1);
-        verifyDownload("foobar.com/file2.txt", path2);
-    }
-
-    @Test
     public void testTryDownload_tooShortMd5() throws IOException {
         // when
         downloader.tryDownload("12", "foobar.com/file1.jpg", "foobar.com/file2.txt");

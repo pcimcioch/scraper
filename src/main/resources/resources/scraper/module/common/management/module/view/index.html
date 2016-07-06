@@ -125,10 +125,10 @@
                         <div class="row">
                             <ng-form name="instanceForm">
                                 <label for="instanceInput" class="col-lg-6">Instance</label>
-                                <input type="text" id="instanceInput" name="instanceInput" data-ng-model="instance" data-ng-pattern="'[A-Za-z_]*'"
-                                       data-ng-required="true" data-ng-minLength="2" data-ng-maxLength="10">
+                                <input type="text" id="instanceInput" name="instanceInput" data-ng-model="instance" data-ng-pattern="'[A-Za-z0-9\.]+'"
+                                       data-ng-required="true" data-ng-minLength="2">
                             <span class="glyphicon glyphicon-warning-sign text-danger" data-ng-show="!instanceForm.instanceInput.$valid"
-                                  data-tooltip-placement="right" data-uib-tooltip="Instance name must be 2 to 10 characters long, only letters or underscore"></span>
+                                  data-tooltip-placement="right" data-uib-tooltip="Instance name must be min 2 characters long, only letters, digits or dots"></span>
                             </ng-form>
                         </div>
 

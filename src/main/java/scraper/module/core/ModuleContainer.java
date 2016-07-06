@@ -2,6 +2,7 @@ package scraper.module.core;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import scraper.module.core.context.ModuleDetails;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -71,6 +72,7 @@ public class ModuleContainer {
 
     private void validate(Module module) {
         String moduleName = module.name();
+        ModuleDetails.validateModule(moduleName);
         if (existsModule(moduleName)) {
             throw new IllegalArgumentException("Duplicated module: " + moduleName);
         }

@@ -55,7 +55,7 @@ public class ExecutionFlowTest {
     public void testStop_observer() {
         // given
         ExecutionFlow flow = new ExecutionFlow();
-        flow.setObservator(observer);
+        flow.setObserver(observer);
 
         // sanity
         assertFlow(flow, false, false, 0, 0, 0, 0);
@@ -75,7 +75,7 @@ public class ExecutionFlowTest {
     public void testStop_observerThrowsException() {
         // given
         ExecutionFlow flow = new ExecutionFlow();
-        flow.setObservator(observer);
+        flow.setObserver(observer);
         doThrow(new IllegalArgumentException("Test")).when(observer).accept(any());
 
         // sanity
@@ -93,7 +93,7 @@ public class ExecutionFlowTest {
     public void testSetRunning_observer() {
         // given
         ExecutionFlow flow = new ExecutionFlow();
-        flow.setObservator(observer);
+        flow.setObserver(observer);
 
         // sanity
         assertFlow(flow, false, false, 0, 0, 0, 0);
@@ -113,7 +113,7 @@ public class ExecutionFlowTest {
     public void testChangeStatus_observer() {
         // given
         ExecutionFlow flow = new ExecutionFlow();
-        flow.setObservator(observer);
+        flow.setObserver(observer);
 
         // sanity
         assertFlow(flow, false, false, 0, 0, 0, 0);
@@ -133,7 +133,7 @@ public class ExecutionFlowTest {
     public void testMultipleUpdates_observer() {
         // given
         ExecutionFlow flow = new ExecutionFlow();
-        flow.setObservator(observer);
+        flow.setObserver(observer);
 
         // sanity
         assertFlow(flow, false, false, 0, 0, 0, 0);

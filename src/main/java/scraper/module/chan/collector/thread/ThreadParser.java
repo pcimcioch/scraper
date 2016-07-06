@@ -26,6 +26,9 @@ import static scraper.util.FuncUtils.map;
 import static scraper.util.FuncUtils.mapFilter;
 import static scraper.util.FuncUtils.toMap;
 
+/**
+ * Service responsible for parsing DOM document of 4chan thread to {@link ThreadDs}.
+ */
 @Service
 public class ThreadParser {
 
@@ -45,6 +48,15 @@ public class ThreadParser {
         this.moduleContext = moduleContext;
     }
 
+    /**
+     * Parse thread DOM {@code document} to new {@link ThreadDs} instance.
+     *
+     * @param document      document with thread webpage
+     * @param downloadFiles flag indicating, if parses should also trigger downloading files associated with given thread. For file downloading, {@link FileDownloader} will be
+     *                      used
+     * @return created thread
+     * @throws IOException if any IO operation failed, during downloading files associated with thread
+     */
     public ThreadDs parseThread(Document document, boolean downloadFiles) throws IOException {
         ThreadDs thread = buildThread(document);
         thread.addPosts(buildPosts(document, downloadFiles));

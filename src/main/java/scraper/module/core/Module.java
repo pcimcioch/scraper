@@ -18,6 +18,8 @@ public interface Module {
      * Name of this module.
      * <p>
      * Must be unique. If two modules with same name are used, application will not start.
+     * <p>
+     * Must match {@link scraper.module.core.context.ModuleDetails#MODULE_PATTERN}.
      *
      * @return name of this module
      */

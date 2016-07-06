@@ -6,9 +6,8 @@ import scraper.module.common.logger.LoggerService;
 import scraper.module.core.scope.InModuleScope;
 
 /**
- * Simple service responsible for sately running scheduled callback in {@link scraper.module.core.scope.ModuleScope}.
+ * Simple service responsible for safely running scheduled callback in {@link scraper.module.core.scope.ModuleScope}.
  */
-// TODO add tests
 @Service
 public class SchedulerRunner {
 
@@ -28,10 +27,13 @@ public class SchedulerRunner {
      */
     @InModuleScope(module = ModuleStoreModule.NAME)
     public void safeRun(Runnable callback) {
+        logger.trace("Starting scheduled task");
         try {
             callback.run();
         } catch (Exception ex) {
             logger.error("Scheduled task failure: %s", ex, ex.getMessage());
+        } finally {
+            logger.trace("Finished scheduled task");
         }
     }
 }

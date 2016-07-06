@@ -13,6 +13,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Neo4j entity representing post structure in the 4chan thread.
+ */
 @NodeEntity
 public class PostDs {
 

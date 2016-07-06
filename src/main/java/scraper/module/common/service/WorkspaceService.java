@@ -6,6 +6,7 @@ import scraper.environment.Workspace;
 import scraper.module.core.context.ModuleContext;
 import scraper.module.core.context.ModuleDetails;
 import scraper.util.FileUtils;
+import scraper.util.StringUtils;
 
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
@@ -19,6 +20,8 @@ import java.nio.file.Path;
 public class WorkspaceService {
 
     private static final String MODULES_DIR = "modules";
+
+    private static final String EMPTY_INSTANCE_REPLACEMENT = "_";
 
     private final Workspace workspace;
 
@@ -42,7 +45,6 @@ public class WorkspaceService {
      * @param others next nodes of the path. May be empty
      * @return path to created file
      */
-    // TODO add test for sanitizing
     public Path createFile(String first, String... others) throws IOException {
         try {
             return workspace.createFile(FileUtils.resolve(getModulePath(), FileUtils.sanitize(first), FileUtils.sanitize(others)));
@@ -53,8 +55,9 @@ public class WorkspaceService {
 
     private Path getModulePath() {
         ModuleDetails moduleDetails = moduleContext.getModuleDetails();
-        // TODO add support for empty instances
-        // TODO add tests for sanitizing. It should never be necessary, but just in case
-        return fileSystem.getPath(MODULES_DIR, FileUtils.sanitize(moduleDetails.getModule()), FileUtils.sanitize(moduleDetails.getInstance()));
+        String instance = StringUtils.isNotBlank(moduleDetails.getInstance()) ? moduleDetails.getInstance() : EMPTY_INSTANCE_REPLACEMENT;
+
+        // There is no need to sanitize module or instance. Their values must be correct
+        return fileSystem.getPath(MODULES_DIR, moduleDetails.getModule(), instance);
     }
 }

@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -42,6 +43,14 @@ public class FileUtilsTest {
         assertEquals("file_.txt", FileUtils.sanitize("file|.txt"));
         assertEquals("file_.txt", FileUtils.sanitize("file?.txt"));
         assertEquals("file_.txt", FileUtils.sanitize("file*.txt"));
+    }
+
+    @Test
+    public void testSanitizeArray() {
+        assertEquals(0, FileUtils.sanitize().length);
+        assertArrayEquals(new String[]{"file1.txt", "file2.tmp", "f3"}, FileUtils.sanitize("file1.txt", "file2.tmp", "f3"));
+        assertArrayEquals(new String[]{"file1.txt", "file2_.tmp", "f3_"}, FileUtils.sanitize("file1.txt", "file2?.tmp", "f3*"));
+        assertArrayEquals(new String[]{"f_ile1.txt", "_file2.tmp", "f_3"}, FileUtils.sanitize("f<ile1.txt", ">file2.tmp", "f:3"));
     }
 
     @Test

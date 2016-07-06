@@ -19,7 +19,7 @@ public class ExecutionFlow {
 
     private final Status status;
 
-    private Consumer<ExecutionFlow> observator;
+    private Consumer<ExecutionFlow> observer;
 
     public ExecutionFlow() {
         this.status = new Status();
@@ -49,7 +49,7 @@ public class ExecutionFlow {
      */
     public void stop() {
         this.stopped = true;
-        informObservator();
+        informObserver();
     }
 
     /**
@@ -72,7 +72,7 @@ public class ExecutionFlow {
      */
     public void setRunning(boolean running) {
         this.running = running;
-        informObservator();
+        informObserver();
     }
 
     /**
@@ -87,24 +87,23 @@ public class ExecutionFlow {
     }
 
     /**
-     * Sets this execution flow observator.
+     * Sets this execution flow observer.
      * <p>
-     * Only one observator is allowed, so it will override previous one.
+     * Only one observer is allowed, so it will override previous one.
      * <p>
-     * Will also override this {@link ExecutionFlow#status} observator.
+     * Will also override this {@link ExecutionFlow#status} observer.
      *
-     * @param observator observator to set. May be null
+     * @param observer observer to set. May be null
      */
-    // TODO rename observator to observer
-    public void setObservator(Consumer<ExecutionFlow> observator) {
-        this.observator = observator;
-        status.setObservator(observator == null ? null : st -> observator.accept(this));
+    public void setObserver(Consumer<ExecutionFlow> observer) {
+        this.observer = observer;
+        status.setObserver(observer == null ? null : st -> observer.accept(this));
     }
 
-    private void informObservator() {
-        if (observator != null) {
+    private void informObserver() {
+        if (observer != null) {
             try {
-                observator.accept(this);
+                observer.accept(this);
             } catch (Exception ex) {
                 // ignore
             }

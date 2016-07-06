@@ -370,8 +370,8 @@ public class ModuleStoreServiceTest {
     public void testAddModuleInstance_nullSchedule() {
         // given
         when(instanceRepository.findByModuleNameAndInstanceName("module.worker", "ins")).thenReturn(null);
-        when(instanceRepository.save(new ModuleInstanceDs("module.worker", "ins", correctSettingsStr, null))).thenReturn(
-                new ModuleInstanceDs(10L, "module.worker", "ins", correctSettingsStr, null));
+        when(instanceRepository.save(new ModuleInstanceDs("module.worker", "ins", correctSettingsStr, null)))
+                .thenReturn(new ModuleInstanceDs(10L, "module.worker", "ins", correctSettingsStr, null));
 
         // when
         service.addModuleInstance(new ModuleInstance("module.worker", "ins", correctSettings, null));
@@ -382,11 +382,31 @@ public class ModuleStoreServiceTest {
     }
 
     @Test
+    public void testAddModuleInstance_incorrectInstanceName() {
+        // given
+        when(instanceRepository.findByModuleNameAndInstanceName("module.worker", "ins&*incorrect")).thenReturn(null);
+        when(instanceRepository.save(new ModuleInstanceDs("module.worker", "ins", correctSettingsStr, "0 15 9-17 * * MON-FRI")))
+                .thenReturn(new ModuleInstanceDs(12L, "module.worker", "ins", correctSettingsStr, "0 15 9-17 * * MON-FRI"));
+
+        // when
+        try {
+            service.addModuleInstance(new ModuleInstance("module.worker", "ins&*incorrect", correctSettings, "0 15 9-17 * * MON-FRI"));
+            fail();
+        } catch (ValidationException ex) {
+            // then
+            assertTrue(ex.getMessage().contains("doesn't match allowed pattern"));
+        }
+
+        verify(instanceRepository, never()).save(any(ModuleInstanceDs.class));
+        verifyNoMoreInteractions(scheduler);
+    }
+
+    @Test
     public void testAddModuleInstance() {
         // given
         when(instanceRepository.findByModuleNameAndInstanceName("module.worker", "ins")).thenReturn(null);
-        when(instanceRepository.save(new ModuleInstanceDs("module.worker", "ins", correctSettingsStr, "0 15 9-17 * * MON-FRI"))).thenReturn(
-                new ModuleInstanceDs(12L, "module.worker", "ins", correctSettingsStr, "0 15 9-17 * * MON-FRI"));
+        when(instanceRepository.save(new ModuleInstanceDs("module.worker", "ins", correctSettingsStr, "0 15 9-17 * * MON-FRI")))
+                .thenReturn(new ModuleInstanceDs(12L, "module.worker", "ins", correctSettingsStr, "0 15 9-17 * * MON-FRI"));
 
         // when
         service.addModuleInstance(new ModuleInstance("module.worker", "ins", correctSettings, "0 15 9-17 * * MON-FRI"));

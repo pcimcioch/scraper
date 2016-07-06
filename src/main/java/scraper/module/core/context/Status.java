@@ -21,8 +21,7 @@ public class Status {
 
     private int currentSubStep;
 
-    //TODO rename observator to observer
-    private Consumer<Status> observator;
+    private Consumer<Status> observer;
 
     public Status() {
     }
@@ -83,7 +82,7 @@ public class Status {
      */
     public void setSteps(int steps) {
         this.steps = steps;
-        informObservator();
+        informObserver();
     }
 
     /**
@@ -97,7 +96,7 @@ public class Status {
         this.currentStep++;
         this.subSteps = 0;
         this.currentSubStep = 0;
-        informObservator();
+        informObserver();
     }
 
     /**
@@ -109,7 +108,7 @@ public class Status {
      */
     public void setSubSteps(int subSteps) {
         this.subSteps = subSteps;
-        informObservator();
+        informObserver();
     }
 
     /**
@@ -119,18 +118,20 @@ public class Status {
      */
     public void incrementCurrentSubStep() {
         this.currentSubStep++;
-        informObservator();
+        informObserver();
     }
 
     /**
      * Sets observer of this status.
      * <p>
+     * Only one observer is allowed, so it will override previous one.
+     * <p>
      * Observer will be notified about all status changes.
      *
-     * @param observator observer to set. May be null.
+     * @param observer observer to set. May be null.
      */
-    public void setObservator(Consumer<Status> observator) {
-        this.observator = observator;
+    public void setObserver(Consumer<Status> observer) {
+        this.observer = observer;
     }
 
     @Override
@@ -153,10 +154,10 @@ public class Status {
         return Utils.computeHash(steps, subSteps, currentSubStep, currentStep);
     }
 
-    private void informObservator() {
-        if (observator != null) {
+    private void informObserver() {
+        if (observer != null) {
             try {
-                observator.accept(this);
+                observer.accept(this);
             } catch (Exception ex) {
                 // ignore
             }

@@ -11,6 +11,9 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+/**
+ * Service responsible for downloading files.
+ */
 @Service
 public class FileDownloader {
 
@@ -26,6 +29,20 @@ public class FileDownloader {
         this.htmlService = htmlService;
     }
 
+    /**
+     * Downloads file and its thumbnail.
+     * <p>
+     * md5 of the file must be known prior to download. Both, file ulr and thumbnail url are required. File will be saved to this module workspace, as described in {@link
+     * WorkspaceService#getModulePath()}.
+     * <p>
+     * File path will be <tt>[module root]/[first and second char of MD5]/[third and forth char of MD5]/[MD5].[Extension from the url, or "tmp"]</tt> Thumbnail path will be
+     * <tt>[module root]/[first and second char of MD5]/[third and forth char of MD5]/[MD5]_s.[Extension from the url, or "tmp"]</tt>
+     *
+     * @param md5          md5 of the file
+     * @param fileUrl      file url
+     * @param thumbnailUrl file thumbnail url
+     * @throws IOException if IO operation failed
+     */
     public void tryDownload(String md5, String fileUrl, String thumbnailUrl) throws IOException {
         System.out.println("Finding file on drive " + md5);
 
@@ -44,9 +61,8 @@ public class FileDownloader {
         if (filename.length() < 5) {
             return null;
         }
-        String sanitizedFilename = FileUtils.sanitize(filename);
 
-        return workspaceService.createFile(sanitizedFilename.substring(0, 2), sanitizedFilename.substring(2, 4), sanitizedFilename + "." + extension);
+        return workspaceService.createFile(filename.substring(0, 2), filename.substring(2, 4), filename + "." + extension);
     }
 
     private void download(Path path, String url) throws IOException {

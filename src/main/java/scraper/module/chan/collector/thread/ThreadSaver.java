@@ -9,6 +9,7 @@ import scraper.module.chan.collector.BoardProcessedThreadDs;
 import scraper.module.chan.collector.BoardProcessedThreadDsRepository;
 
 @Service
+// TODO remove this class when BoardProcessedThreadDsRepository will be removed
 public class ThreadSaver {
 
     private final BoardProcessedThreadDsRepository boardProcessedThreadRepository;

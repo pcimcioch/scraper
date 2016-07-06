@@ -21,7 +21,7 @@ import static org.mockito.Mockito.verify;
 public class StatusTest {
 
     @Spy
-    private TestObserver observator = new TestObserver();
+    private TestObserver observer = new TestObserver();
 
     @Test
     public void testStatusConstructor() {
@@ -95,7 +95,7 @@ public class StatusTest {
     public void testSetSteps_observer() {
         // given
         Status status = new Status();
-        status.setObservator(observator);
+        status.setObserver(observer);
 
         // when
         status.setSteps(5);
@@ -103,15 +103,15 @@ public class StatusTest {
         // then
         Status expected = new Status(5, 0, 0, 0);
         assertEquals(expected, status);
-        verify(observator).accept(any());
-        assertEquals(Collections.singletonList(expected), observator.getStatuses());
+        verify(observer).accept(any());
+        assertEquals(Collections.singletonList(expected), observer.getStatuses());
     }
 
     @Test
     public void testSetSubSteps_observer() {
         // given
         Status status = new Status();
-        status.setObservator(observator);
+        status.setObserver(observer);
 
         // when
         status.setSubSteps(7);
@@ -119,15 +119,15 @@ public class StatusTest {
         // then
         Status expected = new Status(0, 0, 7, 0);
         assertEquals(expected, status);
-        verify(observator).accept(any());
-        assertEquals(Collections.singletonList(expected), observator.getStatuses());
+        verify(observer).accept(any());
+        assertEquals(Collections.singletonList(expected), observer.getStatuses());
     }
 
     @Test
     public void testIncrementCurrentStep_observer() {
         // given
         Status status = new Status(5, 3, 6, 2);
-        status.setObservator(observator);
+        status.setObserver(observer);
 
         // when
         status.incrementCurrentStep();
@@ -135,15 +135,15 @@ public class StatusTest {
         // then
         Status expected = new Status(5, 4, 0, 0);
         assertEquals(expected, status);
-        verify(observator).accept(any());
-        assertEquals(Collections.singletonList(expected), observator.getStatuses());
+        verify(observer).accept(any());
+        assertEquals(Collections.singletonList(expected), observer.getStatuses());
     }
 
     @Test
     public void testIncrementCurrentSubStep_observer() {
         // given
         Status status = new Status(5, 3, 6, 2);
-        status.setObservator(observator);
+        status.setObserver(observer);
 
         // when
         status.incrementCurrentSubStep();
@@ -151,16 +151,16 @@ public class StatusTest {
         // then
         Status expected = new Status(5, 3, 6, 3);
         assertEquals(expected, status);
-        verify(observator).accept(any());
-        assertEquals(Collections.singletonList(expected), observator.getStatuses());
+        verify(observer).accept(any());
+        assertEquals(Collections.singletonList(expected), observer.getStatuses());
     }
 
     @Test
     public void testObserverThrowsException() {
         // given
         Status status = new Status();
-        status.setObservator(observator);
-        doThrow(new IllegalArgumentException("Test")).when(observator).accept(any());
+        status.setObserver(observer);
+        doThrow(new IllegalArgumentException("Test")).when(observer).accept(any());
 
         // when
         status.setSteps(5);
@@ -168,14 +168,14 @@ public class StatusTest {
         // then
         Status expected = new Status(5, 0, 0, 0);
         assertEquals(expected, status);
-        verify(observator).accept(any());
+        verify(observer).accept(any());
     }
 
     @Test
     public void testMultipleStatusUpdates() {
         // given
         Status status = new Status();
-        status.setObservator(observator);
+        status.setObserver(observer);
 
         // when
         status.setSteps(2);
@@ -192,9 +192,9 @@ public class StatusTest {
         // then
         Status expected = new Status(2, 2, 0, 0);
         assertEquals(expected, status);
-        verify(observator, times(10)).accept(any());
+        verify(observer, times(10)).accept(any());
         assertEquals(Arrays.asList(new Status(2, 0, 0, 0), new Status(2, 0, 3, 0), new Status(2, 0, 3, 1), new Status(2, 0, 3, 2), new Status(2, 0, 3, 3), new Status(2, 1, 0, 0),
-                new Status(2, 1, 2, 0), new Status(2, 1, 2, 1), new Status(2, 1, 2, 2), new Status(2, 2, 0, 0)), observator.getStatuses());
+                new Status(2, 1, 2, 0), new Status(2, 1, 2, 1), new Status(2, 1, 2, 2), new Status(2, 2, 0, 0)), observer.getStatuses());
     }
 
     private static class TestObserver implements Consumer<Status> {

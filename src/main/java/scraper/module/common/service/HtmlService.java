@@ -47,7 +47,6 @@ public class HtmlService {
     public void download(String url, OutputStream out) throws IOException {
         System.out.println("Download " + url);
         Response response = getDownloadResponse(url);
-        // TODO maybe stream it, instead of copying whole stream?
         out.write(response.bodyAsBytes());
     }
 

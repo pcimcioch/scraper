@@ -45,14 +45,14 @@ public class ModuleScopeAspect {
     }
 
     private void initModuleContext(InModuleScope annotation) {
-        ModuleDetails moduleDetails = getModuleDetails(annotation);
-        if (StringUtils.isNotBlank(moduleDetails.getModule())) {
-            moduleContext.setModuleDetails(moduleDetails);
+        if (StringUtils.isNotBlank(annotation.module())) {
+            moduleContext.setModuleDetails(getModuleDetails(annotation));
         }
     }
 
     private ModuleDetails getModuleDetails(InModuleScope annotation) {
-        return new ModuleDetails(annotation.module(), annotation.instance());
+        String instance = StringUtils.isBlank(annotation.instance()) ? null : annotation.instance();
+        return new ModuleDetails(annotation.module(), instance);
     }
 
 }

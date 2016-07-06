@@ -29,73 +29,87 @@ public class LoggerService {
         this.logRepository = logRepository;
     }
 
-    // TODO add methods to just log, providing level programatically
+    public void log(LoggerLevel level, String message) {
+        doLog(level, message, null);
+    }
+
+    public void log(LoggerLevel level, String messageFormat, Object... args) {
+        doLog(level, String.format(messageFormat, args), null);
+    }
+
+    public void log(LoggerLevel level, String message, Throwable cause) {
+        doLog(level, message, cause);
+    }
+
+    public void log(LoggerLevel level, String messageFormat, Throwable cause, Object... args) {
+        doLog(level, String.format(messageFormat, args), cause);
+    }
 
     public void trace(String message) {
-        log(LoggerLevel.TRACE, message, null);
+        doLog(LoggerLevel.TRACE, message, null);
     }
 
     public void trace(String messageFormat, Object... args) {
-        log(LoggerLevel.TRACE, String.format(messageFormat, args), null);
+        doLog(LoggerLevel.TRACE, String.format(messageFormat, args), null);
     }
 
     public void trace(String message, Throwable cause) {
-        log(LoggerLevel.TRACE, message, cause);
+        doLog(LoggerLevel.TRACE, message, cause);
     }
 
     public void trace(String messageFormat, Throwable cause, Object... args) {
-        log(LoggerLevel.TRACE, String.format(messageFormat, args), cause);
+        doLog(LoggerLevel.TRACE, String.format(messageFormat, args), cause);
     }
 
     public void info(String message) {
-        log(LoggerLevel.INFO, message, null);
+        doLog(LoggerLevel.INFO, message, null);
     }
 
     public void info(String messageFormat, Object... args) {
-        log(LoggerLevel.INFO, String.format(messageFormat, args), null);
+        doLog(LoggerLevel.INFO, String.format(messageFormat, args), null);
     }
 
     public void info(String message, Throwable cause) {
-        log(LoggerLevel.INFO, message, cause);
+        doLog(LoggerLevel.INFO, message, cause);
     }
 
     public void info(String messageFormat, Throwable cause, Object... args) {
-        log(LoggerLevel.INFO, String.format(messageFormat, args), cause);
+        doLog(LoggerLevel.INFO, String.format(messageFormat, args), cause);
     }
 
     public void warn(String message) {
-        log(LoggerLevel.WARNING, message, null);
+        doLog(LoggerLevel.WARNING, message, null);
     }
 
     public void warn(String messageFormat, Object... args) {
-        log(LoggerLevel.WARNING, String.format(messageFormat, args), null);
+        doLog(LoggerLevel.WARNING, String.format(messageFormat, args), null);
     }
 
     public void warn(String message, Throwable cause) {
-        log(LoggerLevel.WARNING, message, cause);
+        doLog(LoggerLevel.WARNING, message, cause);
     }
 
     public void warn(String messageFormat, Throwable cause, Object... args) {
-        log(LoggerLevel.WARNING, String.format(messageFormat, args), cause);
+        doLog(LoggerLevel.WARNING, String.format(messageFormat, args), cause);
     }
 
     public void error(String message) {
-        log(LoggerLevel.ERROR, message, null);
+        doLog(LoggerLevel.ERROR, message, null);
     }
 
     public void error(String messageFormat, Object... args) {
-        log(LoggerLevel.ERROR, String.format(messageFormat, args), null);
+        doLog(LoggerLevel.ERROR, String.format(messageFormat, args), null);
     }
 
     public void error(String message, Throwable cause) {
-        log(LoggerLevel.ERROR, message, cause);
+        doLog(LoggerLevel.ERROR, message, cause);
     }
 
     public void error(String messageFormat, Throwable cause, Object... args) {
-        log(LoggerLevel.ERROR, String.format(messageFormat, args), cause);
+        doLog(LoggerLevel.ERROR, String.format(messageFormat, args), cause);
     }
 
-    private void log(LoggerLevel level, String message, Throwable cause) {
+    private void doLog(LoggerLevel level, String message, Throwable cause) {
         ModuleDetails moduleDetails = moduleContext.getModuleDetails();
 
         moduleDetails.getLogger().log(level.commonLevel(), message, cause);

@@ -1,6 +1,7 @@
 package scraper.module.core;
 
 import org.junit.Test;
+import scraper.exception.ValidationException;
 import scraper.module.core.testclasses.TestServiceModule;
 import scraper.module.core.testclasses.TestStandaloneModule;
 import scraper.module.core.testclasses.TestWorkerModule;
@@ -163,6 +164,14 @@ public class ModuleContainerTest {
     public void testMultipleModulesWithSameNameAndDifferentType() {
         // given
         TestServiceModule serviceModule = new TestServiceModule("module", "description 1");
+        TestStandaloneModule standaloneModule = new TestStandaloneModule("module", "description 2");
+        ModuleContainer ignored = new ModuleContainer(Collections.emptyList(), Collections.singletonList(serviceModule), Collections.singletonList(standaloneModule));
+    }
+
+    @Test(expected = ValidationException.class)
+    public void testIncorrectModuleName() {
+        // given
+        TestServiceModule serviceModule = new TestServiceModule("module_name", "description 1");
         TestStandaloneModule standaloneModule = new TestStandaloneModule("module", "description 2");
         ModuleContainer ignored = new ModuleContainer(Collections.emptyList(), Collections.singletonList(serviceModule), Collections.singletonList(standaloneModule));
     }

@@ -5,6 +5,7 @@ import org.springframework.data.neo4j.annotation.GraphProperty;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import scraper.util.Utils;
 
+// TODO remove it, just ask database for existing {@link ThreadDs} with threadId
 @NodeEntity
 public class BoardProcessedThreadDs {
 

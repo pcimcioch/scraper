@@ -20,6 +20,11 @@ import static scraper.util.FuncUtils.filter;
 import static scraper.util.FuncUtils.map;
 import static scraper.util.FuncUtils.mapFilterSet;
 
+/**
+ * Parser for 4chan archived threads page.
+ * <p>
+ * Will extract all archived thread links from DOM DOcument. Uses neo4j database to keep information about already extracted threads.
+ */
 @Service
 public class ArchiveParser {
 
@@ -34,6 +39,12 @@ public class ArchiveParser {
         this.boardProcessedThreadRepo = boardProcessedThreadRepo;
     }
 
+    /**
+     * Parses given DOM {@code document}, and extracts links to archived threads, which were not already extracted.
+     *
+     * @param document document
+     * @return list of urls
+     */
     @Neo4jTransactional
     @Transactional(propagation = Propagation.REQUIRED)
     public List<String> parseArchive(Document document) {
