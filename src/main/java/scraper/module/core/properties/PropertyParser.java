@@ -18,7 +18,6 @@ public interface PropertyParser<T extends Annotation> {
      * @param annotation annotation
      * @throws ValidationException if validation failed
      */
-    // TODO accept only T?
     void validate(Object value, Annotation annotation) throws ValidationException;
 
     /**

@@ -20,6 +20,8 @@ import scraper.util.StringUtils;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import static scraper.util.FuncUtils.map;
 
@@ -28,7 +30,8 @@ import static scraper.util.FuncUtils.map;
 @Transactional(propagation = Propagation.REQUIRED)
 public class ModuleStoreService {
 
-    // TODO use read write lock for synchronization
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
+
     private final ModuleInstanceDsRepository instanceRepository;
 
     private final ModuleContainer moduleContainer;
@@ -62,9 +65,13 @@ public class ModuleStoreService {
      */
     public ModuleInstance getModuleInstance(long instanceId) {
         ModuleInstanceDs instanceDs;
-        synchronized (instanceRepository) {
+        lock.readLock().lock();
+        try {
             instanceDs = instanceRepository.findOne(instanceId);
+        } finally {
+            lock.readLock().unlock();
         }
+
         return buildModuleInstance(instanceDs);
     }
 
@@ -76,8 +83,11 @@ public class ModuleStoreService {
      * @throws IllegalArgumentException  if settings data, saved in any module instance, is incorrect
      */
     public List<ModuleInstance> getModuleInstances() {
-        synchronized (instanceRepository) {
+        lock.readLock().lock();
+        try {
             return map(instanceRepository.findAll(), this::buildModuleInstance);
+        } finally {
+            lock.readLock().unlock();
         }
     }
 
@@ -89,9 +99,12 @@ public class ModuleStoreService {
      * @param instanceId worker module instance id
      */
     public void deleteModuleInstance(long instanceId) {
-        synchronized (instanceRepository) {
+        lock.writeLock().lock();
+        try {
             instanceRepository.delete(instanceId);
             scheduler.cancel(instanceId);
+        } finally {
+            lock.writeLock().unlock();
         }
     }
 
@@ -104,7 +117,8 @@ public class ModuleStoreService {
      * @throws ValidationException       if settings or schedule or instance name have incorrect values
      */
     public void addModuleInstance(ModuleInstance instance) {
-        synchronized (instanceRepository) {
+        lock.writeLock().lock();
+        try {
             validateModuleInstance(instance);
             validateSettings(instance.getModuleName(), instance.getSettings());
             validateSchedule(instance.getSchedule());
@@ -112,6 +126,8 @@ public class ModuleStoreService {
             ModuleInstanceDs instanceDs = buildModuleInstanceDs(instance);
             instanceDs = instanceRepository.save(instanceDs);
             reschedule(instanceDs.getId(), instanceDs.getSchedule());
+        } finally {
+            lock.writeLock().unlock();
         }
     }
 
@@ -125,7 +141,8 @@ public class ModuleStoreService {
      * @throws ValidationException       if settings have incorrect values
      */
     public void updateSettings(long instanceId, Object newSettings) {
-        synchronized (instanceRepository) {
+        lock.writeLock().lock();
+        try {
             ModuleInstanceDs instanceDs = instanceRepository.findOne(instanceId);
             if (instanceDs == null) {
                 throw new ResourceNotFoundException("Instance [id=%d] not found", instanceId);
@@ -134,6 +151,8 @@ public class ModuleStoreService {
 
             instanceDs.setSettings(toJson(newSettings));
             instanceRepository.save(instanceDs);
+        } finally {
+            lock.writeLock().unlock();
         }
     }
 
@@ -146,7 +165,8 @@ public class ModuleStoreService {
      * @throws ValidationException       if schedule have incorrect values
      */
     public void updateSchedule(long instanceId, String newSchedule) {
-        synchronized (instanceRepository) {
+        lock.writeLock().lock();
+        try {
             ModuleInstanceDs instanceDs = instanceRepository.findOne(instanceId);
             if (instanceDs == null) {
                 throw new ResourceNotFoundException("Instance [id=%d] not found", instanceId);
@@ -157,6 +177,8 @@ public class ModuleStoreService {
             instanceRepository.save(instanceDs);
 
             reschedule(instanceDs.getId(), instanceDs.getSchedule());
+        } finally {
+            lock.writeLock().unlock();
         }
     }
 

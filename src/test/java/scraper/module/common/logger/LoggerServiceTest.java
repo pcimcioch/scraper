@@ -33,7 +33,7 @@ public class LoggerServiceTest {
 
     @Before
     public void setUp() {
-        service = new LoggerService(moduleContext, logRepository);
+        service = new LoggerService(moduleContext, logRepository, LoggerLevel.TRACE, LoggerLevel.TRACE);
         stub(moduleContext.getModuleDetails()).toReturn(new ModuleDetails("moduleName", "instance"));
     }
 

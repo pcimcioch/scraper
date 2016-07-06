@@ -15,8 +15,9 @@ import scraper.module.core.scope.InModuleScope;
 import scraper.util.FuncUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Service used to run and manage runninag {@link WorkerModule}.
@@ -26,6 +27,8 @@ public class ModuleRunner {
 
     public static final String STATUS_TOPIC = ModuleRunnerModule.NAME + "/topic/status";
 
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
+
     private final ModuleContext moduleContext;
 
     private final LoggerService logger;
@@ -34,8 +37,7 @@ public class ModuleRunner {
 
     private final SimpMessagingTemplate template;
 
-    // TODO use readWriteLock for synchronization
-    private final List<WorkerDescriptor> workingWorkers = Collections.synchronizedList(new ArrayList<>());
+    private final List<WorkerDescriptor> workingWorkers = new ArrayList<>();
 
     @Autowired
     public ModuleRunner(ModuleContext moduleContext, LoggerService logger, ModuleContainer moduleContainer, SimpMessagingTemplate template) {
@@ -52,13 +54,16 @@ public class ModuleRunner {
      * @return <tt>true</tt> if worker was found and stopped, <tt>false</tt> if worker can not be found
      */
     public boolean stopWorker(String id) {
-        synchronized (workingWorkers) {
+        lock.readLock().lock();
+        try {
             for (WorkerDescriptor descriptor : workingWorkers) {
                 if (descriptor.getId().equals(id)) {
                     descriptor.stop();
                     return true;
                 }
             }
+        } finally {
+            lock.readLock().unlock();
         }
 
         return false;
@@ -70,8 +75,11 @@ public class ModuleRunner {
      * @return list of running workers
      */
     public List<WorkerDescriptor> getWorkingWorkers() {
-        synchronized (workingWorkers) {
+        lock.readLock().lock();
+        try {
             return FuncUtils.map(workingWorkers, WorkerDescriptor::new);
+        } finally {
+            lock.readLock().unlock();
         }
     }
 
@@ -136,13 +144,16 @@ public class ModuleRunner {
         ExecutionFlow executionFlow = moduleContext.getExecutionFlow();
         WorkerDescriptor descriptor = new WorkerDescriptor(moduleContext.getModuleDetails(), executionFlow);
 
-        synchronized (workingWorkers) {
+        lock.writeLock().lock();
+        try {
             ModuleDetails currentModuleDetails = moduleContext.getModuleDetails();
             if (workingWorkers.stream().map(WorkerDescriptor::getModuleDetails).anyMatch(currentModuleDetails::equals)) {
                 throw new IllegalStateException(
                         String.format("Worker [%s] instance [%s] already in progress", currentModuleDetails.getModule(), currentModuleDetails.getInstance()));
             }
             workingWorkers.add(descriptor);
+        } finally {
+            lock.writeLock().unlock();
         }
         executionFlow.setObserver(flow -> this.handleStatusChange(new WorkerDescriptor(descriptor)));
 
@@ -152,7 +163,12 @@ public class ModuleRunner {
     private void unregisterWorker(WorkerDescriptor descriptor) {
         ExecutionFlow executionFlow = descriptor.getExecutionFlow();
 
-        workingWorkers.remove(descriptor);
+        lock.writeLock().lock();
+        try {
+            workingWorkers.remove(descriptor);
+        } finally {
+            lock.writeLock().unlock();
+        }
         executionFlow.setObserver(null);
     }
 

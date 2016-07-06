@@ -1,6 +1,7 @@
 package scraper.module.common.logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.neo4j.transaction.Neo4jTransactional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -22,11 +23,17 @@ public class LoggerService {
 
     private final LogEntryDsRepository logRepository;
 
-    // TODO support configuring which level of logs should be displayed and which should be saved to db
+    private final LoggerLevel consoleThreshold;
+
+    private final LoggerLevel dbThreshold;
+
     @Autowired
-    public LoggerService(ModuleContext moduleContext, LogEntryDsRepository logRepository) {
+    public LoggerService(ModuleContext moduleContext, LogEntryDsRepository logRepository, @Value("${logger.console:TRACE}") LoggerLevel consoleThreshold,
+            @Value("${logger.db:WARNING}") LoggerLevel dbThreshold) {
         this.moduleContext = moduleContext;
         this.logRepository = logRepository;
+        this.consoleThreshold = consoleThreshold;
+        this.dbThreshold = dbThreshold;
     }
 
     public void log(LoggerLevel level, String message) {
@@ -112,7 +119,12 @@ public class LoggerService {
     private void doLog(LoggerLevel level, String message, Throwable cause) {
         ModuleDetails moduleDetails = moduleContext.getModuleDetails();
 
-        moduleDetails.getLogger().log(level.commonLevel(), message, cause);
-        logRepository.save(new LogEntryDs(level, moduleDetails.getModule(), moduleDetails.getInstance(), new Date(), message));
+        if (consoleThreshold != null && level.order() >= consoleThreshold.order()) {
+            moduleDetails.getLogger().log(level.commonLevel(), message, cause);
+        }
+
+        if (dbThreshold != null && level.order() >= dbThreshold.order()) {
+            logRepository.save(new LogEntryDs(level, moduleDetails.getModule(), moduleDetails.getInstance(), new Date(), message));
+        }
     }
 }
