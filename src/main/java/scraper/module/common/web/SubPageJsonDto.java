@@ -7,17 +7,17 @@ import scraper.util.Utils;
  */
 public class SubPageJsonDto {
 
-    private final String name;
+    private final String url;
 
     private final String description;
 
-    public SubPageJsonDto(String name, String description) {
-        this.name = name;
+    public SubPageJsonDto(String url, String description) {
+        this.url = url;
         this.description = description;
     }
 
-    public String getName() {
-        return name;
+    public String getUrl() {
+        return url;
     }
 
     public String getDescription() {
@@ -35,12 +35,12 @@ public class SubPageJsonDto {
 
         SubPageJsonDto other = (SubPageJsonDto) o;
 
-        return Utils.computeEq(name, other.name, description, other.description);
+        return Utils.computeEq(url, other.url, description, other.description);
 
     }
 
     @Override
     public int hashCode() {
-        return Utils.computeHash(name, description);
+        return Utils.computeHash(url, description);
     }
 }

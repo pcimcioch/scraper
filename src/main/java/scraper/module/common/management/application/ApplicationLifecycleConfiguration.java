@@ -13,18 +13,20 @@ import scraper.module.common.web.CommonWebConfigurer;
 @Configuration
 public class ApplicationLifecycleConfiguration extends WebMvcConfigurerAdapter implements CommonWebConfigurer {
 
+    private static final String MAIN_PAGE = ApplicationLifecycleModule.NAME + "/index.html";
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/" + ApplicationLifecycleModule.NAME + "/**").addResourceLocations("classpath:/resources/scraper/module/common/management/application/");
     }
 
     @Override
-    public String getModuleName() {
-        return ApplicationLifecycleModule.NAME;
+    public String url() {
+        return MAIN_PAGE;
     }
 
     @Override
-    public String getModuleDescription() {
+    public String moduleDescription() {
         return ApplicationLifecycleModule.DESCRIPTION;
     }
 }

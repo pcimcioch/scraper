@@ -23,7 +23,7 @@ public class CommonWebService {
     }
 
     private SubPageJsonDto toModel(CommonWebConfigurer configurer) {
-        return new SubPageJsonDto(configurer.getModuleName(), configurer.getModuleDescription());
+        return new SubPageJsonDto(configurer.url(), configurer.moduleDescription());
     }
 
     /**

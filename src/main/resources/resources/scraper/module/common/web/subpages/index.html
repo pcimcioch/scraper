@@ -24,7 +24,7 @@
     <div class="container main-container" data-ng-controller="subpagesCtrl">
         <div class="row" data-ng-repeat="subpage in subpages">
             <div class="col-lg-12 light-border">
-                <a href="{{:: subpage.name + '/index.html'}}">{{:: subpage.description}}</a>
+                <a href="{{:: subpage.url}}">{{:: subpage.description}}</a>
             </div>
         </div>
     </div>

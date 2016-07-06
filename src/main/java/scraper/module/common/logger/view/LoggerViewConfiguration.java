@@ -13,18 +13,20 @@ import scraper.module.common.web.CommonWebConfigurer;
 @Configuration
 public class LoggerViewConfiguration extends WebMvcConfigurerAdapter implements CommonWebConfigurer {
 
+    private static final String MAIN_PAGE = LoggerViewModule.NAME + "/index.html";
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/" + LoggerViewModule.NAME + "/**").addResourceLocations("classpath:/resources/scraper/module/common/logger/view/");
     }
 
     @Override
-    public String getModuleName() {
-        return LoggerViewModule.NAME;
+    public String url() {
+        return MAIN_PAGE;
     }
 
     @Override
-    public String getModuleDescription() {
+    public String moduleDescription() {
         return LoggerViewModule.DESCRIPTION;
     }
 }

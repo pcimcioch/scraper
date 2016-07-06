@@ -46,7 +46,6 @@ public class ChanCollectorWorker {
     @Neo4jTransactional
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void doWork(ChanCollectorModuleSettings settings) {
-        logger.info("Doing job");
         Document archiveDoc = getArchiveDocument(settings.getBoardName());
         if (archiveDoc == null || moduleContext.isStopped()) {
             return;

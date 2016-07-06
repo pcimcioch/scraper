@@ -43,22 +43,22 @@ public class CommonWebServiceTest {
 
     private static class TestWebConfigurer implements CommonWebConfigurer {
 
-        private final String name;
+        private final String url;
 
         private final String description;
 
-        public TestWebConfigurer(String name, String description) {
-            this.name = name;
+        public TestWebConfigurer(String url, String description) {
+            this.url = url;
             this.description = description;
         }
 
         @Override
-        public String getModuleName() {
-            return name;
+        public String url() {
+            return url;
         }
 
         @Override
-        public String getModuleDescription() {
+        public String moduleDescription() {
             return description;
         }
     }
