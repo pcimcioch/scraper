@@ -1,11 +1,11 @@
 package scraper.module.core.context;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import scraper.exception.ValidationException;
 import scraper.util.StringUtils;
 import scraper.util.Utils;
-
-import java.util.logging.Logger;
 
 /**
  * Class representing details of the module in current module context.
@@ -22,7 +22,7 @@ public class ModuleDetails {
 
     private final String instance;
 
-    private final Logger logger;
+    private final Log logger;
 
     public ModuleDetails(String module) {
         this(module, null);
@@ -45,7 +45,7 @@ public class ModuleDetails {
 
         this.module = module;
         this.instance = instance;
-        this.logger = Logger.getLogger(getLoggerName(module, instance));
+        this.logger = LogFactory.getLog(getLoggerName(module, instance));
     }
 
     /**
@@ -72,7 +72,7 @@ public class ModuleDetails {
      * @return logger to use
      */
     @JsonIgnore
-    public Logger getLogger() {
+    public Log getLogger() {
         return logger;
     }
 

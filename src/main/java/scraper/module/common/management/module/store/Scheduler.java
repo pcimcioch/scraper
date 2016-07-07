@@ -51,7 +51,6 @@ public class Scheduler {
      *
      * @param taskId task id
      */
-    // TODO check if this works with repeatable tasks
     // TODO maybe one-shot tasks should be automatically removed from "tasks" map?
     public synchronized void cancel(long taskId) {
         ScheduledFuture previousTask = tasks.remove(taskId);

@@ -110,6 +110,48 @@ public class LoggerServiceTest {
     }
 
     @Test
+    public void testDebug_message() {
+        // when
+        service.debug("Debug message");
+
+        // then
+        verifyLog(LoggerLevel.DEBUG, "Debug message");
+    }
+
+    @Test
+    public void testDebug_formattedMessage() {
+        // when
+        service.debug("Debug message %s %d%s", "t", 2, "b");
+
+        // then
+        verifyLog(LoggerLevel.DEBUG, "Debug message t 2b");
+    }
+
+    @Test
+    public void testDebug_messageAndCause() {
+        // given
+        IOException cause = new IOException("Test");
+
+        // when
+        service.debug("Debug message", cause);
+
+        // then
+        verifyLog(LoggerLevel.DEBUG, "Debug message");
+    }
+
+    @Test
+    public void testDebug_formattedMessageAndCause() {
+        // given
+        IOException cause = new IOException("Test");
+
+        // when
+        service.debug("Debug message %d", cause, 5);
+
+        // then
+        verifyLog(LoggerLevel.DEBUG, "Debug message 5");
+    }
+
+    @Test
     public void testTrace_formattedMessageAndCause() {
         // given
         IOException cause = new IOException("Test");

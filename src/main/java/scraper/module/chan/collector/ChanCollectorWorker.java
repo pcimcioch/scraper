@@ -7,15 +7,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import scraper.module.chan.collector.thread.ThreadDs;
+import scraper.module.chan.collector.thread.ThreadDsRepository;
 import scraper.module.chan.collector.thread.ThreadParser;
-import scraper.module.chan.collector.thread.ThreadSaver;
 import scraper.module.common.logger.LoggerService;
 import scraper.module.common.service.HtmlService;
 import scraper.module.core.context.ModuleContext;
+import scraper.util.structure.Pair;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+
+import static scraper.util.FuncUtils.mapIf;
 
 @Service
 public class ChanCollectorWorker {
@@ -30,17 +33,17 @@ public class ChanCollectorWorker {
 
     private final ThreadParser threadParser;
 
-    private final ThreadSaver threadSaver;
+    private final ThreadDsRepository threadRepository;
 
     @Autowired
     public ChanCollectorWorker(LoggerService logger, HtmlService htmlService, ModuleContext moduleContext, ArchiveParser archiveParser, ThreadParser threadParser,
-            ThreadSaver threadSaver) {
+            ThreadDsRepository threadRepository) {
         this.logger = logger;
         this.htmlService = htmlService;
         this.moduleContext = moduleContext;
         this.archiveParser = archiveParser;
         this.threadParser = threadParser;
-        this.threadSaver = threadSaver;
+        this.threadRepository = threadRepository;
     }
 
     @Neo4jTransactional
@@ -52,6 +55,7 @@ public class ChanCollectorWorker {
         }
 
         List<String> threadUrls = getThreadUrls(archiveDoc);
+        // Reverse, so that oldest threads are scrapped first. They may disapper quickly.
         Collections.reverse(threadUrls);
         moduleContext.setSteps(threadUrls.size());
 
@@ -77,7 +81,8 @@ public class ChanCollectorWorker {
     }
 
     private List<String> getThreadUrls(Document archiveDoc) {
-        return archiveParser.parseArchive(archiveDoc);
+        List<Pair<String, String>> threads = archiveParser.parseArchive(archiveDoc);
+        return mapIf(threads, pair -> threadRepository.findByThreadId(pair.getFirst()) == null, Pair::getSecond);
     }
 
     private void scrapThread(String threadUrl, boolean downloadFiles) {
@@ -88,7 +93,7 @@ public class ChanCollectorWorker {
 
         ThreadDs thread = getTherad(threadDoc, downloadFiles);
         if (thread != null) {
-            threadSaver.saveThread(thread);
+            threadRepository.save(thread);
         }
     }
 

@@ -74,7 +74,7 @@ public class FuncUtilsTest {
     }
 
     @Test
-    public void testMapFilterFromAray() {
+    public void testMapFilterFromArray() {
         assertEquals(Arrays.asList(12, 22, 12), FuncUtils.mapFilter(new String[]{"12", "8", "22", "12", "1"}, Integer::parseInt, a -> a > 10));
         assertTrue(FuncUtils.mapFilter(new String[]{"12", "8", "22", "12", "1"}, Integer::parseInt, a -> a > 30).isEmpty());
         assertTrue(FuncUtils.mapFilter(new String[]{}, Integer::parseInt, a -> a > 30).isEmpty());
@@ -95,6 +95,34 @@ public class FuncUtilsTest {
     }
 
     @Test
+    public void testMapIf() {
+        assertEquals(Arrays.asList(12, 22, 12), FuncUtils.mapIf(Arrays.asList("12", "8", "22", "12", "1"), a -> a.length() > 1, Integer::parseInt));
+        assertTrue(FuncUtils.mapIf(Arrays.asList("12", "8", "22", "12", "1"), a -> a.length() > 2, Integer::parseInt).isEmpty());
+        assertTrue(FuncUtils.mapIf(Collections.<String>emptyList(), a -> a.length() > 1, Integer::parseInt).isEmpty());
+    }
+
+    @Test
+    public void testMapIfFromArray() {
+        assertEquals(Arrays.asList(12, 22, 12), FuncUtils.mapIf(new String[]{"12", "8", "22", "12", "1"}, a -> a.length() > 1, Integer::parseInt));
+        assertTrue(FuncUtils.mapIf(new String[]{"12", "8", "22", "12", "1"}, a -> a.length() > 2, Integer::parseInt).isEmpty());
+        assertTrue(FuncUtils.mapIf(new String[]{}, a -> a.length() > 1, Integer::parseInt).isEmpty());
+    }
+
+    @Test
+    public void testMapIfSet() {
+        assertEquals(Utils.set(12, 22), FuncUtils.mapIfSet(Arrays.asList("12", "8", "22", "12", "1"), a -> a.length() > 1, Integer::parseInt));
+        assertTrue(FuncUtils.mapIfSet(Arrays.asList("12", "8", "22", "12", "1"), a -> a.length() > 2, Integer::parseInt).isEmpty());
+        assertTrue(FuncUtils.mapIfSet(Collections.<String>emptyList(), a -> a.length() > 1, Integer::parseInt).isEmpty());
+    }
+
+    @Test
+    public void testMapIfSetFromArray() {
+        assertEquals(Utils.set(12, 22), FuncUtils.mapIfSet(new String[]{"12", "8", "22", "12", "1"}, a -> a.length() > 1, Integer::parseInt));
+        assertTrue(FuncUtils.mapIfSet(new String[]{"12", "8", "22", "12", "1"}, a -> a.length() > 2, Integer::parseInt).isEmpty());
+        assertTrue(FuncUtils.mapIfSet(new String[]{}, a -> a.length() > 1, Integer::parseInt).isEmpty());
+    }
+
+    @Test
     public void testToMap() {
         assertEquals(Utils.map(12, 2, 555, 3), FuncUtils.toMap(Arrays.asList("12", "555"), Integer::parseInt, String::length));
         assertEquals(Utils.map(3, "4", 563, "564", 21, "22"), FuncUtils.toMap(Arrays.asList(4, 564, 22), t -> t - 1, String::valueOf));
@@ -102,7 +130,7 @@ public class FuncUtilsTest {
     }
 
     @Test
-    public void testToMapFromAray() {
+    public void testToMapFromArray() {
         assertEquals(Utils.map(12, 2, 555, 3), FuncUtils.toMap(new String[]{"12", "555"}, Integer::parseInt, String::length));
         assertEquals(Utils.map(3, "4", 563, "564", 21, "22"), FuncUtils.toMap(new Integer[]{4, 564, 22}, t -> t - 1, String::valueOf));
         assertTrue(FuncUtils.toMap(new String[]{}, Integer::parseInt, String::length).isEmpty());

@@ -185,7 +185,7 @@ public class ModuleStoreService {
     /**
      * Runs {@link WorkerModule} instance.
      * <p>
-     * Run is asynchronous, so ths method will almost immediately return.
+     * Run is asynchronous, so ths method will almost immediately return. For blocking call, use {@link #runModuleInstanceSync(long)}.
      *
      * @param instanceId worker module instance id
      * @throws ResourceNotFoundException if worker module instance can not be found
@@ -198,6 +198,25 @@ public class ModuleStoreService {
         ModuleDetails moduleDetails = new ModuleDetails(instance.getModuleName(), instance.getInstanceName());
 
         moduleRunner.runWorkerAsync(moduleDetails, instance.getSettings());
+    }
+
+    /**
+     * Runs {@link WorkerModule} instance.
+     * <p>
+     * Run is blocking, so ths method will wait for worker to finish. For asynchronous call, use {@link #runModuleInstance(long)}.
+     *
+     * @param instanceId worker module instance id
+     * @throws ResourceNotFoundException if worker module instance can not be found
+     */
+    // TODO tests
+    public void runModuleInstanceSync(long instanceId) {
+        ModuleInstance instance = getModuleInstance(instanceId);
+        if (instance == null) {
+            throw new ResourceNotFoundException("Instance [id=%d] not found", instanceId);
+        }
+        ModuleDetails moduleDetails = new ModuleDetails(instance.getModuleName(), instance.getInstanceName());
+
+        moduleRunner.runWorker(moduleDetails, instance.getSettings());
     }
 
     private ModuleInstance buildModuleInstance(ModuleInstanceDs instanceDs) {
@@ -244,7 +263,7 @@ public class ModuleStoreService {
         if (StringUtils.isBlank(schedule)) {
             scheduler.cancel(instanceId);
         } else {
-            scheduler.schedule(instanceId, new CronTrigger(schedule), () -> runModuleInstance(instanceId));
+            scheduler.schedule(instanceId, new CronTrigger(schedule), () -> runModuleInstanceSync(instanceId));
         }
     }
 

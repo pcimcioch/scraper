@@ -1,5 +1,6 @@
 package scraper.module.common.logger;
 
+import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.neo4j.transaction.Neo4jTransactional;
@@ -68,6 +69,22 @@ public class LoggerService {
         doLog(LoggerLevel.TRACE, String.format(messageFormat, args), cause);
     }
 
+    public void debug(String message) {
+        doLog(LoggerLevel.DEBUG, message, null);
+    }
+
+    public void debug(String messageFormat, Object... args) {
+        doLog(LoggerLevel.DEBUG, String.format(messageFormat, args), null);
+    }
+
+    public void debug(String message, Throwable cause) {
+        doLog(LoggerLevel.DEBUG, message, cause);
+    }
+
+    public void debug(String messageFormat, Throwable cause, Object... args) {
+        doLog(LoggerLevel.DEBUG, String.format(messageFormat, args), cause);
+    }
+
     public void info(String message) {
         doLog(LoggerLevel.INFO, message, null);
     }
@@ -120,11 +137,31 @@ public class LoggerService {
         ModuleDetails moduleDetails = moduleContext.getModuleDetails();
 
         if (consoleThreshold != null && level.order() >= consoleThreshold.order()) {
-            moduleDetails.getLogger().log(level.commonLevel(), message, cause);
+            logToConsole(moduleDetails.getLogger(), level, message, cause);
         }
 
         if (dbThreshold != null && level.order() >= dbThreshold.order()) {
             logRepository.save(new LogEntryDs(level, moduleDetails.getModule(), moduleDetails.getInstance(), new Date(), message));
+        }
+    }
+
+    private void logToConsole(Log logger, LoggerLevel level, String message, Throwable cause) {
+        switch (level) {
+            case TRACE:
+                logger.trace(message, cause);
+                break;
+            case DEBUG:
+                logger.debug(message, cause);
+                break;
+            case INFO:
+                logger.info(message, cause);
+                break;
+            case WARNING:
+                logger.warn(message, cause);
+                break;
+            case ERROR:
+                logger.error(message, cause);
+                break;
         }
     }
 }

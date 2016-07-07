@@ -292,6 +292,109 @@ public final class FuncUtils {
     }
 
     /**
+     * Filters and maps {@code elements} using {@code predicate} and {@code transform} function.
+     *
+     * @param elements  elements to map
+     * @param predicate filter predicate function
+     * @param transform transformation function
+     * @param <T>       type of the {@code elements}
+     * @param <K>       type of the result
+     * @param <X>       type of the exception that may be thrown by {@code predicate} function
+     * @param <Y>       type of the exception that may be thrown by {@code transform} function
+     * @return list of filtered and mapped {@code elements}
+     * @throws X if {@code predicate} function failed
+     * @throws Y if {@code transform} function failed
+     */
+    public static <T, K, X extends Throwable, Y extends Throwable> List<K> mapIf(Iterable<T> elements, ThrowingPredicate<T, X> predicate, ThrowingFunction<T, K, Y> transform)
+            throws X, Y {
+        List<K> result = new ArrayList<>();
+        for (T el : elements) {
+            if (predicate.test(el)) {
+                result.add(transform.apply(el));
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Filters and maps {@code elements} using {@code predicate} and {@code transform} function.
+     *
+     * @param elements  elements to map
+     * @param predicate filter predicate function
+     * @param transform transformation function
+     * @param <T>       type of the {@code elements}
+     * @param <K>       type of the result
+     * @param <X>       type of the exception that may be thrown by {@code predicate} function
+     * @param <Y>       type of the exception that may be thrown by {@code transform} function
+     * @return list of filtered and mapped {@code elements}
+     * @throws X if {@code predicate} function failed
+     * @throws Y if {@code transform} function failed
+     */
+    public static <T, K, X extends Throwable, Y extends Throwable> List<K> mapIf(T[] elements, ThrowingPredicate<T, X> predicate, ThrowingFunction<T, K, Y> transform) throws X, Y {
+        List<K> result = new ArrayList<>();
+        for (T el : elements) {
+            if (predicate.test(el)) {
+                result.add(transform.apply(el));
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Filters and maps {@code elements} using {@code predicate} and {@code transform} function.
+     *
+     * @param elements  elements to map
+     * @param predicate filter predicate function
+     * @param transform transformation function
+     * @param <T>       type of the {@code elements}
+     * @param <K>       type of the result
+     * @param <X>       type of the exception that may be thrown by {@code predicate} function
+     * @param <Y>       type of the exception that may be thrown by {@code transform} function
+     * @return set of filtered and mapped {@code elements}
+     * @throws X if {@code predicate} function failed
+     * @throws Y if {@code transform} function failed
+     */
+    public static <T, K, X extends Throwable, Y extends Throwable> Set<K> mapIfSet(Iterable<T> elements, ThrowingPredicate<T, X> predicate, ThrowingFunction<T, K, Y> transform)
+            throws X, Y {
+        Set<K> result = new HashSet<>();
+        for (T el : elements) {
+            if (predicate.test(el)) {
+                result.add(transform.apply(el));
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Filters and maps {@code elements} using {@code predicate} and {@code transform} function.
+     *
+     * @param elements  elements to map
+     * @param predicate filter predicate function
+     * @param transform transformation function
+     * @param <T>       type of the {@code elements}
+     * @param <K>       type of the result
+     * @param <X>       type of the exception that may be thrown by {@code predicate} function
+     * @param <Y>       type of the exception that may be thrown by {@code transform} function
+     * @return set of filtered and mapped {@code elements}
+     * @throws X if {@code predicate} function failed
+     * @throws Y if {@code transform} function failed
+     */
+    public static <T, K, X extends Throwable, Y extends Throwable> Set<K> mapIfSet(T[] elements, ThrowingPredicate<T, X> predicate, ThrowingFunction<T, K, Y> transform)
+            throws X, Y {
+        Set<K> result = new HashSet<>();
+        for (T el : elements) {
+            if (predicate.test(el)) {
+                result.add(transform.apply(el));
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Builds map based on {@code elements}.
      *
      * @param elements    elements that should be turned into map

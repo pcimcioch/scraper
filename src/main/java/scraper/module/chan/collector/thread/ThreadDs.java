@@ -1,7 +1,6 @@
 package scraper.module.chan.collector.thread;
 
 import org.neo4j.graphdb.Direction;
-import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.GraphProperty;
 import org.springframework.data.neo4j.annotation.NodeEntity;
@@ -33,7 +32,6 @@ public class ThreadDs {
     private String subject;
 
     @RelatedTo(type = "CONTAINS", direction = Direction.INCOMING)
-    @Fetch
     protected Set<PostDs> posts = new HashSet<>();
 
     public ThreadDs() {

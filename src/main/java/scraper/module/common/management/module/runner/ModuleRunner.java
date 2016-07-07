@@ -129,14 +129,14 @@ public class ModuleRunner {
     private void runWorker(WorkerModule<?> module, Object settings) {
         WorkerDescriptor descriptor = registerWorker();
 
-        logger.trace("Started worker module [%s]", module.name());
+        logger.info("Started worker module [%s]", module.name());
         try {
             module.call(settings);
-        } catch (Throwable th) {
-            logger.error("Error running worker module [%s]: %s", th, module.name(), th.getMessage());
+        } catch (Exception ex) {
+            logger.error("Error running worker module [%s]: %s", ex, module.name(), ex.getMessage());
         } finally {
             unregisterWorker(descriptor);
-            logger.trace("Finished worker module [%s]", module.name());
+            logger.info("Finished worker module [%s]", module.name());
         }
     }
 

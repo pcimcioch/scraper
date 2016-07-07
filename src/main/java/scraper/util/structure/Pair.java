@@ -56,4 +56,9 @@ public class Pair<T, K> {
     public int hashCode() {
         return Utils.computeHash(first, second);
     }
+
+    @Override
+    public String toString() {
+        return String.format("Pair[first=%s, second=%s]", first, second);
+    }
 }
