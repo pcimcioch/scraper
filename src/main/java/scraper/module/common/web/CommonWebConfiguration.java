@@ -18,7 +18,7 @@ public class CommonWebConfiguration extends WebMvcConfigurerAdapter {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/" + CommonWebModule.NAME + "/**").addResourceLocations("classpath:/resources/scraper/module/common/web/");
+        registry.addResourceHandler('/' + CommonWebModule.NAME + "/**").addResourceLocations("classpath:/resources/scraper/module/common/web/");
         registry.addResourceHandler("/**").addResourceLocations("classpath:/resources/scraper/module/common/web/subpages/");
     }
 }

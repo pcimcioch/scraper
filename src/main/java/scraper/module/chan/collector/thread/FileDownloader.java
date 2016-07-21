@@ -62,7 +62,7 @@ public class FileDownloader {
             return null;
         }
 
-        return workspaceService.createFile(filename.substring(0, 2), filename.substring(2, 4), filename + "." + extension);
+        return workspaceService.createFile(filename.substring(0, 2), filename.substring(2, 4), filename + '.' + extension);
     }
 
     private void download(Path path, String url) throws IOException {

@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public final class ClassPropertyDescriptorFactory {
 
-    private static final Map<Class<? extends Annotation>, PropertyParser<?>> parsers = new HashMap<>();
+    private static final Map<Class<? extends Annotation>, PropertyParser<?>> PARSERS = new HashMap<>();
 
     static {
         registerParser(new StringPropertyParser());
@@ -32,12 +32,12 @@ public final class ClassPropertyDescriptorFactory {
     }
 
     private static <T extends Annotation> void registerParser(PropertyParser<T> parser) {
-        parsers.put(parser.getAnnotationType(), parser);
+        PARSERS.put(parser.getAnnotationType(), parser);
     }
 
     @SuppressWarnings("unchecked")
     private static <T extends Annotation> PropertyParser<T> getParser(Class<T> annotationType) {
-        return (PropertyParser<T>) parsers.get(annotationType);
+        return (PropertyParser<T>) PARSERS.get(annotationType);
     }
 
     /**

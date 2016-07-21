@@ -165,6 +165,37 @@ public class ModuleStoreServiceTest {
     }
 
     @Test
+    public void testRunModuleInstanceSync_missingInstance() {
+        // given
+        when(instanceRepository.findOne(12L)).thenReturn(null);
+
+        // when
+        try {
+            service.runModuleInstanceSync(12L);
+            fail();
+        } catch (ResourceNotFoundException ex) {
+            // then
+            assertTrue(ex.getMessage().contains("not found"));
+        }
+
+        verifyNoMoreInteractions(moduleRunner);
+    }
+
+    @Test
+    public void testRunModuleInstanceSync() {
+        // given
+        ModuleInstanceDs instanceDs = new ModuleInstanceDs("module.worker", "ins", correctSettingsStr, "0 15 9-17 * * MON-FRI");
+        instanceDs.setId(12L);
+        when(instanceRepository.findOne(12L)).thenReturn(instanceDs);
+
+        // when
+        service.runModuleInstanceSync(12L);
+
+        // then
+        verify(moduleRunner).runWorker(new ModuleDetails("module.worker", "ins"), correctSettings);
+    }
+
+    @Test
     public void testGetModuleInstances_noModule() {
         // given
         ModuleInstanceDs instanceDs = new ModuleInstanceDs("module.worker", "ins", correctSettingsStr, "0 15 9-17 * * MON-FRI");
@@ -417,7 +448,7 @@ public class ModuleStoreServiceTest {
     }
 
     @Test
-    public void testUpdateSettings_missingInstnce() {
+    public void testUpdateSettings_missingInstance() {
         // given
         when(instanceRepository.findOne(12L)).thenReturn(null);
 
@@ -595,7 +626,7 @@ public class ModuleStoreServiceTest {
 
         private int value;
 
-        public TestSettings(int value) {
+        protected TestSettings(int value) {
             this.value = value;
         }
 

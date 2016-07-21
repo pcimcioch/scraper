@@ -43,7 +43,7 @@ public final class StringUtils {
     }
 
     /**
-     * Checks if any of the given strings is blank (<tt>null</tt> or <tt>""</tt\>).
+     * Checks if any of the given strings is blank (<tt>null</tt> or <tt>""</tt>).
      *
      * @param values values to check. May be empty. May contain <tt>null</tt> values
      * @return <tt>true</tt> if any o the given strings is blank. <tt>false</tt> otherwise
@@ -59,22 +59,22 @@ public final class StringUtils {
     }
 
     /**
-     * Checks if given string is blank (<tt>null</tt> or <tt>""</tt\>).
+     * Checks if given string is blank (<tt>null</tt> or <tt>""</tt>).
      *
      * @param val string to check. May be <tt>null</tt>
      * @return <tt>true</tt> if given string is <tt>null</tt> or <tt>""</tt>. <tt>false</tt> otherwise
      */
     public static boolean isBlank(String val) {
-        return val == null || "".equals(val);
+        return val == null || val.isEmpty();
     }
 
     /**
-     * Checks if given string is not blank (not <tt>null</tt> nor <tt>""</tt\>).
+     * Checks if given string is not blank (not <tt>null</tt> nor <tt>""</tt>).
      *
      * @param val string to check. May be <tt>null</tt>
      * @return <tt>true</tt> if given string is not <tt>null</tt> nor <tt>""</tt>. <tt>false</tt> otherwise
      */
     public static boolean isNotBlank(String val) {
-        return val != null && !"".equals(val);
+        return val != null && !val.isEmpty();
     }
 }

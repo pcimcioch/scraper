@@ -111,15 +111,15 @@ public class ExecutionFlow {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
 
-        ExecutionFlow other = (ExecutionFlow) o;
+        ExecutionFlow other = (ExecutionFlow) obj;
 
         return Utils.computeEq(stopped, other.stopped, running, other.running, status, other.status);
     }

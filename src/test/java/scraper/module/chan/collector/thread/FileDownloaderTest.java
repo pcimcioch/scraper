@@ -41,8 +41,6 @@ public class FileDownloaderTest {
     @Rule
     public final FileSystemRule rule = new FileSystemRule();
 
-    private FileSystem fs;
-
     private Path path1;
 
     private Path path2;
@@ -51,7 +49,7 @@ public class FileDownloaderTest {
     public void setUp() throws IOException {
         downloader = new FileDownloader(workspaceService, htmlService);
 
-        fs = rule.getFileSystem();
+        FileSystem fs = rule.getFileSystem();
         path1 = fs.getPath("p1");
         path2 = fs.getPath("p2");
         Files.createFile(path1);

@@ -39,15 +39,15 @@ public class Pair<T, K> {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
 
-        Pair<?, ?> other = (Pair<?, ?>) o;
+        Pair<?, ?> other = (Pair<?, ?>) obj;
 
         return Utils.computeEq(this.first, other.first, this.second, other.second);
     }

@@ -92,7 +92,7 @@ public class FileUtilsTest {
         Path path = fs.getPath("file.txt");
 
         // when
-        String content = FileUtils.readFile(path, StandardCharsets.UTF_8);
+        FileUtils.readFile(path, StandardCharsets.UTF_8);
     }
 
     @Test

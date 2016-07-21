@@ -82,15 +82,15 @@ public class ModuleInstanceDs {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
 
-        ModuleInstanceDs other = (ModuleInstanceDs) o;
+        ModuleInstanceDs other = (ModuleInstanceDs) obj;
 
         return Utils.computeEq(id, other.id, moduleName, other.moduleName, instanceName, other.instanceName, settings, other.settings, schedule, other.schedule);
     }

@@ -211,7 +211,7 @@ public class ModuleScopeTest {
 
     private void runAndWait(Runnable runnable) throws InterruptedException {
         Thread t = new Thread(runnable);
-        final boolean[] failed = new boolean[]{false};
+        final boolean[] failed = {false};
         t.setUncaughtExceptionHandler((thread, throwable) -> failed[0] = true);
 
         t.start();

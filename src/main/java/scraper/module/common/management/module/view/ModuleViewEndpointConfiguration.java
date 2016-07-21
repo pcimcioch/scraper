@@ -13,8 +13,8 @@ import scraper.module.common.management.module.runner.ModuleRunnerModule;
 public class ModuleViewEndpointConfiguration extends AbstractWebSocketMessageBrokerConfigurer {
 
     @Override
-    public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker(ModuleRunnerModule.NAME + "/topic");
+    public void configureMessageBroker(MessageBrokerRegistry registry) {
+        registry.enableSimpleBroker(ModuleRunnerModule.NAME + "/topic");
     }
 
     @Override

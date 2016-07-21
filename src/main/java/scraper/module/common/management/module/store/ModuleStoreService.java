@@ -60,7 +60,7 @@ public class ModuleStoreService {
      *
      * @param instanceId worker module instance id
      * @return worker module instance, or <tt>null</tt> if instance with such id can not be found
-     * @throws ResourceNotFoundException if module, that searched instance is refering to, do not exists
+     * @throws ResourceNotFoundException if module, that searched instance is referring to, do not exists
      * @throws IllegalArgumentException  if settings data, saved in module instance, is incorrect
      */
     public ModuleInstance getModuleInstance(long instanceId) {
@@ -79,7 +79,7 @@ public class ModuleStoreService {
      * Gets list of all {@link WorkerModule} instances.
      *
      * @return list of all worker module instances
-     * @throws ResourceNotFoundException if module, that any instance is refering to, do not exists
+     * @throws ResourceNotFoundException if module, that any instance is referring to, do not exists
      * @throws IllegalArgumentException  if settings data, saved in any module instance, is incorrect
      */
     public List<ModuleInstance> getModuleInstances() {
@@ -208,7 +208,7 @@ public class ModuleStoreService {
      * @param instanceId worker module instance id
      * @throws ResourceNotFoundException if worker module instance can not be found
      */
-    // TODO tests
+    // TODO use sync/async always in pair
     public void runModuleInstanceSync(long instanceId) {
         ModuleInstance instance = getModuleInstance(instanceId);
         if (instance == null) {

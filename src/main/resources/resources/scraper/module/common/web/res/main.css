@@ -44,9 +44,8 @@
 }
 
 .light-border {
-    border: solid #f7f7f9;
     margin-bottom: 0;
-    border-width: .2rem;
+    border: .2rem solid #f7f7f9;
 }
 
 .main-container {

@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -21,7 +20,7 @@ public class EnvironmentConfiguration {
     }
 
     @Bean
-    Path workspacePath(FileSystem filesystem, @Value("${workspace.path}") String workspacePath) throws IOException {
+    Path workspacePath(FileSystem filesystem, @Value("${workspace.path}") String workspacePath) {
         return filesystem.getPath(workspacePath);
     }
 }

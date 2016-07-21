@@ -24,7 +24,7 @@ public class ApplicationLifecycleService {
     /**
      * Requests application stop.
      */
-    // TODO graceful shutdown (for instance when workers are working, cancell them and wait for them. Don'e allow start new ones, block all http requests etc)
+    // TODO graceful shutdown (for instance when workers are working, cancel them and wait for them. Don'e allow start new ones, block all http requests etc)
     public void stopApplication() {
         logger.info("Stopping application");
         lifecycle.finish();

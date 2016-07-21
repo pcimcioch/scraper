@@ -48,7 +48,7 @@ public class ModuleViewService {
     /**
      * Gets list of all {@link WorkerModule} instances.
      *
-     * @return list of all worker mdule instances represented as json DTOs
+     * @return list of all worker module instances represented as json DTOs
      */
     public List<ModuleInstanceJsonReadDto> getModuleInstances() {
         return map(moduleStoreService.getModuleInstances(), ModuleInstanceJsonReadDto::new);

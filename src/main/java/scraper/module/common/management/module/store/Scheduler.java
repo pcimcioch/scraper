@@ -38,7 +38,7 @@ public class Scheduler {
      */
     public synchronized void schedule(long taskId, Trigger trigger, Runnable callback) {
         ScheduledFuture<?> newTask = taskScheduler.schedule(() -> runner.safeRun(callback), trigger);
-        ScheduledFuture previousTask = tasks.put(taskId, newTask);
+        ScheduledFuture<?> previousTask = tasks.put(taskId, newTask);
         if (previousTask != null) {
             previousTask.cancel(false);
         }
@@ -53,14 +53,14 @@ public class Scheduler {
      */
     // TODO maybe one-shot tasks should be automatically removed from "tasks" map?
     public synchronized void cancel(long taskId) {
-        ScheduledFuture previousTask = tasks.remove(taskId);
+        ScheduledFuture<?> previousTask = tasks.remove(taskId);
         if (previousTask != null) {
             previousTask.cancel(false);
         }
     }
 
     /**
-     * Cheks if task with given {@code taskId} is scheduled.
+     * Checks if task with given {@code taskId} is scheduled.
      *
      * @param taskId task id
      * @return <tt>true</tt> if task with given id is scheduled, <tt>false</tt> otherwise

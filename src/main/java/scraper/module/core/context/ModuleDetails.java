@@ -105,15 +105,15 @@ public class ModuleDetails {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
 
-        ModuleDetails other = (ModuleDetails) o;
+        ModuleDetails other = (ModuleDetails) obj;
 
         return Utils.computeEq(module, other.module, instance, other.instance);
     }

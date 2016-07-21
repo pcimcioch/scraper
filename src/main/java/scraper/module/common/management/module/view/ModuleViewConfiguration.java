@@ -17,7 +17,7 @@ public class ModuleViewConfiguration extends WebMvcConfigurerAdapter implements 
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/" + ModuleViewModule.NAME + "/**").addResourceLocations("classpath:/resources/scraper/module/common/management/module/view/");
+        registry.addResourceHandler('/' + ModuleViewModule.NAME + "/**").addResourceLocations("classpath:/resources/scraper/module/common/management/module/view/");
     }
 
     @Override

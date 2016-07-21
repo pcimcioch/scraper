@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.Set;
 
 /**
- * Standalone module that displays operations used to manade modules and their instances. Main endpoint available in this module is {@link ModuleViewController}.
+ * Standalone module that displays operations used to manage modules and their instances. Main endpoint available in this module is {@link ModuleViewController}.
  */
 @Service
 public class ModuleViewModule implements StandaloneModule {

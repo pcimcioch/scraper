@@ -25,15 +25,15 @@ public class SubPageJsonDto {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
 
-        SubPageJsonDto other = (SubPageJsonDto) o;
+        SubPageJsonDto other = (SubPageJsonDto) obj;
 
         return Utils.computeEq(url, other.url, description, other.description);
 

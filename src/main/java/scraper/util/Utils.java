@@ -27,7 +27,7 @@ public final class Utils {
      */
     @SafeVarargs
     public static <T> Set<T> set(T... elements) {
-        HashSet<T> set = new HashSet<>(elements.length);
+        Set<T> set = new HashSet<>(elements.length);
         Collections.addAll(set, elements);
 
         return set;

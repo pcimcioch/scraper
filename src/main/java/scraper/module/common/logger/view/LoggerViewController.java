@@ -12,7 +12,7 @@ import scraper.module.core.scope.InModuleScope;
 import java.util.List;
 
 /**
- * REST Controller for managing log entires operations.
+ * REST Controller for managing log entries operations.
  * <p>
  * All methods are called in {@link scraper.module.core.scope.ModuleScope}.
  */

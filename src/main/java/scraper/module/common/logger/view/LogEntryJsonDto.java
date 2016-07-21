@@ -80,15 +80,15 @@ public class LogEntryJsonDto {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
 
-        LogEntryJsonDto other = (LogEntryJsonDto) o;
+        LogEntryJsonDto other = (LogEntryJsonDto) obj;
 
         return Utils.computeEq(level, other.level, module, other.module, instance, other.instance, date, other.date, message, other.message);
 

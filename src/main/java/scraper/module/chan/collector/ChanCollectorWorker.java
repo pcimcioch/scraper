@@ -55,7 +55,7 @@ public class ChanCollectorWorker {
         }
 
         List<String> threadUrls = getThreadUrls(archiveDoc);
-        // Reverse, so that oldest threads are scrapped first. They may disapper quickly.
+        // Reverse, so that oldest threads are scrapped first. They may disappear quickly.
         Collections.reverse(threadUrls);
         moduleContext.setSteps(threadUrls.size());
 
@@ -91,13 +91,13 @@ public class ChanCollectorWorker {
             return;
         }
 
-        ThreadDs thread = getTherad(threadDoc, downloadFiles);
+        ThreadDs thread = getThread(threadDoc, downloadFiles);
         if (thread != null) {
             threadRepository.save(thread);
         }
     }
 
-    private ThreadDs getTherad(Document threadDoc, boolean downloadFiles) {
+    private ThreadDs getThread(Document threadDoc, boolean downloadFiles) {
         try {
             return threadParser.parseThread(threadDoc, downloadFiles);
         } catch (IOException e) {

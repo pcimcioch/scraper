@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.Set;
 
 /**
- * Srandalone module displaying endpoint and webpage used to manage application lifecycle. Main endpoint available in this module is {@link ApplicationLifecycleController}.
+ * Standalone module displaying endpoint and webpage used to manage application lifecycle. Main endpoint available in this module is {@link ApplicationLifecycleController}.
  */
 @Service
 public class ApplicationLifecycleModule implements StandaloneModule {

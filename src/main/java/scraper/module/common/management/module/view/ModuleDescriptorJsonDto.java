@@ -7,6 +7,7 @@ import scraper.module.core.WorkerModule;
 import scraper.module.core.properties.ClassPropertyDescriptor;
 import scraper.util.Utils;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -71,7 +72,7 @@ public class ModuleDescriptorJsonDto {
     }
 
     public void setDependencies(Set<String> dependencies) {
-        this.dependencies = dependencies;
+        this.dependencies = new HashSet<>(dependencies);
     }
 
     public ClassPropertyDescriptor getPropertyDescriptor() {
@@ -100,15 +101,15 @@ public class ModuleDescriptorJsonDto {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
 
-        ModuleDescriptorJsonDto other = (ModuleDescriptorJsonDto) o;
+        ModuleDescriptorJsonDto other = (ModuleDescriptorJsonDto) obj;
 
         return Utils.computeEq(name, other.name, description, other.description, dependencies, other.dependencies, type, other.type, propertyDescriptor, other.propertyDescriptor);
 

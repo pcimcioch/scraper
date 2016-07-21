@@ -1,7 +1,7 @@
 package scraper.exception;
 
 /**
- * Exception indicating that resource counld not be found.
+ * Exception indicating that resource couldn't not be found.
  */
 public class ResourceNotFoundException extends RuntimeException {
 

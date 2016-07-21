@@ -55,7 +55,7 @@ public class ThreadParserTest {
 
         // then
         assertThread(thread, "6474195", "wg", "", Utils.set("6474195", "6474196", "6474197", "6474283", "6474293"));
-        List<PostDs> posts = thread.getOrderdPosts();
+        List<PostDs> posts = thread.getOrderedPosts();
 
         assertPost(posts.get(0), "6474195", "Anonymous", new GregorianCalendar(2016, 1, 10, 11, 59, 31).getTime(), thread, "Fc5rw3qHBpHuQ8g3qS1qJQ==", "1444079794632.jpg",
                 "Urban environments being reclaimed by nature. Buildings being assimilated by trees, grass breaking through pavement, that sort of thing.", Collections.emptySet(),
@@ -87,7 +87,7 @@ public class ThreadParserTest {
 
         // then
         assertThread(thread, "6474195", "wg", "", Utils.set("6474195", "6474196", "6474197", "6474283", "6474293"));
-        List<PostDs> posts = thread.getOrderdPosts();
+        List<PostDs> posts = thread.getOrderedPosts();
 
         assertPost(posts.get(0), "6474195", "Anonymous", new GregorianCalendar(2016, 1, 10, 11, 59, 31).getTime(), thread, "Fc5rw3qHBpHuQ8g3qS1qJQ==", "1444079794632.jpg",
                 "Urban environments being reclaimed by nature. Buildings being assimilated by trees, grass breaking through pavement, that sort of thing.", Collections.emptySet(),
@@ -114,7 +114,7 @@ public class ThreadParserTest {
 
         // then
         assertThread(thread, "6480486", "wg", "MERICA'N WALLPAPERS!", Utils.set("6480486", "6480524", "6481166", "6481167", "6481219", "6481249", "6481250", "6481251", "6481730"));
-        List<PostDs> posts = thread.getOrderdPosts();
+        List<PostDs> posts = thread.getOrderedPosts();
 
         assertPost(posts.get(0), "6480486", "Anonymous", new GregorianCalendar(2016, 1, 15, 13, 44, 37).getTime(), thread, "4ZBB1DyGKb1X9ZqEGpkwAA==", "hugemericans.jpg",
                 "Merican' wallpaper thread! I wanna see the most american wallpaper you guys can come up with! Mine is missing the cheesburgers! POST!", Collections.emptySet(),
@@ -157,7 +157,7 @@ public class ThreadParserTest {
 
         // then
         assertThread(thread, "6480486", "wg", "MERICA'N WALLPAPERS!", Utils.set("6480486", "6480524", "6481166", "6481167", "6481219", "6481249", "6481250", "6481251", "6481730"));
-        List<PostDs> posts = thread.getOrderdPosts();
+        List<PostDs> posts = thread.getOrderedPosts();
 
         assertPost(posts.get(0), "6480486", "Anonymous", new GregorianCalendar(2016, 1, 15, 13, 44, 37).getTime(), thread, "4ZBB1DyGKb1X9ZqEGpkwAA==", "hugemericans.jpg",
                 "Merican' wallpaper thread! I wanna see the most american wallpaper you guys can come up with! Mine is missing the cheesburgers! POST!", Collections.emptySet(),

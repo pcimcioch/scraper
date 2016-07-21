@@ -7,7 +7,7 @@ public class SomePropertiesTestClass {
     @SuppressWarnings("unused")
     private int field1;
 
-    @StringProperty(viewName = "view", description = "description", minLength = 10, maxLength = 12, pattern = "")
+    @StringProperty(viewName = "view", description = "description", minLength = 10, maxLength = 12)
     protected String field2;
 
     String field3;

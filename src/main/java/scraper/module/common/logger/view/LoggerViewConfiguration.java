@@ -17,7 +17,7 @@ public class LoggerViewConfiguration extends WebMvcConfigurerAdapter implements 
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/" + LoggerViewModule.NAME + "/**").addResourceLocations("classpath:/resources/scraper/module/common/logger/view/");
+        registry.addResourceHandler('/' + LoggerViewModule.NAME + "/**").addResourceLocations("classpath:/resources/scraper/module/common/logger/view/");
     }
 
     @Override

@@ -63,7 +63,7 @@ public class ThreadDs {
         return Collections.unmodifiableSet(posts);
     }
 
-    public List<PostDs> getOrderdPosts() {
+    public List<PostDs> getOrderedPosts() {
         List<PostDs> orderedPosts = new ArrayList<>(posts);
         Collections.sort(orderedPosts, (post1, post2) -> post1.getDate().compareTo(post2.getDate()));
         return orderedPosts;

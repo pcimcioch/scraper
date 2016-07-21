@@ -149,7 +149,7 @@ public class ModuleContainerTest {
         // given
         TestWorkerModule workerModule = new TestWorkerModule("module.worker", "description 1", "module.service");
         TestServiceModule serviceModule = new TestServiceModule("module.service", "description 2", "module.standalone");
-        ModuleContainer container = new ModuleContainer(Collections.singletonList(workerModule), Collections.singletonList(serviceModule), Collections.emptyList());
+        ModuleContainer ignored = new ModuleContainer(Collections.singletonList(workerModule), Collections.singletonList(serviceModule), Collections.emptyList());
     }
 
     @Test(expected = IllegalArgumentException.class)

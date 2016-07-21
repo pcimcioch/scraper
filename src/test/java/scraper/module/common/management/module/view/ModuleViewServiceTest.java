@@ -49,7 +49,7 @@ public class ModuleViewServiceTest {
 
     private ObjectNode correctSettingsJson;
 
-    private TestSettins incorrectTypeSettings;
+    private TestSettings incorrectTypeSettings;
 
     private ObjectNode incorrectTypeSettingsJson;
 
@@ -59,7 +59,7 @@ public class ModuleViewServiceTest {
 
         correctSettings = new TestWorkerSettings("option");
         correctSettingsJson = toJson(correctSettings);
-        incorrectTypeSettings = new TestSettins(44);
+        incorrectTypeSettings = new TestSettings(44);
         incorrectTypeSettingsJson = toJson(incorrectTypeSettings);
 
         TestWorkerModule worker = new TestWorkerModule("module.worker", "description");
@@ -209,7 +209,7 @@ public class ModuleViewServiceTest {
     }
 
     @Test
-    public void testUpdateModuleInstnceSettings_missingInstance() {
+    public void testUpdateModuleInstanceSettings_missingInstance() {
         // given
         when(moduleStoreService.getModuleInstance(45L)).thenReturn(null);
 
@@ -224,7 +224,7 @@ public class ModuleViewServiceTest {
     }
 
     @Test
-    public void testUpdateModuleInstnceSettings_missingModule() {
+    public void testUpdateModuleInstanceSettings_missingModule() {
         // given
         TestWorkerSettings oldSettings = new TestWorkerSettings("oldOption");
         ModuleInstance instance = new ModuleInstance("module.worker", "ins", oldSettings, "0 15 9-17 * * MON-FRI");
@@ -242,7 +242,7 @@ public class ModuleViewServiceTest {
     }
 
     @Test
-    public void testUpdateModuleInstnceSettings_incorrectSettingsClass() {
+    public void testUpdateModuleInstanceSettings_incorrectSettingsClass() {
         // given
         TestWorkerSettings oldSettings = new TestWorkerSettings("oldOption");
         ModuleInstance instance = new ModuleInstance("module.worker", "ins", oldSettings, "0 15 9-17 * * MON-FRI");
@@ -259,7 +259,7 @@ public class ModuleViewServiceTest {
     }
 
     @Test
-    public void testUpdateModuleInstnceSettings() {
+    public void testUpdateModuleInstanceSettings() {
         // given
         TestWorkerSettings oldSettings = new TestWorkerSettings("oldOption");
         ModuleInstance instance = new ModuleInstance("module.worker", "ins", oldSettings, "0 15 9-17 * * MON-FRI");
@@ -322,11 +322,11 @@ public class ModuleViewServiceTest {
         return mapper.valueToTree(obj);
     }
 
-    private static class TestSettins {
+    private static class TestSettings {
 
         private int value;
 
-        public TestSettins(int value) {
+        protected TestSettings(int value) {
             this.value = value;
         }
 
@@ -339,15 +339,15 @@ public class ModuleViewServiceTest {
         }
 
         @Override
-        public boolean equals(Object o) {
-            if (this == o) {
+        public boolean equals(Object obj) {
+            if (this == obj) {
                 return true;
             }
-            if (o == null || getClass() != o.getClass()) {
+            if (obj == null || getClass() != obj.getClass()) {
                 return false;
             }
 
-            TestSettins other = (TestSettins) o;
+            TestSettings other = (TestSettings) obj;
 
             return Utils.computeEq(value, other.value);
         }

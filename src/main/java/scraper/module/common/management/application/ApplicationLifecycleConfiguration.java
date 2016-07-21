@@ -6,7 +6,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import scraper.module.common.web.CommonWebConfigurer;
 
 /**
- * Application liecycle webpage configuration.
+ * Application lifecycle webpage configuration.
  * <p>
  * Registers resource handlers for lifecycle webpage, and registers as webpage in {@link CommonWebConfigurer}.
  */
@@ -17,7 +17,7 @@ public class ApplicationLifecycleConfiguration extends WebMvcConfigurerAdapter i
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/" + ApplicationLifecycleModule.NAME + "/**").addResourceLocations("classpath:/resources/scraper/module/common/management/application/");
+        registry.addResourceHandler('/' + ApplicationLifecycleModule.NAME + "/**").addResourceLocations("classpath:/resources/scraper/module/common/management/application/");
     }
 
     @Override

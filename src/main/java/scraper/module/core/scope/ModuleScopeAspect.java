@@ -24,12 +24,12 @@ public class ModuleScopeAspect {
         this.moduleContext = moduleContext;
     }
 
-    @Around(value = "@within(annotation) && !@annotation(scraper.module.core.scope.InModuleScope)")
+    @Around("@within(annotation) && !@annotation(scraper.module.core.scope.InModuleScope)")
     private Object aroundClass(ProceedingJoinPoint pjp, InModuleScope annotation) throws Throwable {
         return manageScope(pjp, annotation);
     }
 
-    @Around(value = "@annotation(annotation)")
+    @Around("@annotation(annotation)")
     private Object aroundMethod(ProceedingJoinPoint pjp, InModuleScope annotation) throws Throwable {
         return manageScope(pjp, annotation);
     }

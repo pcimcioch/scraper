@@ -20,7 +20,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * Service used to run and manage runninag {@link WorkerModule}.
+ * Service used to run and manage running {@link WorkerModule}.
  */
 @Service
 public class ModuleRunner {
@@ -50,7 +50,7 @@ public class ModuleRunner {
     /**
      * Requests stop of the running {@link WorkerModule}.
      *
-     * @param id id of the running worker. Can be otained from {@link WorkerDescriptor#getId()}
+     * @param id id of the running worker. Can be obtained from {@link WorkerDescriptor#getId()}
      * @return <tt>true</tt> if worker was found and stopped, <tt>false</tt> if worker can not be found
      */
     public boolean stopWorker(String id) {

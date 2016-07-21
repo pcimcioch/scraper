@@ -47,7 +47,7 @@ public class CommonWebServiceTest {
 
         private final String description;
 
-        public TestWebConfigurer(String url, String description) {
+        protected TestWebConfigurer(String url, String description) {
             this.url = url;
             this.description = description;
         }

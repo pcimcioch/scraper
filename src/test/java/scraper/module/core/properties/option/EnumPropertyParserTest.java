@@ -66,7 +66,7 @@ public class EnumPropertyParserTest {
     }
 
     @Test
-    public void testValidate_incorrenctAnnotation() {
+    public void testValidate_incorrectAnnotation() {
         try {
             parser.validate("value", new Override() {
                 @Override
@@ -81,7 +81,7 @@ public class EnumPropertyParserTest {
     }
 
     @Test
-    public void testValidate_incorrenctValueType() {
+    public void testValidate_incorrectValueType() {
         try {
             parser.validate(12, annotation("a", "b", true));
             fail();

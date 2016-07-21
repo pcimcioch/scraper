@@ -111,7 +111,7 @@ public class NumberPropertyParserTest {
     }
 
     @Test
-    public void testValidate_incorrenctAnnotation() {
+    public void testValidate_incorrectAnnotation() {
         try {
             parser.validate(12, new Override() {
                 @Override
@@ -126,7 +126,7 @@ public class NumberPropertyParserTest {
     }
 
     @Test
-    public void testValidate_incorrenctValueType() {
+    public void testValidate_incorrectValueType() {
         try {
             parser.validate("as", annotation("a", "b", 1, 2, false));
             fail();

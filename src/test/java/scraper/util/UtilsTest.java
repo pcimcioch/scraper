@@ -132,7 +132,7 @@ public class UtilsTest {
     private static class AlwaysEqualsTestClass {
 
         @Override
-        public boolean equals(Object o) {
+        public boolean equals(Object obj) {
             return true;
         }
 
@@ -145,7 +145,7 @@ public class UtilsTest {
     private static class NeverEqualsTestClass {
 
         @Override
-        public boolean equals(Object o) {
+        public boolean equals(Object obj) {
             return false;
         }
 

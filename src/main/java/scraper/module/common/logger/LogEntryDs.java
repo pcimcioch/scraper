@@ -89,15 +89,15 @@ public class LogEntryDs {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
 
-        LogEntryDs other = (LogEntryDs) o;
+        LogEntryDs other = (LogEntryDs) obj;
 
         return Utils.computeEq(this.level, other.level, this.module, other.module, this.instance, other.instance, this.date, other.date, this.message, other.message);
 
