@@ -6,6 +6,7 @@ import org.springframework.scheduling.Trigger;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 
@@ -42,6 +43,8 @@ public class Scheduler {
         if (previousTask != null) {
             previousTask.cancel(false);
         }
+
+        clearDone();
     }
 
     /**
@@ -51,7 +54,6 @@ public class Scheduler {
      *
      * @param taskId task id
      */
-    // TODO maybe one-shot tasks should be automatically removed from "tasks" map?
     public synchronized void cancel(long taskId) {
         ScheduledFuture<?> previousTask = tasks.remove(taskId);
         if (previousTask != null) {
@@ -67,5 +69,15 @@ public class Scheduler {
      */
     public synchronized boolean isScheduled(long taskId) {
         return tasks.containsKey(taskId);
+    }
+
+    private void clearDone() {
+        Iterator<Map.Entry<Long, ScheduledFuture<?>>> it = tasks.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<Long, ScheduledFuture<?>> entry = it.next();
+            if (entry.getValue().isDone()) {
+                it.remove();
+            }
+        }
     }
 }

@@ -140,7 +140,7 @@ public class ModuleStoreServiceTest {
 
         // when
         try {
-            service.runModuleInstance(12L);
+            service.runModuleInstanceAsync(12L);
             fail();
         } catch (ResourceNotFoundException ex) {
             // then
@@ -158,7 +158,7 @@ public class ModuleStoreServiceTest {
         when(instanceRepository.findOne(12L)).thenReturn(instanceDs);
 
         // when
-        service.runModuleInstance(12L);
+        service.runModuleInstanceAsync(12L);
 
         // then
         verify(moduleRunner).runWorkerAsync(new ModuleDetails("module.worker", "ins"), correctSettings);
@@ -192,7 +192,7 @@ public class ModuleStoreServiceTest {
         service.runModuleInstanceSync(12L);
 
         // then
-        verify(moduleRunner).runWorker(new ModuleDetails("module.worker", "ins"), correctSettings);
+        verify(moduleRunner).runWorkerSync(new ModuleDetails("module.worker", "ins"), correctSettings);
     }
 
     @Test

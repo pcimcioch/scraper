@@ -123,7 +123,7 @@ public class ModuleViewService {
      * @throws ResourceNotFoundException if instance of worker module can not be found
      */
     public void runModuleInstance(long instanceId) {
-        moduleStoreService.runModuleInstance(instanceId);
+        moduleStoreService.runModuleInstanceAsync(instanceId);
     }
 
     /**

@@ -190,7 +190,7 @@ public class ModuleStoreService {
      * @param instanceId worker module instance id
      * @throws ResourceNotFoundException if worker module instance can not be found
      */
-    public void runModuleInstance(long instanceId) {
+    public void runModuleInstanceAsync(long instanceId) {
         ModuleInstance instance = getModuleInstance(instanceId);
         if (instance == null) {
             throw new ResourceNotFoundException("Instance [id=%d] not found", instanceId);
@@ -203,12 +203,11 @@ public class ModuleStoreService {
     /**
      * Runs {@link WorkerModule} instance.
      * <p>
-     * Run is blocking, so ths method will wait for worker to finish. For asynchronous call, use {@link #runModuleInstance(long)}.
+     * Run is blocking, so ths method will wait for worker to finish. For asynchronous call, use {@link #runModuleInstanceAsync(long)}.
      *
      * @param instanceId worker module instance id
      * @throws ResourceNotFoundException if worker module instance can not be found
      */
-    // TODO use sync/async always in pair
     public void runModuleInstanceSync(long instanceId) {
         ModuleInstance instance = getModuleInstance(instanceId);
         if (instance == null) {
@@ -216,7 +215,7 @@ public class ModuleStoreService {
         }
         ModuleDetails moduleDetails = new ModuleDetails(instance.getModuleName(), instance.getInstanceName());
 
-        moduleRunner.runWorker(moduleDetails, instance.getSettings());
+        moduleRunner.runWorkerSync(moduleDetails, instance.getSettings());
     }
 
     private ModuleInstance buildModuleInstance(ModuleInstanceDs instanceDs) {

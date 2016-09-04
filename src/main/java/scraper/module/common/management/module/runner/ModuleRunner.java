@@ -87,7 +87,7 @@ public class ModuleRunner {
      * Run worker asynchronously.
      * <p>
      * Run is performed in {@link scraper.module.core.scope.ModuleScope}. This method will return immediately, as it is asynchronous. To wait for worker finish, method {@link
-     * #runWorker(ModuleDetails, Object)} can be used.
+     * #runWorkerSync(ModuleDetails, Object)} can be used.
      *
      * @param moduleDetails module details describing module and instance of the worker
      * @param settings      worker settings
@@ -97,7 +97,7 @@ public class ModuleRunner {
     @InModuleScope
     @Async
     public void runWorkerAsync(ModuleDetails moduleDetails, Object settings) {
-        runWorker(moduleDetails, settings);
+        runWorkerSync(moduleDetails, settings);
     }
 
     /**
@@ -112,21 +112,21 @@ public class ModuleRunner {
      * @throws IllegalStateException     if worker instance with the same name is already running
      */
     @InModuleScope
-    public void runWorker(ModuleDetails moduleDetails, Object settings) {
+    public void runWorkerSync(ModuleDetails moduleDetails, Object settings) {
         initWorkerRun(moduleDetails);
         WorkerModule<?> module = moduleContainer.getWorkerModule(moduleDetails.getModule());
         if (module == null) {
             throw new ResourceNotFoundException("Worker module [%s] not found", moduleDetails.getModule());
         }
 
-        runWorker(module, settings);
+        runWorkerSync(module, settings);
     }
 
     private void initWorkerRun(ModuleDetails moduleDetails) {
         moduleContext.setModuleDetails(moduleDetails);
     }
 
-    private void runWorker(WorkerModule<?> module, Object settings) {
+    private void runWorkerSync(WorkerModule<?> module, Object settings) {
         WorkerDescriptor descriptor = registerWorker();
 
         logger.info("Started worker module [%s]", module.name());

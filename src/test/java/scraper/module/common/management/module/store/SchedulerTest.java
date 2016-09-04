@@ -21,7 +21,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -69,7 +68,6 @@ public class SchedulerTest {
         // then
         assertTrue(scheduler.isScheduled(12L));
         assertFalse(scheduler.isScheduled(13L));
-        verifyNoMoreInteractions(future1);
         verify(taskScheduler).schedule(runnableCaptor.capture(), eq(trigger));
         verifyRunnable(runnableCaptor.getValue());
     }
@@ -95,7 +93,6 @@ public class SchedulerTest {
         // then
         verify(taskScheduler, times(3)).schedule(any(Runnable.class), eq(trigger));
         verify(future1).cancel(false);
-        verifyNoMoreInteractions(future1, future2, future3);
     }
 
     @Test
@@ -109,7 +106,6 @@ public class SchedulerTest {
         // then
         assertTrue(scheduler.isScheduled(12L));
         assertFalse(scheduler.isScheduled(13L));
-        verifyNoMoreInteractions(future1);
         verify(taskScheduler).schedule(runnableCaptor.capture(), eq(trigger));
         verifyRunnable(runnableCaptor.getValue());
     }
@@ -139,7 +135,6 @@ public class SchedulerTest {
         // then
         assertTrue(scheduler.isScheduled(12L));
         assertFalse(scheduler.isScheduled(13L));
-        verifyNoMoreInteractions(future1);
     }
 
     @Test

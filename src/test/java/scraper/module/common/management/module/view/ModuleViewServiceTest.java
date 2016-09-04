@@ -305,7 +305,7 @@ public class ModuleViewServiceTest {
         service.runModuleInstance(17L);
 
         // then
-        verify(moduleStoreService).runModuleInstance(17L);
+        verify(moduleStoreService).runModuleInstanceAsync(17L);
     }
 
     @Test
