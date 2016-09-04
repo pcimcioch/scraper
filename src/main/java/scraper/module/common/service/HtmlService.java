@@ -33,7 +33,6 @@ public class HtmlService {
      * @throws IOException if connection failed. See {@link Connection#execute()} for details
      */
     public Document getDocument(String url) throws IOException {
-        System.out.println("Getting " + url);
         return getStandardResponse(url);
     }
 
@@ -45,7 +44,6 @@ public class HtmlService {
      * @throws IOException if connection failed or stream operation I/O exception occurred. See {@link Connection#execute()} for details
      */
     public void download(String url, OutputStream out) throws IOException {
-        System.out.println("Download " + url);
         Response response = getDownloadResponse(url);
         out.write(response.bodyAsBytes());
     }

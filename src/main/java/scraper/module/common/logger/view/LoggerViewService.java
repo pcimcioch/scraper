@@ -1,7 +1,6 @@
 package scraper.module.common.logger.view;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.neo4j.transaction.Neo4jTransactional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +14,6 @@ import static scraper.util.FuncUtils.map;
  * Service implementing operations for managing saved in database {@link scraper.module.common.logger.LogEntryDs} records.
  */
 @Service
-@Neo4jTransactional
 @Transactional(propagation = Propagation.REQUIRED)
 public class LoggerViewService {
 

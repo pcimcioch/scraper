@@ -1,7 +1,6 @@
 package scraper.module.common.logger.view;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -43,7 +42,7 @@ public class LoggerViewController {
      *
      * @return operation status message
      */
-    @RequestMapping(path = "/log", method = RequestMethod.DELETE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @RequestMapping(path = "/log", method = RequestMethod.DELETE)
     public StatusMessage removeAllLogs() {
         logsService.deleteAllLogs();
         return new StatusMessage("All logs removed");
@@ -55,7 +54,7 @@ public class LoggerViewController {
      * @param module module name
      * @return operation status message
      */
-    @RequestMapping(path = "/log/{module}", method = RequestMethod.DELETE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @RequestMapping(path = "/log/{module}", method = RequestMethod.DELETE)
     public StatusMessage removeModuleLogs(@PathVariable("module") String module) {
         logsService.deleteModuleLogs(module);
         return new StatusMessage("Module [%s] logs removed", module);

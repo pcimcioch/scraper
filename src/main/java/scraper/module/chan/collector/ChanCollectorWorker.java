@@ -2,7 +2,6 @@ package scraper.module.chan.collector;
 
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.neo4j.transaction.Neo4jTransactional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,7 +45,6 @@ public class ChanCollectorWorker {
         this.threadRepository = threadRepository;
     }
 
-    @Neo4jTransactional
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void doWork(ChanCollectorModuleSettings settings) {
         Document archiveDoc = getArchiveDocument(settings.getBoardName());
@@ -108,6 +106,7 @@ public class ChanCollectorWorker {
     }
 
     private Document getThreadDocument(String threadUrl) {
+        logger.info("Getting thread: %s", threadUrl);
         try {
             return htmlService.getDocument(threadUrl);
         } catch (IOException e) {

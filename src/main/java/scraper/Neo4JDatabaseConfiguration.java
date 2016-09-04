@@ -1,32 +1,32 @@
 package scraper;
 
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.factory.GraphDatabaseFactory;
+import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.neo4j.config.EnableNeo4jRepositories;
-import org.springframework.data.neo4j.config.Neo4jConfiguration;
+import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * Configuration of neo4j database.
  */
 @Configuration
-@EnableNeo4jRepositories(basePackageClasses = Neo4JDatabaseConfiguration.class)
+@EnableNeo4jRepositories
 @EnableTransactionManagement
-// TODO update neo4j version to 4.x
-public class Neo4JDatabaseConfiguration extends Neo4jConfiguration {
+public class Neo4JDatabaseConfiguration {
 
-    public Neo4JDatabaseConfiguration() {
-        setBasePackage(this.getClass().getPackage().getName());
+    @Bean
+    public org.neo4j.ogm.config.Configuration getConfiguration(@Value("${neo4j.path}") String dbPath, @Value("${neo4j.username}") String username,
+            @Value("${neo4j.password}") String password) {
+        org.neo4j.ogm.config.Configuration config = new org.neo4j.ogm.config.Configuration();
+
+        config.driverConfiguration().setDriverClassName("org.neo4j.ogm.drivers.embedded.driver.EmbeddedDriver").setCredentials(username, password).setURI("file:///" + dbPath);
+
+        return config;
     }
 
     @Bean
-    GraphDatabaseService graphDatabaseService(@Value("${neo4j.path}") String dbPath, @Value("${neo4j.username}") String username, @Value("${neo4j.password}") String password) {
-        System.setProperty("username", username);
-        System.setProperty("password", password);
-
-        return new GraphDatabaseFactory().newEmbeddedDatabase(dbPath);
+    public SessionFactory getSessionFactory(org.neo4j.ogm.config.Configuration configuration) {
+        return new SessionFactory(configuration);
     }
 }

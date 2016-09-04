@@ -1,11 +1,9 @@
 package scraper.module.chan.collector.thread;
 
-import org.neo4j.graphdb.Direction;
-import org.springframework.data.neo4j.annotation.Fetch;
-import org.springframework.data.neo4j.annotation.GraphId;
-import org.springframework.data.neo4j.annotation.GraphProperty;
-import org.springframework.data.neo4j.annotation.NodeEntity;
-import org.springframework.data.neo4j.annotation.RelatedTo;
+import org.neo4j.ogm.annotation.GraphId;
+import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Property;
+import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -22,34 +20,31 @@ public class PostDs {
     @GraphId
     private Long id;
 
-    @GraphProperty(propertyName = "author")
+    @Property(name = "author")
     private String author;
 
-    @GraphProperty(propertyName = "date")
+    @Property(name = "date")
     private Date date;
 
-    @GraphProperty(propertyName = "postId")
+    @Property(name = "postId")
     private String postId;
 
-    @GraphProperty(propertyName = "comment")
+    @Property(name = "comment")
     private String comment;
 
-    @GraphProperty(propertyName = "fileName")
+    @Property(name = "fileName")
     private String fileName;
 
-    @GraphProperty(propertyName = "md5")
+    @Property(name = "md5")
     private String md5;
 
-    @RelatedTo(type = "REPLY", direction = Direction.INCOMING)
-    @Fetch
+    @Relationship(type = "REPLAY", direction = Relationship.INCOMING)
     private Set<PostDs> repliedBy = new HashSet<>();
 
-    @RelatedTo(type = "REPLY", direction = Direction.OUTGOING)
-    @Fetch
+    @Relationship(type = "REPLAY", direction = Relationship.OUTGOING)
     private Set<PostDs> replyTo = new HashSet<>();
 
-    @RelatedTo(type = "CONTAINS", direction = Direction.OUTGOING)
-    @Fetch
+    @Relationship(type = "CONTAINS", direction = Relationship.OUTGOING)
     protected ThreadDs thread;
 
     public PostDs() {

@@ -1,10 +1,9 @@
 package scraper.module.chan.collector.thread;
 
-import org.neo4j.graphdb.Direction;
-import org.springframework.data.neo4j.annotation.GraphId;
-import org.springframework.data.neo4j.annotation.GraphProperty;
-import org.springframework.data.neo4j.annotation.NodeEntity;
-import org.springframework.data.neo4j.annotation.RelatedTo;
+import org.neo4j.ogm.annotation.GraphId;
+import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Property;
+import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,16 +21,16 @@ public class ThreadDs {
     @GraphId
     private Long id;
 
-    @GraphProperty(propertyName = "threadId")
+    @Property(name = "threadId")
     private String threadId;
 
-    @GraphProperty(propertyName = "board")
+    @Property(name = "board")
     private String board;
 
-    @GraphProperty(propertyName = "subject")
+    @Property(name = "subject")
     private String subject;
 
-    @RelatedTo(type = "CONTAINS", direction = Direction.INCOMING)
+    @Relationship(type = "CONTAINS", direction = Relationship.INCOMING)
     protected Set<PostDs> posts = new HashSet<>();
 
     public ThreadDs() {

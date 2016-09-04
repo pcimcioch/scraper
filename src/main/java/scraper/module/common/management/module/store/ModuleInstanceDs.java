@@ -1,8 +1,8 @@
 package scraper.module.common.management.module.store;
 
-import org.springframework.data.neo4j.annotation.GraphId;
-import org.springframework.data.neo4j.annotation.GraphProperty;
-import org.springframework.data.neo4j.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.GraphId;
+import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Property;
 import scraper.util.Utils;
 
 /**
@@ -14,16 +14,16 @@ public class ModuleInstanceDs {
     @GraphId
     private Long id;
 
-    @GraphProperty(propertyName = "moduleName")
+    @Property(name = "moduleName")
     private String moduleName;
 
-    @GraphProperty(propertyName = "instanceName")
+    @Property(name = "instanceName")
     private String instanceName;
 
-    @GraphProperty(propertyName = "settings")
+    @Property(name = "settings")
     private String settings;
 
-    @GraphProperty(propertyName = "schedule")
+    @Property(name = "schedule")
     private String schedule;
 
     public ModuleInstanceDs() {

@@ -1,8 +1,8 @@
 package scraper.module.common.logger;
 
-import org.springframework.data.neo4j.annotation.GraphId;
-import org.springframework.data.neo4j.annotation.GraphProperty;
-import org.springframework.data.neo4j.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.GraphId;
+import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Property;
 import scraper.util.Utils;
 
 import java.util.Date;
@@ -18,19 +18,19 @@ public class LogEntryDs {
     @GraphId
     private Long id;
 
-    @GraphProperty(propertyName = "level")
+    @Property(name = "level")
     private LoggerLevel level;
 
-    @GraphProperty(propertyName = "module")
+    @Property(name = "module")
     private String module;
 
-    @GraphProperty(propertyName = "instance")
+    @Property(name = "instance")
     private String instance;
 
-    @GraphProperty(propertyName = "date")
+    @Property(name = "date")
     private Date date;
 
-    @GraphProperty(propertyName = "message")
+    @Property(name = "message")
     private String message;
 
     public LogEntryDs() {

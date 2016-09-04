@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.zebasto.spring.post.initialize.PostInitialize;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.neo4j.transaction.Neo4jTransactional;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -26,7 +25,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import static scraper.util.FuncUtils.map;
 
 @Service
-@Neo4jTransactional
 @Transactional(propagation = Propagation.REQUIRED)
 public class ModuleStoreService {
 
